@@ -1,0 +1,86 @@
+{
+  "app": {
+    "name": "即時論文",
+    "tagline": "AI高精度、即時作成論文Word/PDF"
+  },
+  "nav": {
+    "home": "ホーム",
+    "templates": "テンプレート",
+    "history": "履歴",
+    "profile": "プロフィール",
+    "pricing": "料金プラン",
+    "dashboard": "ダッシュボード"
+  },
+  "actions": {
+    "recharge": "ポイントチャージ",
+    "login": "ログイン",
+    "register": "登録",
+    "logout": "ログアウト",
+    "generate": "論文を生成",
+    "format": "フォーマット開始",
+    "download": {
+      "word": "Wordをダウンロード",
+      "pdf": "PDFをダウンロード"
+    },
+    "save": "保存",
+    "cancel": "キャンセル",
+    "confirm": "確認",
+    "edit": "編集",
+    "delete": "削除",
+    "view": "表示",
+    "search": "検索",
+    "filter": "フィルター",
+    "sort": "並べ替え",
+    "apply": "適用"
+  },
+  "home": {
+    "input": {
+      "title": "プロンプト入力",
+      "placeholder": "論文のテーマ、キーワード、または具体的な要件を入力してください...",
+      "pure_placeholder": "既存の論文内容を貼り付けてください。選択したテンプレートに従ってフォーマットします..."
+    },
+    "template": {
+      "title": "テンプレート選択",
+      "undergraduate": "学部卒業論文",
+      "master": "修士論文",
+      "course": "課題レポート",
+      "journal": "学術ジャーナル"
+    },
+    "preview": {
+      "title": "ドキュメントプレビュー",
+      "empty": "プロンプトを入力し、テンプレートを選択してください",
+      "generating": "論文を生成中...",
+      "formatting": "ドキュメントをフォーマット中..."
+    },
+    "features": {
+      "title": "機能紹介",
+      "subtitle": "異なるニーズに対応する2つの文書フォーマット方法を提供しています",
+      "pure": {
+        "title": "純粋なフォーマット",
+        "description": "既存の論文内容を選択したテンプレートに従って専門的にフォーマットし、元のコンテンツを変更せずに要件に合った形式を確保します。コンテンツ作成が完了し、フォーマットの調整のみが必要なユーザーに適しています。"
+      },
+      "ai": {
+        "title": "AI拡張/自動執筆",
+        "description": "提供されたキーワード、アウトライン、またはトピックに基づいて、AIが完全な論文コンテンツを自動生成し、選択したテンプレートに従ってフォーマットします。課題を迅速に完了したり、執筆のインスピレーションを求めるユーザーに適しています。"
+      }
+    },
+    "points": {
+      "consume": "AI生成には",
+      "points": "ポイントが必要です",
+      "recharge": "ポイントをチャージ"
+    }
+  },
+  "footer": {
+    "copyright": "© 2025 即時論文. All rights reserved.",
+    "links": {
+      "about": "会社概要",
+      "terms": "利用規約",
+      "privacy": "プライバシーポリシー",
+      "contact": "お問い合わせ"
+    }
+  },
+  "language": {
+    "name": "日本語",
+    "select": "言語を選択"
+  }
+}

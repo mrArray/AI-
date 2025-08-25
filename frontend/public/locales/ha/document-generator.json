@@ -1,0 +1,52 @@
+{
+  "coreFeatures": {
+    "inputSection": {
+      "title": "Mai Samar da Takardu"
+    },
+    "templates": {
+      "title": "Zaɓi Samfuri"
+    },
+    "generateButton": {
+      "default": "Samar da Takarda",
+      "loading": "Ana ƙirƙira..."
+    },
+    "requirements": {
+      "title": "Bukatun Takarda",
+      "paperTitle": "Taken Takarda",
+      "titlePlaceholder": "Shigar da taken takarda",
+      "optional": "na zaɓi",
+      "words": "kalmomi"
+    },
+    "credits": {
+      "remaining": "Ragowar kirediti",
+      "cost": "Kudin"
+    },
+    "errors": {
+      "templates": "An kasa lodin samfuran. Sabunta shafin.",
+      "generation": "An kasa samar da takarda. Gwada sakewa.",
+      "auth": "Ana buƙatar shaidar kanka. Shiga cikin farko.",
+      "missingFields": "Cike waɗannan filayen da ake buƙata: {fields}"
+    },
+    "authRequired": {
+      "title": "Ana Bukatar Shaida",
+      "description": "Shiga domin samun damar mai samar da takardu",
+      "loginButton": "Shiga Yanzu"
+    },
+    "preview": {
+      "title": "Siffofin Takarda",
+      "emptyTitle": "Siffofin Takarda",
+      "emptyDescription": "Zaɓi samfuri kuma shigar da buƙatun don samar da takarda",
+      "untitled": "Takarda maras suna",
+      "sections": {
+        "abstract": "Taƙaice",
+        "abstractContent": "Wannan sashe zai ƙunshi taƙaitaccen taƙaice na dukan takardar...",
+        "introduction": "Gabatarwa",
+        "introductionContent": "Wannan sashe ya gabatar da batu kuma ya bayyana manufar binciken...",
+        "methodology": "Hanyar Bincike",
+        "methodologyContent": "Wannan sashe ya bayyana hanyoyin da aka bi don gudanar da binciken...",
+        "pageInfo": "Shafi na {page} na {total}"
+      }
+    },
+    "generationTime": "Yakan ɗauki daƙiƙa 1-3"
+  }
+}

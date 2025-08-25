@@ -1,0 +1,61 @@
+{
+    "header": {
+      "logo": "秒出论文",
+      "nav": {
+        "home": "首页",
+        "templates": "模板浏览",
+        "history": "历史记录"
+      },
+      "profile": "个人中心",
+      "recharge": "积分充值"
+    },
+    "pageTitle": "论文模板库",
+    "pageDescription": "浏览并选择适合您需求的专业论文模板，覆盖各类院校和期刊要求",
+    "categories": {
+      "all": "全部模板",
+      "undergraduate": "本科论文",
+      "master": "硕士论文",
+      "journal": "期刊论文",
+      "course": "课程作业"
+    },
+    "templateItem": {
+      "popularity": "热度 {{percentage}}%",
+      "useButton": "使用此模板"
+    },
+    "templateDetail": {
+      "title": "模板详情",
+      "description": "模板描述",
+      "applicability": "适用范围",
+      "sections": "包含章节",
+      "close": "关闭",
+      "useTemplate": "使用模板",
+      "cancel": "取消",
+      "applicabilityOptions": {
+        "undergraduate": "本科毕业论文、学年论文",
+        "master": "硕士学位论文、研究生课程论文",
+        "journal": "学术期刊投稿、会议论文",
+        "course": "日常课程作业、实验报告、小组项目"
+      },
+      "defaultSections": [
+        "封面和扉页",
+        "中英文摘要",
+        "目录（自动生成）",
+        "正文（含标准章节结构）",
+        "参考文献",
+        "致谢"
+      ],
+      "additionalSections": {
+        "master": ["研究成果"],
+        "journal": ["作者简介"]
+      }
+    },
+    "footer": {
+      "rights": "© 2025 秒出论文. 保留所有权利.",
+      "links": {
+        "about": "关于我们",
+        "terms": "使用条款",
+        "privacy": "隐私政策",
+        "contact": "联系我们"
+      }
+    }
+  }

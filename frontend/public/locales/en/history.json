@@ -1,0 +1,30 @@
+{
+    "page": {
+      "title": "History",
+      "description": "View all your previously generated paper records, you can re-edit or download them"
+    },
+    "table": {
+      "date": "Date",
+      "template": "Template",
+      "type": "Type",
+      "viewDetails": "View Details"
+    },
+    "types": {
+      "aiExtension": "AI Expansion",
+      "formatting": "Formatting Only"
+    },
+    "status": {
+      "completed": "Completed"
+    },
+    "modal": {
+      "title": "History Details",
+      "generationDate": "Generation Date",
+      "templateUsed": "Template Used",
+      "generationType": "Generation Type",
+      "status": "Status",
+      "documentPreview": "Document Preview",
+      "downloadButton": "Download Document",
+      "editButton": "Edit Again",
+      "closeButton": "Close"
+    }
+  }

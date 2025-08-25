@@ -1,0 +1,178 @@
+{
+    "header": {
+      "logoText": "즉시논문",
+      "navItems": {
+        "home": "홈",
+        "templates": "템플릿",
+        "history": "기록",
+        "examples": "작품 예시"
+      },
+      "profile": "프로필",
+      "recharge": "포인트 충전"
+    },
+    "hero": {
+      "title1": "AI 논문 생성 도구",
+      "title2": "30초 만에 전문 학술 논문 생성",
+      "description": "주제를 입력하고 템플릿을 선택하면 AI가 완전한 형식의 Word/PDF 문서를 자동 생성합니다",
+      "stats": {
+        "trustedUsers": "사용자 신뢰",
+        "templates": "전문 템플릿",
+        "passRate": "합격률",
+        "avgTime": "평균 생성 시간"
+      }
+    },
+    "coreFeatures": {
+      "subtitle": "핵심 기능",
+      "title": "전문 학술 문서의 빠른 생성",
+      "description": "과제 보고서, 졸업 논문, 학술 저널 기사 등 모든 요구사항 충족",
+      "inputSection": {
+        "title": "논문 요구사항 입력",
+        "placeholder": "예: 의료 분야에서 인공지능 적용에 관한 논문을 생성하세요. 요약, 서론, 관련 연구, 적용 사례, 결론을 포함하여 5000자 이상...",
+        "tip": "상세한 설명일수록 정확한 결과를 얻습니다"
+      },
+      "templates": {
+        "title": "템플릿 유형 선택",
+        "undergraduate": "학부 졸업논문",
+        "master": "석사 학위논문",
+        "coursework": "과제 보고서",
+        "journal": "학술 저널",
+        "research": "연구 보고서",
+        "proposal": "연구 제안서"
+      },
+      "generateButton": {
+        "default": "즉시 논문 생성",
+        "loading": "생성 중..."
+      },
+      "costTip": "1회 생성당 1포인트 소모 · Word/PDF 형식 다운로드 지원",
+      "preview": {
+        "title": "문서 미리보기",
+        "emptyTitle": "프롬프트를 입력하고 템플릿을 선택하세요",
+        "emptyDescription": "AI가 완전한 학술 논문 문서를 생성합니다",
+        "emptyTip": "Word/PDF 형식 다운로드 지원",
+        "sections": {
+          "abstract": "요약",
+          "introduction": "서론",
+          "methodology": "연구 방법",
+          "pageInfo": "{{page}} 페이지 / 총 {{total}} 페이지"
+        }
+      }
+    },
+    "features": {
+      "subtitle": "기능 특징",
+      "title": "논문 생성 도구를 선택하는 이유",
+      "items": {
+        "speed": {
+          "title": "초고속 생성",
+          "content": "30초 이내 완전한 논문 생성. AI 모델은 전문 학술 데이터로 훈련되어 콘텐츠 품질 보장"
+        },
+        "plagiarism": {
+          "title": "정밀 표절 검사",
+          "content": "내장 학술 표절 검사 시스템으로 논문의 독창성 보장. 주요 학술 데이터베이스와 비교 지원"
+        },
+        "templates": {
+          "title": "전문 템플릿",
+          "content": "50+ 전문 학술 템플릿이 각 분야를 커버. 학술 규범에 엄격히 준수한 형식 설계"
+        }
+      }
+    },
+    "testimonials": {
+      "subtitle": "사용자 평가",
+      "title": "10,000명 이상 사용자의 선택",
+      "items": {
+        "student": {
+          "name": "김학생",
+          "content": "이 도구를 사용한 후 논문 작성 효율이 3배 향상되었습니다! 생성된 문헌 검토 부분이 특히 전문적입니다"
+        },
+        "professor": {
+          "name": "이교수",
+          "content": "학생들에게 이 도구를 초안 작성용으로 사용하도록 추천하여 학술 논문 구조 이해를 돕고 있습니다"
+        },
+        "researcher": {
+          "name": "박연구원",
+          "content": "국제 회의 논문 준비 시 이 도구가 IEEE 형식에 맞는 초안을 빠르게 생성하는 데 도움이 되었습니다"
+        }
+      }
+    },
+    "cta": {
+      "title": "AI 논문 생성을 지금 체험하세요",
+      "description": "회원가입 시 5포인트 제공, 첫 번째 AI 논문 무료 생성",
+      "register": "무료 회원가입",
+      "demo": "데모 보기"
+    },
+    "functionTabs": {
+      "formatter": "문서 서식",
+      "generator": "AI 생성",
+      "formatterDescription": "문서를 업로드하여 전문적인 서식 적용",
+      "generatorDescription": "주제 요구사항을 입력하면 AI가 완전한 논문 생성"
+    },
+    "formatter": {
+      "uploadTitle": "문서 업로드",
+      "uploadPlaceholder": "파일을 여기에 드래그하거나 클릭하여 업로드",
+      "supportedFormats": ".docx, .doc, .pdf 파일 지원, 최대 20MB",
+      "fileUploaded": "파일이 업로드되었습니다",
+      "formatStyleTitle": "서식 스타일 선택", 
+      "formatButton": "전문 서식 적용",
+      "formatting": "서식 처리 중...",
+      "costTip": "서식 적용 1회당 2포인트 소모, 전문적인 표준 서식",
+      "previewTitle": "서식 미리보기",
+      "emptyTitle": "문서를 업로드하여 서식 시작",
+      "emptyDescription": "Word 및 PDF 문서 지원, 콘텐츠 구조를 자동 인식하여 학술 표준에 따라 서식 적용",
+      "emptyTip": "문서를 업로드하고 서식을 선택하면 미리보기 가능",
+      "formats": {
+        "apa": {
+          "name": "APA 형식",
+          "description": "미국심리학회 형식, 심리학·교육학 논문에 주로 사용"
+        },
+        "mla": {
+          "name": "MLA 형식", 
+          "description": "현대어학협회 형식, 문학·언어학 논문에 주로 사용"
+        },
+        "chicago": {
+          "name": "시카고 형식",
+          "description": "시카고 형식, 역사·문학 논문에 주로 사용"
+        },
+        "ieee": {
+          "name": "IEEE 형식",
+          "description": "전기전자기술자협회 형식, 공학기술 논문에 주로 사용"
+        },
+        "harvard": {
+          "name": "하버드 형식",
+          "description": "하버드 형식, 경영·사회과학 논문에 주로 사용"
+        },
+        "vancouver": {
+          "name": "밴쿠버 형식",
+          "description": "밴쿠버 형식, 의학·생물학 논문에 주로 사용"
+        }
+      }
+    },
+    "footer": {
+      "slogan": "가장 전문적인 AI 논문 생성 도구, 학술 연구 지원 및 작성 효율성 향상",
+      "features": {
+        "title": "제품 기능",
+        "items": [
+          "논문 생성",
+          "형식 조정",
+          "학술 표절 검사",
+          "참고 문헌 관리",
+          "다국어 지원"
+        ]
+      },
+      "help": {
+        "title": "도움말 센터",
+        "items": [
+          "사용 튜토리얼",
+          "자주 묻는 질문",
+          "템플릿 센터",
+          "포인트 설명",
+          "API 연동"
+        ]
+      },
+      "contact": {
+        "title": "문의하기",
+        "email": "support@papergen.com",
+        "phone": "02-1234-5678",
+        "address": "서울시 강남구 테크밸리 88번지"
+      },
+      "rights": "© 2025 즉시논문. All rights reserved. | 사업자등록번호: KR-12345678"
+    }
+  } 

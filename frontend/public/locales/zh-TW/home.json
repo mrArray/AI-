@@ -1,0 +1,195 @@
+{
+    "header": {
+      "logoText": "秒出論文",
+      "navItems": {
+        "home": "首頁",
+        "templates": "模板瀏覽",
+        "history": "歷史記錄",
+        "examples": "範例作品"
+      },
+      "profile": "個人中心",
+      "recharge": "積分充值"
+    },
+    "hero": {
+      "title1": "AI論文生成工具",
+      "title2": "30秒生成專業學術論文",
+      "description": "輸入您的主題，選擇模板，AI將自動生成完整格式的Word/PDF文檔",
+      "stats": {
+        "trustedUsers": "用戶信任",
+        "templates": "專業模板",
+        "passRate": "通過率",
+        "avgTime": "平均生成時間"
+      }
+    },
+    "coreFeatures": {
+      "subtitle": "核心功能",
+      "title": "快速生成專業學術文檔",
+      "description": "無論您需要課程作業、畢業論文還是學術期刊文章，我們都能滿足",
+      "inputSection": {
+        "title": "輸入您的論文要求",
+        "placeholder": "例如：請生成一篇關於人工智慧在醫療領域應用的論文，要求包含摘要、引言、相關研究、應用案例和結論，不少於5000字...",
+        "tip": "越詳細的描述，生成結果越精準"
+      },
+      "templates": {
+        "title": "選擇模板類型",
+        "undergraduate": "本科畢業論文",
+        "master": "碩士學位論文",
+        "coursework": "課程作業",
+        "journal": "學術期刊",
+        "research": "研究報告",
+        "proposal": "開題報告"
+      },
+      "generateButton": {
+        "default": "立即生成論文",
+        "loading": "正在生成中..."
+      },
+      "costTip": "每次生成消耗1積分 · 支援Word/PDF格式下載",
+      "preview": {
+        "title": "文檔預覽",
+        "emptyTitle": "輸入提示詞並選擇模板",
+        "emptyDescription": "AI將為您生成完整的學術論文文檔",
+        "emptyTip": "支援Word/PDF格式下載",
+        "sections": {
+          "abstract": "摘要",
+          "introduction": "引言",
+          "methodology": "研究方法",
+          "pageInfo": "第 {{page}} 頁 / 共 {{total}} 頁"
+        }
+      }
+    },
+    "features": {
+      "subtitle": "功能特色",
+      "title": "為什麼選擇我們的論文生成工具",
+      "items": {
+        "speed": {
+          "title": "極速生成",
+          "content": "30秒內生成完整論文，AI模型經過專業學術數據訓練，確保內容品質"
+        },
+        "plagiarism": {
+          "title": "精準查重",
+          "content": "內建學術查重系統，確保論文原創性，支援主流學術數據庫比對"
+        },
+        "templates": {
+          "title": "專業模板",
+          "content": "50+專業學術模板覆蓋各學科，嚴格按照學術規範設計格式"
+        }
+      }
+    },
+    "testimonials": {
+      "subtitle": "用戶評價",
+      "title": "超過10,000名用戶的選擇",
+      "items": {
+        "student": {
+          "name": "張同學",
+          "content": "使用這個工具後，我的論文寫作效率提高了3倍！生成的文獻綜述部分特別專業"
+        },
+        "professor": {
+          "name": "李教授",
+          "content": "我推薦學生使用這個工具進行初稿創作，幫助他們理解學術論文結構"
+        },
+        "researcher": {
+          "name": "王研究員",
+          "content": "在準備國際會議論文時，這個工具幫我快速生成了符合IEEE格式的初稿"
+        }
+      }
+    },
+    "cta": {
+      "title": "立即體驗AI論文生成",
+      "description": "註冊即送5積分，免費生成您的第一篇AI論文",
+      "register": "免費註冊",
+      "demo": "查看演示"
+    },
+    "functionTabs": {
+      "formatter": "文檔一鍵排版",
+      "generator": "AI智能生成",
+      "formatterDescription": "上傳您的文檔，快速完成專業格式排版",
+      "generatorDescription": "輸入主題要求，AI為您生成完整論文"
+    },
+    "formatter": {
+      "uploadTitle": "上傳文檔",
+      "uploadPlaceholder": "拖拽文件到此處或點擊上傳",
+      "supportedFormats": "支援 .docx, .doc, .pdf 文件，最大20MB",
+      "fileUploaded": "文件已上傳",
+      "formatStyleTitle": "選擇排版格式",
+      "formatButton": "一鍵專業排版",
+      "formatting": "正在排版處理中...",
+      "costTip": "排版一次消耗 2 積分，專業格式標準排版",
+      "errors": {
+        "fetchFormats": "獲取格式列表失敗。",
+        "unsupportedFile": "不支援的文件類型。",
+        "formatFailed": "排版失敗，請重試。"
+      },
+      
+      "previewTitle": "排版預覽",
+      "downloadFormatted": "下載排版後文檔",
+      "emptyTitle": "上傳文檔開始排版",
+      "emptyDescription": "支援Word和PDF文檔，自動識別內容結構並按照學術標準進行專業排版",
+      "emptyTip": "上傳文檔並選擇格式即可預覽",
+      "preview": {
+        "title": "範例標題",
+        "content": "您的排版文檔預覽將顯示在這裡。",
+        "abstract": "摘要",
+        "abstractContent": "這是一個摘要部分的範例。",
+        "introduction": "引言",
+        "introductionContent": "這是一個引言部分的範例。",
+        "pageInfo": "第 {{page}} 頁，共 {{total}} 頁",
+        "emptyDescription": "請上傳文檔並選擇格式以查看預覽。"
+      },
+      "formats": {
+        "apa": {
+          "name": "APA格式",
+          "description": "美國心理學協會格式，常用於心理學、教育學論文"
+        },
+        "mla": {
+          "name": "MLA格式",
+          "description": "現代語言協會格式，常用於文學、語言學論文"
+        },
+        "chicago": {
+          "name": "Chicago格式",
+          "description": "芝加哥格式，常用於歷史、文學論文"
+        },
+        "ieee": {
+          "name": "IEEE格式",
+          "description": "電氣電子工程師協會格式，常用於工程技術論文"
+        },
+        "harvard": {
+          "name": "Harvard格式",
+          "description": "哈佛格式，常用於商科、社會科學論文"
+        },
+        "vancouver": {
+          "name": "Vancouver格式",
+          "description": "溫哥華格式，常用於醫學、生物學論文"
+        }
+      }
+    },
+    "footer": {
+      "slogan": "最專業的AI論文生成工具，助力學術研究，提升寫作效率",
+      "features": {
+        "title": "產品功能",
+        "items": [
+          "論文生成",
+          "格式排版",
+          "學術查重",
+          "參考文獻管理",
+          "多語言支援"
+        ]
+      },
+      "help": {
+        "title": "幫助中心",
+        "items": [
+          "使用教程",
+          "常見問題",
+          "模板中心",
+          "積分說明",
+          "API接入"
+        ]
+      },
+      "contact": {
+        "title": "聯繫我們",
+        "email": "support@papergen.com",
+        "phone": "400-888-8888",
+        "address": "台北市信義區科技園區88號"
+      },
+      "rights": "© 2025 秒出論文. 保留所有權利. | 統編: TW-12345678"
+    }
+  }

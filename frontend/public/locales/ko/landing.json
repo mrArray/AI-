@@ -1,0 +1,25 @@
+{
+  "hero": {
+    "description": "AI 기술을 사용하여 고품질 학술 논문을 빠르게 생성, 다양한 형식과 템플릿 지원",
+    "try_now": "지금 체험",
+    "try_now_message": "AI 논문 생성 기능을 체험해보세요!",
+    "learn_more": "자세히 보기"
+  },
+  "interactive": {
+    "title": "스마트 논문 생성 체험",
+    "subtitle": "필요한 기능을 선택하고 AI의 강력함을 체험하세요"
+  },
+  "features": {
+    "try_feature": "기능 체험"
+  },
+  "testimonials": {
+    "title": "사용자들의 호평",
+    "subtitle": "다른 사용자들이 우리 제품에 대해 어떻게 평가하는지 확인해보세요"
+  },
+  "cta": {
+    "title": "시작할 준비가 되셨나요?",
+    "subtitle": "수천 명의 만족한 사용자와 함께 AI 논문 생성의 편리함을 경험하세요",
+    "start_now": "지금 시작",
+    "view_pricing": "가격 보기"
+  }
+} 

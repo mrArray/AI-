@@ -1,0 +1,25 @@
+{
+  "hero": {
+    "description": "使用AI技術快速生成高品質學術論文，支援多種格式和模板",
+    "try_now": "立即體驗",
+    "try_now_message": "歡迎體驗AI論文生成功能！",
+    "learn_more": "了解更多"
+  },
+  "interactive": {
+    "title": "智慧論文生成體驗",
+    "subtitle": "選擇您需要的功能，體驗AI的強大能力"
+  },
+  "features": {
+    "try_feature": "體驗功能"
+  },
+  "testimonials": {
+    "title": "用戶好評如潮",
+    "subtitle": "看看其他用戶是如何評價我們的產品的"
+  },
+  "cta": {
+    "title": "準備好開始了嗎？",
+    "subtitle": "加入數千名滿意用戶，體驗AI論文生成的便利",
+    "start_now": "立即開始",
+    "view_pricing": "查看價格"
+  }
+} 

@@ -1,0 +1,130 @@
+{
+  "header": {
+    "title": "选择适合您的套餐",
+    "subtitle": "灵活多样的选择，满足不同需求，让您以最优惠的价格享受最优质的服务",
+    "promotion": "新用户首购享85折优惠"
+  },
+  "plans": {
+    "sectionTitle": "灵活套餐选择",
+    "sectionSubtitle": "无论您是个人用户还是企业客户，都能找到最适合您的解决方案",
+    "trial": {
+      "name": "试用套餐",
+      "description": "适合新用户体验服务",
+      "badge": "限时优惠",
+      "limitation": "限制最多购买5次",
+      "features": [
+        "15次基础服务调用",
+        "7天有效期",
+        "体验全部功能"
+      ],
+      "sectionTitle": "新用户专享",
+      "sectionSubtitle": "首次使用？先来体验一下我们的服务",
+      "buttonText": "立即体验"
+    },
+    "basic": {
+      "name": "基础套餐",
+      "description": "适合轻度用户",
+      "features": [
+        "60次服务调用",
+        "30天有效期",
+        "优先客服支持"
+      ]
+    },
+    "final": {
+      "name": "超值套餐",
+      "description": "最具性价比的选择",
+      "badge": "最受欢迎",
+      "features": [
+        "360次服务调用",
+        "90天有效期",
+        "高级功能访问权限"
+      ]
+    },
+    "research": {
+      "name": "研究套餐",
+      "description": "适合专业用户",
+      "features": [
+        "1200次服务调用",
+        "180天有效期",
+        "专属客服经理"
+      ]
+    }
+  },
+  "common": {
+    "recommended": "热门推荐",
+    "selectPlan": "立即购买",
+    "save": "节省",
+    "baseCredits": "基础积分",
+    "creditsWithBonus": "基础积分 + 赠送积分"
+  },
+  "payment": {
+    "title": "确认订单",
+    "selectMethod": "选择支付方式",
+    "confirmPayment": "确认支付",
+    "securityNote": "您的支付信息已加密处理，安全可靠",
+    "totalCredits": "总积分",
+    "creditsUnit": "积分",
+    "validity": "有效期",
+    "validityDays": {
+      "trial": "7天",
+      "basic": "30天",
+      "final": "90天",
+      "research": "180天"
+    },
+    "comingSoon": "即将支持",
+    "methods": {
+      "alipay": {
+        "name": "支付宝",
+        "description": "支持支付宝扫码支付"
+      },
+      "wechat": {
+        "name": "微信支付",
+        "description": "即将支持微信支付"
+      },
+      "visa": {
+        "name": "Visa/Mastercard",
+        "description": "即将支持国际信用卡"
+      }
+    }
+  },
+  "whyChooseUs": {
+    "title": "为什么选择我们？",
+    "subtitle": "我们致力于提供最优质的服务和最卓越的用户体验",
+    "features": {
+      "security": {
+        "title": "安全可靠",
+        "description": "企业级安全保障，确保您的数据和交易安全"
+      },
+      "speed": {
+        "title": "极速响应",
+        "description": "毫秒级响应时间，让您的工作流程畅通无阻"
+      },
+      "support": {
+        "title": "专属支持",
+        "description": "7×24小时专业客服团队，随时解决您的问题"
+      }
+    }
+  },
+  "faq": {
+    "title": "常见问题解答",
+    "subtitle": "您可能关心的疑问，我们都准备好了答案",
+    "questions": {
+      "1": {
+        "question": "积分是如何计算的？",
+        "answer": "每次生成论文消耗3.00-80.00积分不等，具体根据论文复杂度和长度确定。积分显示保留小数点后2位，积分有效期为购买套餐后对应的天数。"
+      },
+      "2": {
+        "question": "购买后可以退款吗？",
+        "answer": "我们提供7天无理由退款政策。如果您在购买后7天内对服务不满意，且使用量未超过总积分的20%，可以申请全额退款。"
+      },
+      "3": {
+        "question": "积分可以转让吗？",
+        "answer": "积分与购买账户绑定，不能转让给其他账户。但您可以通过企业套餐为团队多个成员分配积分使用额度。"
+      },
+      "4": {
+        "question": "套餐可以升级吗？",
+        "answer": "可以随时升级套餐，系统将根据您当前套餐的剩余价值和已使用天数，计算升级差价，只需支付差额即可。"
+      }
+    }
+  }
+} 

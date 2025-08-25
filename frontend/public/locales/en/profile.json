@@ -1,0 +1,51 @@
+{
+    "pageTitle": "User Profile",
+    "pageDescription": "Manage your profile settings",
+    "tabs": {
+      "profile": "Profile",
+      "settings": "Settings",
+      "usage": "Usage"
+    },
+    "membership": {
+      "normal": "Membership",
+      "joinDate": "Join Date"
+    },
+    "stats": {
+      "points": "Points",
+      "documentsGenerated": "Documents"
+    },
+    "buttons": {
+      "editProfile": "Edit Profile",
+      "saveSettings": "Save Settings"
+    },
+    "settings": {
+      "accountInfo": {
+        "title": "Account Information",
+        "description": "Update your account details below.",
+        "username": "Username",
+        "email": "Email Address"
+      },
+      "password": {
+        "title": "Change Password",
+        "description": "Update your password regularly to keep your account secure.",
+        "current": "Current Password",
+        "new": "New Password",
+        "confirm": "Confirm New Password"
+      },
+      "notifications": {
+        "title": "Notification Preferences",
+        "description": "Manage your notification settings.",
+        "email": "Email Notifications",
+        "emailDesc": "Receive updates and alerts via email.",
+        "marketing": "Marketing Emails",
+        "marketingDesc": "Get marketing and promotional emails."
+      }
+    },
+    "usage": {
+      "title": "Usage Statistics",
+      "totalDocuments": "Total Documents",
+      "aiGenerated": "AI Generated",
+      "formatted": "Formatted"
+    }
+  }
+  

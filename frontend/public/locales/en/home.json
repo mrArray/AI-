@@ -1,0 +1,215 @@
+{
+ 
+    "header": {
+      "logoText": "InstantPaper",
+      "navItems": {
+        "home": "Home",
+        "templates": "Templates",
+        "history": "History",
+        "examples": "Examples"
+      },
+      "profile": "Profile",
+      "recharge": "Top Up Credits"
+    },
+    "hero": {
+      "title1": "AI Paper Generator",
+      "title2": "Professional academic papers in 30 seconds",
+      "description": "Enter your topic, choose a template, and AI will generate formatted Word/PDF documents",
+      "stats": {
+        "trustedUsers": "Trusted Users",
+        "templates": "Professional Templates",
+        "passRate": "Success Rate",
+        "avgTime": "Average Generation Time"
+      }
+    },
+    "coreFeatures": {
+      "subtitle": "CORE FEATURES",
+      "title": "Generate Professional Academic Documents",
+      "description": "Whether you need coursework, thesis, or journal articles - we've got you covered",
+      "inputSection": {
+        "title": "Enter your paper requirements",
+        "placeholder": "e.g.: Generate a paper about AI applications in healthcare, including abstract, introduction, related work, case studies, and conclusion (5000+ words)...",
+        "tip": "More detailed descriptions yield better results"
+      },
+      "templates": {
+        "title": "Select template type",
+        "undergraduate": "Undergraduate Thesis",
+        "master": "Master's Thesis",
+        "coursework": "Coursework",
+        "journal": "Academic Journal",
+        "research": "Research Report",
+        "proposal": "Proposal"
+      },
+      "generateButton": {
+        "default": "Generate Paper Now",
+        "loading": "Generating..."
+      },
+      "costTip": "3.00-80.00 credits per generation · Word/PDF download",
+      "preview": {
+        "title": "Document Preview",
+        "emptyTitle": "Enter prompt and select template",
+        "emptyDescription": "AI will generate a complete academic paper for you",
+        "emptyTip": "Supports Word/PDF download",
+        "sections": {
+          "abstract": "Abstract",
+          "introduction": "Introduction",
+          "methodology": "Methodology",
+          "pageInfo": "Page {page} of {total}"
+        }
+      }
+    },
+    "features": {
+      "subtitle": "FEATURES",
+      "title": "Why Choose Our Paper Generator",
+      "items": {
+        "speed": {
+          "title": "Ultra-Fast Generation",
+          "content": "Generate complete papers in 30 seconds. AI trained on academic data ensures quality content."
+        },
+        "plagiarism": {
+          "title": "Accurate Plagiarism Check",
+          "content": "Built-in plagiarism detection ensures originality. Compatible with academic databases."
+        },
+        "templates": {
+          "title": "Professional Templates",
+          "content": "50+ academic templates across disciplines. Strict academic formatting with references."
+        }
+      }
+    },
+    "testimonials": {
+      "subtitle": "TESTIMONIALS",
+      "title": "Trusted by 10,000+ Users",
+      "items": {
+        "student": {
+          "name": "Zhang Student",
+          "content": "\"My writing efficiency tripled! The literature review section is particularly professional.\""
+        },
+        "professor": {
+          "name": "Professor Li",
+          "content": "\"I recommend this to students for draft creation. Helps them understand academic structure.\""
+        },
+        "researcher": {
+          "name": "Researcher Wang",
+          "content": "\"Generated IEEE-compliant drafts for international conferences, saving layout time.\""
+        }
+      }
+    },
+    "cta": {
+      "title": "Experience AI Paper Generation",
+      "description": "Register now and get 3 free universal uses",
+      "register": "Free Sign Up",
+      "demo": "View Demo"
+    },
+    "functionTabs": {
+      "formatter": "Document Formatting",
+      "generator": "AI Generation",
+      "formatterDescription": "Upload your document for professional formatting",
+      "generatorDescription": "Enter topic requirements, AI generates complete papers"
+    },
+    "formatter": {
+      "title": "Document Format Converter",
+      "subtitle": "AI-powered, one-click intelligent formatting and conversion",
+  "requirements": "Formatting Requirements",
+  "requirementsPlaceholder": "Describe your formatting requirements...\n\nExample:\n• IEEE conference format\n• 12pt Times New Roman font\n• 1-inch margins on all sides\n• Double-spaced text\n• APA citation style",
+      "uploadTitle": "Upload Document",
+      "uploadPlaceholder": "Click or drag file to upload",
+      "supportedFormats": "Supported formats: DOCX, DOC, PDF",
+      "fileUploaded": "File uploaded",
+      "formatStyleTitle": "Select Format Style",
+      "formatButton": "Format Document",
+      "formatting": "Formatting...",
+      "costTip": "Formatting may consume credits.",
+      "errors": {
+        "fetchFormats": "Failed to fetch formats.",
+        "unsupportedFile": "Unsupported file type.",
+        "formatFailed": "Formatting failed. Please try again."
+      },
+      "previewTitle": "Preview",
+      "downloadFormatted": "Download Formatted",
+      "emptyTitle": "No Document",
+      "emptyDescription": "No file uploaded yet.",
+      "preview": {
+        "title": "Sample Title",
+        "content": "Your formatted document preview will appear here.",
+        "abstract": "Abstract",
+        "abstractContent": "This is a sample abstract section.",
+        "introduction": "Introduction",
+        "introductionContent": "This is a sample introduction section.",
+        "pageInfo": "Page {{page}} of {{total}}",
+        "emptyDescription": "Upload a document and select a format to see the preview."
+      },
+      "formats": {
+        "apa": {
+          "name": "APA Format",
+          "description": "American Psychological Association format, commonly used for psychology and education papers"
+        },
+        "mla": {
+          "name": "MLA Format",
+          "description": "Modern Language Association format, commonly used for literature and linguistics papers"
+        },
+        "chicago": {
+          "name": "Chicago Format",
+          "description": "Chicago format, commonly used for history and literature papers"
+        },
+        "ieee": {
+          "name": "IEEE Format",
+          "description": "Institute of Electrical and Electronics Engineers format, commonly used for engineering papers"
+        },
+        "harvard": {
+          "name": "Harvard Format",
+          "description": "Harvard format, commonly used for business and social science papers"
+        },
+        "vancouver": {
+          "name": "Vancouver Format",
+          "description": "Vancouver format, commonly used for medical and biological papers"
+        }
+      }
+    },
+    "footer": {
+      "slogan": "The most professional AI paper generator for academic research",
+      "about": {
+        "title": "About Us",
+        "items": [
+          "About Us",
+          "Terms of Service",
+          "Privacy Policy",
+          "Contact Us"
+        ]
+      },
+      "templates": {
+        "title": "Template Center",
+        "items": [
+          "Undergraduate Thesis",
+          "Master's Thesis",
+          "Coursework",
+          "Academic Journal"
+        ]
+      },
+      "features": {
+        "title": "Product Features",
+        "items": [
+          "Paper Generation",
+          "Formatting",
+          "Plagiarism Check",
+          "Reference Management",
+          "Multilingual Support"
+        ]
+      },
+      "help": {
+        "title": "Help Center",
+        "items": [
+          "Tutorials",
+          "FAQs",
+          "Template Center",
+          "Credit Guide",
+          "API Integration"
+        ]
+      },
+      "contact": {
+        "title": "Contact Us",
+        "email": "bricog@163.com",
+        "address": "Zhiqiao Linggou (Wuhan) Technology Co., Ltd."
+      },
+        "rights": "© 2025 Zhiqiao Linggou (Wuhan) Technology Co., Ltd. All rights reserved."
+      }
+  }

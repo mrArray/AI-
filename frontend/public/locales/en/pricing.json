@@ -1,0 +1,87 @@
+{
+  "header": {
+    "title": "Choose Your Perfect Plan",
+    "subtitle": "Flexible choices for all needs, enjoy premium services at the best prices",
+    "promotion": "New User First Purchase 15% Off"
+  },
+  "plans": {
+    "trial": {
+      "name": "Trial Package",
+      "description": "Perfect for new users to experience AI paper generation",
+      "badge": "First Time",
+      "features": [
+        "Generate 3-5 short assignments",
+        "Access to all basic templates",
+        "24/7 customer support"
+      ]
+    },
+    "basic": {
+      "name": "Basic Package",
+      "description": "Ideal for daily assignments and course papers",
+      "features": [
+        "Generate 12-20 short assignments",
+        "Generate 1-2 long papers",
+        "All professional templates"
+      ]
+    },
+    "final": {
+      "name": "Final Exam Package",
+      "description": "Covers 80% of users' final exam needs",
+      "badge": "Best Seller",
+      "features": [
+        "Generate 50-100 short assignments",
+        "Generate 6-10 long papers",
+        "Priority customer support"
+      ]
+    },
+    "research": {
+      "name": "Research Package",
+      "description": "Designed for researchers, one purchase for continuous output",
+      "features": [
+        "Generate extensive academic papers",
+        "Advanced templates and formats",
+        "Professional paper guidance"
+      ]
+    },
+    "premium": {
+      "name": "Premium Package",
+      "description": "For professional writers and institutions",
+      "features": [
+        "Unlimited paper generation",
+        "Custom template services",
+        "Dedicated 1-on-1 support"
+      ]
+    }
+  },
+  "common": {
+    "recommended": "Recommended",
+    "selectPlan": "Select Plan"
+  },
+  "payment": {
+    "title": "Choose Payment Method",
+    "selectMethod": "Select Payment Method",
+    "confirmPayment": "Confirm Payment",
+    "securityNote": "Payment information is protected by SSL encryption"
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "questions": {
+      "1": {
+        "question": "How do credits work?",
+        "answer": "Each paper generation consumes 3.00-80.00 credits depending on complexity and length. Credits are displayed with 2 decimal places. Credits never expire and sync across devices."
+      },
+      "2": {
+        "question": "Is refund available?",
+        "answer": "Full refund available within 7 days if credits unused. Used credits will be deducted from refund amount."
+      },
+      "3": {
+        "question": "How is paper quality guaranteed?",
+        "answer": "Our AI is trained on extensive academic data to ensure scholarly value. Unsatisfied? Generate again for free."
+      },
+      "4": {
+        "question": "Do you offer team versions?",
+        "answer": "We offer team versions for educational institutions and enterprises with unified management and bulk purchasing. Contact support."
+      }
+    }
+  }
+} 

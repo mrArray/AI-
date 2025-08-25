@@ -1,0 +1,25 @@
+{
+  "hero": {
+    "description": "Generate high-quality academic papers quickly using AI technology, supporting multiple formats and templates",
+    "try_now": "Try Now",
+    "try_now_message": "Welcome to experience AI paper generation!",
+    "learn_more": "Learn More"
+  },
+  "interactive": {
+    "title": "Smart Paper Generation Experience",
+    "subtitle": "Choose the features you need and experience the power of AI"
+  },
+  "features": {
+    "try_feature": "Try Feature"
+  },
+  "testimonials": {
+    "title": "Users Love Our Product",
+    "subtitle": "See what other users are saying about our product"
+  },
+  "cta": {
+    "title": "Ready to Get Started?",
+    "subtitle": "Join thousands of satisfied users and experience the convenience of AI paper generation",
+    "start_now": "Start Now",
+    "view_pricing": "View Pricing"
+  }
+} 

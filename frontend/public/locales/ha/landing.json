@@ -1,0 +1,25 @@
+{
+  "hero": {
+    "description": "Yi amfani da fasahar AI don samar da takardun ilimi masu inganci da sauri, tare da goyan bayan nau'ikan tsari da samfura da yawa",
+    "try_now": "Gwada Yanzu",
+    "try_now_message": "Maraba da gwajin aikin samar da takarda ta AI!",
+    "learn_more": "Koyi Kari"
+  },
+  "interactive": {
+    "title": "Gwajin Samar da Takarda ta Hankali",
+    "subtitle": "Ka zabi ayyukan da kake bukata ka gwada karfin AI"
+  },
+  "features": {
+    "try_feature": "Gwada Aikin"
+  },
+  "testimonials": {
+    "title": "Masu Amfani Sun Yaba da Mu",
+    "subtitle": "Duba abin da sauran masu amfani ke cewa game da kayayyakin mu"
+  },
+  "cta": {
+    "title": "Kana Shirye ka Fara?",
+    "subtitle": "Ka shiga dubban masu amfani masu gamsuwa ka gwada saukin samar da takarda ta AI",
+    "start_now": "Fara Yanzu",
+    "view_pricing": "Duba Farashi"
+  }
+} 

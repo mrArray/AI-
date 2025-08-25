@@ -1,0 +1,50 @@
+{
+    "pageTitle": "用戶資料",
+    "pageDescription": "管理您的個人資料設置",
+    "tabs": {
+      "profile": "個人資料",
+      "settings": "設置",
+      "usage": "使用情況"
+    },
+    "membership": {
+      "normal": "普通會員",
+      "joinDate": "加入日期"
+    },
+    "stats": {
+      "points": "積分",
+      "documentsGenerated": "生成文檔數"
+    },
+    "buttons": {
+      "editProfile": "編輯資料",
+      "saveSettings": "保存設置"
+    },
+    "settings": {
+      "accountInfo": {
+        "title": "帳戶資訊",
+        "description": "更新您的帳戶詳情。",
+        "username": "用戶名",
+        "email": "電子郵件地址"
+      },
+      "password": {
+        "title": "修改密碼",
+        "description": "定期更新密碼以保障帳戶安全。",
+        "current": "當前密碼",
+        "new": "新密碼",
+        "confirm": "確認新密碼"
+      },
+      "notifications": {
+        "title": "通知設置",
+        "description": "管理您的通知偏好。",
+        "email": "郵件通知",
+        "emailDesc": "透過郵件接收更新和提醒。",
+        "marketing": "營銷郵件",
+        "marketingDesc": "接收營銷及促銷郵件。"
+      }
+    },
+    "usage": {
+      "title": "使用統計",
+      "totalDocuments": "文檔總數",
+      "aiGenerated": "AI 生成",
+      "formatted": "格式化"
+    }
+  } 

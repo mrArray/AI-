@@ -1,0 +1,52 @@
+{
+  "coreFeatures": {
+    "inputSection": {
+      "title": "Document Generator"
+    },
+    "templates": {
+      "title": "Select Template"
+    },
+    "generateButton": {
+      "default": "Generate Document",
+      "loading": "Generating..."
+    },
+    "requirements": {
+      "title": "Paper Requirements",
+      "paperTitle": "Paper Title",
+      "titlePlaceholder": "Enter paper title",
+      "optional": "optional",
+      "words": "words"
+    },
+    "credits": {
+      "remaining": "Remaining credits",
+      "cost": "Cost"
+    },
+    "errors": {
+      "templates": "Failed to load templates. Please refresh the page.",
+      "generation": "Failed to generate paper. Please try again.",
+      "auth": "Authentication required. Please login first.",
+      "missingFields": "Please fill in required fields: {fields}"
+    },
+    "authRequired": {
+      "title": "Authentication Required",
+      "description": "Please login to access the document generator",
+      "loginButton": "Login Now"
+    },
+    "preview": {
+      "title": "Document Preview",
+      "emptyTitle": "Document Preview",
+      "emptyDescription": "Choose a template and enter requirements to generate document",
+      "untitled": "Untitled Document",
+      "sections": {
+        "abstract": "Abstract",
+        "abstractContent": "This section will contain a brief summary of the entire paper...",
+        "introduction": "Introduction",
+        "introductionContent": "This section introduces the topic and states the research objectives...",
+        "methodology": "Methodology",
+        "methodologyContent": "This section describes the research methods and approaches used...",
+        "pageInfo": "Page {page} of {total}"
+      }
+    },
+    "generationTime": "Typically takes 1-3 minutes"
+  }
+}

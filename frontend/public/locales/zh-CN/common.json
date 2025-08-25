@@ -1,0 +1,86 @@
+{
+  "app": {
+    "name": "秒出论文",
+    "tagline": "AI超高准确性，秒出作业论文Word/PDF"
+  },
+  "nav": {
+    "home": "首页",
+    "templates": "模板浏览",
+    "history": "历史记录",
+    "profile": "个人中心",
+    "pricing": "价格方案",
+    "dashboard": "仪表盘"
+  },
+  "actions": {
+    "recharge": "积分充值",
+    "login": "登录",
+    "register": "注册",
+    "logout": "退出登录",
+    "generate": "生成论文",
+    "format": "开始排版",
+    "download": {
+      "word": "下载Word",
+      "pdf": "下载PDF"
+    },
+    "save": "保存",
+    "cancel": "取消",
+    "confirm": "确认",
+    "edit": "编辑",
+    "delete": "删除",
+    "view": "查看",
+    "search": "搜索",
+    "filter": "筛选",
+    "sort": "排序",
+    "apply": "应用"
+  },
+  "home": {
+    "input": {
+      "title": "输入提示词",
+      "placeholder": "请输入您的论文主题、关键词或具体要求...",
+      "pure_placeholder": "请粘贴您已有的论文内容，我们将按照选定模板进行排版..."
+    },
+    "template": {
+      "title": "选择模板",
+      "undergraduate": "本科毕业论文",
+      "master": "硕士学位论文",
+      "course": "课程作业",
+      "journal": "学术期刊"
+    },
+    "preview": {
+      "title": "文档预览",
+      "empty": "请输入提示词并选择模板",
+      "generating": "正在生成您的论文...",
+      "formatting": "正在排版您的文档..."
+    },
+    "features": {
+      "title": "功能介绍",
+      "subtitle": "我们提供两种文档排版方式，满足您的不同需求",
+      "pure": {
+        "title": "纯排版",
+        "description": "将您已有的论文内容按照选定的模板进行专业排版，保持原有内容不变，确保格式符合要求。适合已完成内容创作，仅需调整格式的用户。"
+      },
+      "ai": {
+        "title": "AI扩展/自动写作",
+        "description": "基于您提供的关键词、提纲或主题，AI自动生成完整的论文内容，并按照选定模板进行排版。适合需要快速完成作业或寻找写作灵感的用户。"
+      }
+    },
+    "points": {
+      "consume": "AI生成需消耗",
+      "points": "积分",
+      "recharge": "充值积分"
+    }
+  },
+  "footer": {
+    "copyright": "© 2025 秒出论文. 保留所有权利.",
+    "links": {
+      "about": "关于我们",
+      "terms": "使用条款",
+      "privacy": "隐私政策",
+      "contact": "联系我们"
+    }
+  },
+  "language": {
+    "name": "简体中文",
+    "select": "选择语言"
+  }
+}

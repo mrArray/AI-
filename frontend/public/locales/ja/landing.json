@@ -1,0 +1,25 @@
+{
+  "hero": {
+    "description": "AI技術を使用して高品質な学術論文を迅速に生成、複数の形式とテンプレートをサポート",
+    "try_now": "今すぐ試す",
+    "try_now_message": "AI論文生成機能をご体験ください！",
+    "learn_more": "詳細を見る"
+  },
+  "interactive": {
+    "title": "スマート論文生成体験",
+    "subtitle": "必要な機能を選択し、AIの力を体験してください"
+  },
+  "features": {
+    "try_feature": "機能を試す"
+  },
+  "testimonials": {
+    "title": "ユーザーから高評価",
+    "subtitle": "他のユーザーが当製品についてどう評価しているかご覧ください"
+  },
+  "cta": {
+    "title": "始める準備はできましたか？",
+    "subtitle": "数千人の満足したユーザーに加わり、AI論文生成の便利さを体験してください",
+    "start_now": "今すぐ開始",
+    "view_pricing": "料金を見る"
+  }
+} 

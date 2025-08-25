@@ -1,0 +1,61 @@
+{
+    "header": {
+      "logo": "InstantPaper",
+      "nav": {
+        "home": "Home",
+        "templates": "Template Library",
+        "history": "History"
+      },
+      "profile": "Profile",
+      "recharge": "Top Up Credits"
+    },
+    "pageTitle": "Paper Template Library",
+    "pageDescription": "Browse and select professional paper templates for various institutions and journals",
+    "categories": {
+      "all": "All Templates",
+      "undergraduate": "Undergraduate Thesis",
+      "master": "Master's Thesis",
+      "journal": "Journal Articles",
+      "course": "Coursework"
+    },
+    "templateItem": {
+      "popularity": "Popularity {{percentage}}%",
+      "useButton": "Use This Template"
+    },
+    "templateDetail": {
+      "title": "Template Details",
+      "description": "Description",
+      "applicability": "Applicability",
+      "sections": "Included Sections",
+      "close": "Close",
+      "useTemplate": "Use Template",
+      "cancel": "Cancel",
+      "applicabilityOptions": {
+        "undergraduate": "Undergraduate thesis, term papers",
+        "master": "Master's thesis, graduate coursework",
+        "journal": "Journal submissions, conference papers",
+        "course": "Course assignments, lab reports, group projects"
+      },
+      "defaultSections": [
+        "Cover page",
+        "Abstract (English & Chinese)",
+        "Table of Contents (auto-generated)",
+        "Main content (standard structure)",
+        "References",
+        "Acknowledgements"
+      ],
+      "additionalSections": {
+        "master": ["Research achievements"],
+        "journal": ["Author bio"]
+      }
+    },
+    "footer": {
+      "rights": "© 2025 InstantPaper. All rights reserved.",
+      "links": {
+        "about": "About Us",
+        "terms": "Terms of Use",
+        "privacy": "Privacy Policy",
+        "contact": "Contact Us"
+      }
+    }
+  }

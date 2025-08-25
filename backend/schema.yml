@@ -1,0 +1,2790 @@
+# openapi: 3.0.3
+# info:
+#   title: Academic Paper Generator API
+#   version: 1.0.0
+#   description: API for generating academic papers using AI
+# paths:
+#   /api/v1/auth/change-password/:
+#     post:
+#       operationId: auth_change_password_create
+#       description: Change user's password
+#       summary: Change password
+#       tags:
+#       - auth
+#       requestBody:
+#         content:
+#           application/json:
+#             schema:
+#               $ref: '#/components/schemas/PasswordChangeRequest'
+#           application/x-www-form-urlencoded:
+#             schema:
+#               $ref: '#/components/schemas/PasswordChangeRequest'
+#           multipart/form-data:
+#             schema:
+#               $ref: '#/components/schemas/PasswordChangeRequest'
+#         required: true
+#       security:
+#       - jwtAuth: []
+#       responses:
+#         '200':
+#           description: No response body
+#   /api/v1/auth/delete-account/:
+#     delete:
+#       operationId: auth_delete_account_destroy
+#       description: Delete user account
+#       tags:
+#       - auth
+#       security:
+#       - jwtAuth: []
+#       responses:
+#         '204':
+#           description: No response body
+#   /api/v1/auth/login/:
+#     post:
+#       operationId: auth_login_create
+#       description: Authenticate user and return JWT tokens
+#       summary: User login
+#       tags:
+#       - auth
+#       requestBody:
+#         content:
+#           application/json:
+#             schema:
+#               $ref: '#/components/schemas/TokenObtainPairRequest'
+#           application/x-www-form-urlencoded:
+#             schema:
+#               $ref: '#/components/schemas/TokenObtainPairRequest'
+#           multipart/form-data:
+#             schema:
+#               $ref: '#/components/schemas/TokenObtainPairRequest'
+#         required: true
+#       security:
+#       - {}
+#       responses:
+#         '200':
+#           content:
+#             application/json:
+#               schema:
+#                 access: string
+#                 refresh: string
+#                 user: UserSerializer
+#           description: ''
+#   /api/v1/auth/logout/:
+#     post:
+#       operationId: auth_logout_create
+#       description: Logout user and blacklist refresh token
+#       summary: User logout
+#       tags:
+#       - auth
+#       security:
+#       - jwtAuth: []
+#       responses:
+#         '200':
+#           description: No response body
+#   /api/v1/auth/preferences/:
+#     get:
+#       operationId: auth_preferences_retrieve
+#       description: Get user preferences
+#       tags:
+#       - auth
+#       security:
+#       - jwtAuth: []
+#       responses:
+#         '200':
+#           description: No response body
+#   /api/v1/auth/preferences/update/:
+#     post:
+#       operationId: auth_preferences_update_create
+#       description: Update user preferences
+#       tags:
+#       - auth
+#       security:
+#       - jwtAuth: []
+#       responses:
+#         '200':
+#           description: No response body
+#   /api/v1/auth/profile/:
+#     get:
+#       operationId: auth_profile_retrieve
+#       description: Retrieve current user's profile information
+#       summary: Get user profile
+#       tags:
+#       - auth
+#       security:
+#       - jwtAuth: []
+#       responses:
+#         '200':
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/User'
+#           description: ''
+#     put:
+#       operationId: auth_profile_update
+#       description: User profile management
+#       tags:
+#       - auth
+#       requestBody:
+#         content:
+#           application/json:
+#             schema:
+#               $ref: '#/components/schemas/UserRequest'
+#           application/x-www-form-urlencoded:
+#             schema:
+#               $ref: '#/components/schemas/UserRequest'
+#           multipart/form-data:
+#             schema:
+#               $ref: '#/components/schemas/UserRequest'
+#         required: true
+#       security:
+#       - jwtAuth: []
+#       responses:
+#         '200':
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/User'
+#           description: ''
+#     patch:
+#       operationId: auth_profile_partial_update
+#       description: Update current user's profile information
+#       summary: Update user profile
+#       tags:
+#       - auth
+#       requestBody:
+#         content:
+#           application/json:
+#             schema:
+#               $ref: '#/components/schemas/PatchedUserRequest'
+#           application/x-www-form-urlencoded:
+#             schema:
+#               $ref: '#/components/schemas/PatchedUserRequest'
+#           multipart/form-data:
+#             schema:
+#               $ref: '#/components/schemas/PatchedUserRequest'
+#       security:
+#       - jwtAuth: []
+#       responses:
+#         '200':
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/User'
+#           description: ''
+#   /api/v1/auth/register/:
+#     post:
+#       operationId: auth_register_create
+#       description: Create a new user account with email verification
+#       summary: Register a new user
+#       tags:
+#       - auth
+#       requestBody:
+#         content:
+#           application/json:
+#             schema:
+#               $ref: '#/components/schemas/RegisterRequest'
+#           application/x-www-form-urlencoded:
+#             schema:
+#               $ref: '#/components/schemas/RegisterRequest'
+#           multipart/form-data:
+#             schema:
+#               $ref: '#/components/schemas/RegisterRequest'
+#         required: true
+#       security:
+#       - jwtAuth: []
+#       - {}
+#       responses:
+#         '201':
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/User'
+#           description: ''
+  
+#   /api/v1/auth/reset-password/:
+#     post:
+#       operationId: auth_reset_password_create
+#       description: Request a password reset code via email
+#       summary: Request password reset
+#       tags:
+#       - auth
+#       requestBody:
+#         content:
+#           application/json:
+#             schema:
+#               $ref: '#/components/schemas/PasswordResetRequestRequest'
+#           application/x-www-form-urlencoded:
+#             schema:
+#               $ref: '#/components/schemas/PasswordResetRequestRequest'
+#           multipart/form-data:
+#             schema:
+#               $ref: '#/components/schemas/PasswordResetRequestRequest'
+#         required: true
+#       security:
+#       - jwtAuth: []
+#       - {}
+#       responses:
+#         '200':
+#           description: No response body
+#   /api/v1/auth/reset-password/confirm/:
+#     post:
+#       operationId: auth_reset_password_confirm_create
+#       description: Reset password using verification code
+#       summary: Confirm password reset
+#       tags:
+#       - auth
+#       requestBody:
+#         content:
+#           application/json:
+#             schema:
+#               $ref: '#/components/schemas/PasswordResetConfirmRequest'
+#           application/x-www-form-urlencoded:
+#             schema:
+#               $ref: '#/components/schemas/PasswordResetConfirmRequest'
+#           multipart/form-data:
+#             schema:
+#               $ref: '#/components/schemas/PasswordResetConfirmRequest'
+#         required: true
+#       security:
+#       - jwtAuth: []
+#       - {}
+#       responses:
+#         '200':
+#           description: No response body
+#   /api/v1/auth/stats/:
+#     get:
+#       operationId: auth_stats_retrieve
+#       description: Retrieve current user's usage statistics
+#       summary: Get user statistics
+#       tags:
+#       - auth
+#       security:
+#       - jwtAuth: []
+#       responses:
+#         '200':
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/UserStats'
+#           description: ''
+#   /api/v1/auth/token/refresh/:
+#     post:
+#       operationId: auth_token_refresh_create
+#       description: |-
+#         Takes a refresh type JSON web token and returns an access type JSON web
+#         token if the refresh token is valid.
+#       tags:
+#       - auth
+#       requestBody:
+#         content:
+#           application/json:
+#             schema:
+#               $ref: '#/components/schemas/TokenRefreshRequest'
+#           application/x-www-form-urlencoded:
+#             schema:
+#               $ref: '#/components/schemas/TokenRefreshRequest'
+#           multipart/form-data:
+#             schema:
+#               $ref: '#/components/schemas/TokenRefreshRequest'
+#         required: true
+#       responses:
+#         '200':
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/TokenRefresh'
+#           description: ''
+#   /api/v1/auth/verify-email/:
+#     post:
+#       operationId: auth_verify_email_create
+#       description: Verify user's email address with verification code
+#       summary: Verify email address
+#       tags:
+#       - auth
+#       requestBody:
+#         content:
+#           application/json:
+#             schema:
+#               $ref: '#/components/schemas/EmailVerificationRequest'
+#           application/x-www-form-urlencoded:
+#             schema:
+#               $ref: '#/components/schemas/EmailVerificationRequest'
+#           multipart/form-data:
+#             schema:
+#               $ref: '#/components/schemas/EmailVerificationRequest'
+#         required: true
+#       security:
+#       - jwtAuth: []
+#       responses:
+#         '200':
+#           description: No response body
+#   /api/v1/billing/admin/adjust-credits/:
+#     post:
+#       operationId: billing_admin_adjust_credits_create
+#       description: Adjust user credits (admin only)
+#       tags:
+#       - billing
+#       security:
+#       - jwtAuth: []
+#       responses:
+#         '200':
+#           description: No response body
+#   /api/v1/billing/admin/stats/:
+#     get:
+#       operationId: billing_admin_stats_retrieve
+#       description: Get billing statistics (admin only)
+#       tags:
+#       - billing
+#       security:
+#       - jwtAuth: []
+#       responses:
+#         '200':
+#           description: No response body
+#   /api/v1/billing/info/:
+#     get:
+#       operationId: billing_info_retrieve
+#       description: Get user billing information
+#       tags:
+#       - billing
+#       security:
+#       - jwtAuth: []
+#       responses:
+#         '200':
+#           description: No response body
+#   /api/v1/billing/packages/:
+#     get:
+#       operationId: billing_packages_list
+#       description: Retrieve all available credit packages for purchase
+#       summary: Get credit packages
+#       parameters:
+#       - name: page
+#         required: false
+#         in: query
+#         description: A page number within the paginated result set.
+#         schema:
+#           type: integer
+#       tags:
+#       - billing
+#       security:
+#       - jwtAuth: []
+#       - {}
+#       responses:
+#         '200':
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/PaginatedPackageList'
+#           description: ''
+#   /api/v1/billing/payment-methods/:
+#     get:
+#       operationId: billing_payment_methods_list
+#       description: Retrieve user's payment methods
+#       summary: Get payment methods
+#       parameters:
+#       - name: page
+#         required: false
+#         in: query
+#         description: A page number within the paginated result set.
+#         schema:
+#           type: integer
+#       tags:
+#       - billing
+#       security:
+#       - jwtAuth: []
+#       responses:
+#         '200':
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/PaginatedPaymentMethodList'
+#           description: ''
+#     post:
+#       operationId: billing_payment_methods_create
+#       description: Add a new payment method for the user
+#       summary: Add payment method
+#       tags:
+#       - billing
+#       requestBody:
+#         content:
+#           application/json:
+#             schema:
+#               $ref: '#/components/schemas/PaymentMethodRequest'
+#           application/x-www-form-urlencoded:
+#             schema:
+#               $ref: '#/components/schemas/PaymentMethodRequest'
+#           multipart/form-data:
+#             schema:
+#               $ref: '#/components/schemas/PaymentMethodRequest'
+#         required: true
+#       security:
+#       - jwtAuth: []
+#       responses:
+#         '201':
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/PaymentMethod'
+#           description: ''
+#   /api/v1/billing/payment-methods/{id}/:
+#     get:
+#       operationId: billing_payment_methods_retrieve
+#       description: ViewSet for payment methods
+#       parameters:
+#       - in: path
+#         name: id
+#         schema:
+#           type: string
+#         required: true
+#       tags:
+#       - billing
+#       security:
+#       - jwtAuth: []
+#       responses:
+#         '200':
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/PaymentMethod'
+#           description: ''
+#     put:
+#       operationId: billing_payment_methods_update
+#       description: Update a payment method
+#       summary: Update payment method
+#       parameters:
+#       - in: path
+#         name: id
+#         schema:
+#           type: string
+#         required: true
+#       tags:
+#       - billing
+#       requestBody:
+#         content:
+#           application/json:
+#             schema:
+#               $ref: '#/components/schemas/PaymentMethodRequest'
+#           application/x-www-form-urlencoded:
+#             schema:
+#               $ref: '#/components/schemas/PaymentMethodRequest'
+#           multipart/form-data:
+#             schema:
+#               $ref: '#/components/schemas/PaymentMethodRequest'
+#         required: true
+#       security:
+#       - jwtAuth: []
+#       responses:
+#         '200':
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/PaymentMethod'
+#           description: ''
+#     patch:
+#       operationId: billing_payment_methods_partial_update
+#       description: ViewSet for payment methods
+#       parameters:
+#       - in: path
+#         name: id
+#         schema:
+#           type: string
+#         required: true
+#       tags:
+#       - billing
+#       requestBody:
+#         content:
+#           application/json:
+#             schema:
+#               $ref: '#/components/schemas/PatchedPaymentMethodRequest'
+#           application/x-www-form-urlencoded:
+#             schema:
+#               $ref: '#/components/schemas/PatchedPaymentMethodRequest'
+#           multipart/form-data:
+#             schema:
+#               $ref: '#/components/schemas/PatchedPaymentMethodRequest'
+#       security:
+#       - jwtAuth: []
+#       responses:
+#         '200':
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/PaymentMethod'
+#           description: ''
+#     delete:
+#       operationId: billing_payment_methods_destroy
+#       description: Delete a payment method
+#       summary: Delete payment method
+#       parameters:
+#       - in: path
+#         name: id
+#         schema:
+#           type: string
+#         required: true
+#       tags:
+#       - billing
+#       security:
+#       - jwtAuth: []
+#       responses:
+#         '204':
+#           description: No response body
+#   /api/v1/billing/pricing/:
+#     get:
+#       operationId: billing_pricing_retrieve
+#       description: Get pricing information
+#       tags:
+#       - billing
+#       security:
+#       - jwtAuth: []
+#       - {}
+#       responses:
+#         '200':
+#           description: No response body
+#   /api/v1/billing/purchase/:
+#     post:
+#       operationId: billing_purchase_create
+#       description: Purchase a credit package
+#       tags:
+#       - billing
+#       security:
+#       - jwtAuth: []
+#       responses:
+#         '200':
+#           description: No response body
+#   /api/v1/billing/subscriptions/:
+#     get:
+#       operationId: billing_subscriptions_list
+#       description: Retrieve current user's subscription history
+#       summary: Get user subscriptions
+#       parameters:
+#       - name: page
+#         required: false
+#         in: query
+#         description: A page number within the paginated result set.
+#         schema:
+#           type: integer
+#       tags:
+#       - billing
+#       security:
+#       - jwtAuth: []
+#       responses:
+#         '200':
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/PaginatedSubscriptionList'
+#           description: ''
+#   /api/v1/billing/transactions/:
+#     get:
+#       operationId: billing_transactions_list
+#       description: Retrieve current user's credit transaction history
+#       summary: Get user transactions
+#       parameters:
+#       - name: page
+#         required: false
+#         in: query
+#         description: A page number within the paginated result set.
+#         schema:
+#           type: integer
+#       tags:
+#       - billing
+#       security:
+#       - jwtAuth: []
+#       responses:
+#         '200':
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/PaginatedCreditTransactionList'
+#           description: ''
+#   /api/v1/content/faqs/:
+#     get:
+#       operationId: content_faqs_list
+#       description: Retrieve frequently asked questions by language and category
+#       summary: Get FAQs
+#       parameters:
+#       - in: query
+#         name: category
+#         schema:
+#           type: string
+#         description: FAQ category filter
+#       - in: query
+#         name: language
+#         schema:
+#           type: string
+#         description: 'Language code (default: en)'
+#       - name: page
+#         required: false
+#         in: query
+#         description: A page number within the paginated result set.
+#         schema:
+#           type: integer
+#       tags:
+#       - content
+#       security:
+#       - jwtAuth: []
+#       - {}
+#       responses:
+#         '200':
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/PaginatedFAQList'
+#           description: ''
+#   /api/v1/content/features/:
+#     get:
+#       operationId: content_features_list
+#       description: Retrieve product features by language
+#       summary: Get features
+#       parameters:
+#       - in: query
+#         name: language
+#         schema:
+#           type: string
+#         description: 'Language code (default: en)'
+#       - name: page
+#         required: false
+#         in: query
+#         description: A page number within the paginated result set.
+#         schema:
+#           type: integer
+#       tags:
+#       - content
+#       security:
+#       - jwtAuth: []
+#       - {}
+#       responses:
+#         '200':
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/PaginatedFeatureList'
+#           description: ''
+#   /api/v1/content/landing-page/:
+#     get:
+#       operationId: content_landing_page_retrieve
+#       description: Get complete landing page data
+#       tags:
+#       - content
+#       security:
+#       - jwtAuth: []
+#       - {}
+#       responses:
+#         '200':
+#           description: No response body
+#   /api/v1/content/languages/:
+#     get:
+#       operationId: content_languages_retrieve
+#       description: Get available languages
+#       tags:
+#       - content
+#       security:
+#       - jwtAuth: []
+#       - {}
+#       responses:
+#         '200':
+#           description: No response body
+#   /api/v1/content/localization/:
+#     get:
+#       operationId: content_localization_retrieve
+#       description: Get localization texts
+#       tags:
+#       - content
+#       security:
+#       - jwtAuth: []
+#       - {}
+#       responses:
+#         '200':
+#           description: No response body
+#   /api/v1/content/search/:
+#     get:
+#       operationId: content_search_retrieve
+#       description: Search across all content types
+#       tags:
+#       - content
+#       security:
+#       - jwtAuth: []
+#       - {}
+#       responses:
+#         '200':
+#           description: No response body
+#   /api/v1/content/sections/:
+#     get:
+#       operationId: content_sections_list
+#       description: Retrieve landing page sections by language and type
+#       summary: Get landing page sections
+#       parameters:
+#       - in: query
+#         name: language
+#         schema:
+#           type: string
+#         description: 'Language code (default: en)'
+#       - name: page
+#         required: false
+#         in: query
+#         description: A page number within the paginated result set.
+#         schema:
+#           type: integer
+#       - in: query
+#         name: section_type
+#         schema:
+#           type: string
+#         description: Section type filter
+#       tags:
+#       - content
+#       security:
+#       - jwtAuth: []
+#       - {}
+#       responses:
+#         '200':
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/PaginatedLandingPageSectionList'
+#           description: ''
+#   /api/v1/content/testimonials/:
+#     get:
+#       operationId: content_testimonials_list
+#       description: Retrieve testimonials by language
+#       summary: Get testimonials
+#       parameters:
+#       - in: query
+#         name: featured
+#         schema:
+#           type: boolean
+#         description: Show only featured testimonials
+#       - in: query
+#         name: language
+#         schema:
+#           type: string
+#         description: 'Language code (default: en)'
+#       - name: page
+#         required: false
+#         in: query
+#         description: A page number within the paginated result set.
+#         schema:
+#           type: integer
+#       tags:
+#       - content
+#       security:
+#       - jwtAuth: []
+#       - {}
+#       responses:
+#         '200':
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/PaginatedTestimonialList'
+#           description: ''
+#   /api/v1/llm/detect-language/:
+#     post:
+#       operationId: llm_detect_language_create
+#       description: Detect language of provided text
+#       tags:
+#       - llm
+#       security:
+#       - jwtAuth: []
+#       responses:
+#         '200':
+#           description: No response body
+#   /api/v1/llm/generate/:
+#     post:
+#       operationId: llm_generate_create
+#       description: Generate content using LLM with prompt guiding
+#       tags:
+#       - llm
+#       security:
+#       - jwtAuth: []
+#       responses:
+#         '200':
+#           description: No response body
+#   /api/v1/llm/models/:
+#     get:
+#       operationId: llm_models_retrieve
+#       description: Get available LLM models
+#       tags:
+#       - llm
+#       security:
+#       - jwtAuth: []
+#       - {}
+#       responses:
+#         '200':
+#           description: No response body
+#   /api/v1/llm/prompt-templates/:
+#     get:
+#       operationId: llm_prompt_templates_retrieve
+#       description: Get available prompt templates
+#       tags:
+#       - llm
+#       security:
+#       - jwtAuth: []
+#       - {}
+#       responses:
+#         '200':
+#           description: No response body
+#   /api/v1/llm/providers/:
+#     get:
+#       operationId: llm_providers_retrieve
+#       description: Get available LLM providers
+#       tags:
+#       - llm
+#       security:
+#       - jwtAuth: []
+#       - {}
+#       responses:
+#         '200':
+#           description: No response body
+#   /api/v1/llm/stream/:
+#     post:
+#       operationId: llm_stream_create
+#       description: Stream content generation using LLM
+#       tags:
+#       - llm
+#       security:
+#       - jwtAuth: []
+#       responses:
+#         '200':
+#           description: No response body
+#   /api/v1/papers/{id}/:
+#     get:
+#       operationId: papers_retrieve
+#       description: Retrieve detailed information about a specific generated paper
+#       summary: Get paper details
+#       parameters:
+#       - in: path
+#         name: id
+#         schema:
+#           type: integer
+#         required: true
+#       tags:
+#       - papers
+#       security:
+#       - jwtAuth: []
+#       responses:
+#         '200':
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/GeneratedPaper'
+#           description: ''
+#   /api/v1/papers/export/:
+#     post:
+#       operationId: papers_export_create
+#       description: Export paper to different formats
+#       tags:
+#       - papers
+#       security:
+#       - jwtAuth: []
+#       responses:
+#         '200':
+#           description: No response body
+#   /api/v1/papers/feedback/:
+#     get:
+#       operationId: papers_feedback_list
+#       description: Retrieve feedback for user's papers
+#       summary: Get paper feedback
+#       parameters:
+#       - name: page
+#         required: false
+#         in: query
+#         description: A page number within the paginated result set.
+#         schema:
+#           type: integer
+#       tags:
+#       - papers
+#       security:
+#       - jwtAuth: []
+#       responses:
+#         '200':
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/PaginatedPaperFeedbackList'
+#           description: ''
+#     post:
+#       operationId: papers_feedback_create
+#       description: Submit feedback for a generated paper
+#       summary: Create paper feedback
+#       tags:
+#       - papers
+#       requestBody:
+#         content:
+#           application/json:
+#             schema:
+#               $ref: '#/components/schemas/PaperFeedbackRequest'
+#           application/x-www-form-urlencoded:
+#             schema:
+#               $ref: '#/components/schemas/PaperFeedbackRequest'
+#           multipart/form-data:
+#             schema:
+#               $ref: '#/components/schemas/PaperFeedbackRequest'
+#         required: true
+#       security:
+#       - jwtAuth: []
+#       responses:
+#         '201':
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/PaperFeedback'
+#           description: ''
+#   /api/v1/papers/feedback/{id}/:
+#     get:
+#       operationId: papers_feedback_retrieve
+#       description: ViewSet for paper feedback
+#       parameters:
+#       - in: path
+#         name: id
+#         schema:
+#           type: string
+#         required: true
+#       tags:
+#       - papers
+#       security:
+#       - jwtAuth: []
+#       responses:
+#         '200':
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/PaperFeedback'
+#           description: ''
+#     put:
+#       operationId: papers_feedback_update
+#       description: ViewSet for paper feedback
+#       parameters:
+#       - in: path
+#         name: id
+#         schema:
+#           type: string
+#         required: true
+#       tags:
+#       - papers
+#       requestBody:
+#         content:
+#           application/json:
+#             schema:
+#               $ref: '#/components/schemas/PaperFeedbackRequest'
+#           application/x-www-form-urlencoded:
+#             schema:
+#               $ref: '#/components/schemas/PaperFeedbackRequest'
+#           multipart/form-data:
+#             schema:
+#               $ref: '#/components/schemas/PaperFeedbackRequest'
+#         required: true
+#       security:
+#       - jwtAuth: []
+#       responses:
+#         '200':
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/PaperFeedback'
+#           description: ''
+#     patch:
+#       operationId: papers_feedback_partial_update
+#       description: ViewSet for paper feedback
+#       parameters:
+#       - in: path
+#         name: id
+#         schema:
+#           type: string
+#         required: true
+#       tags:
+#       - papers
+#       requestBody:
+#         content:
+#           application/json:
+#             schema:
+#               $ref: '#/components/schemas/PatchedPaperFeedbackRequest'
+#           application/x-www-form-urlencoded:
+#             schema:
+#               $ref: '#/components/schemas/PatchedPaperFeedbackRequest'
+#           multipart/form-data:
+#             schema:
+#               $ref: '#/components/schemas/PatchedPaperFeedbackRequest'
+#       security:
+#       - jwtAuth: []
+#       responses:
+#         '200':
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/PaperFeedback'
+#           description: ''
+#     delete:
+#       operationId: papers_feedback_destroy
+#       description: ViewSet for paper feedback
+#       parameters:
+#       - in: path
+#         name: id
+#         schema:
+#           type: string
+#         required: true
+#       tags:
+#       - papers
+#       security:
+#       - jwtAuth: []
+#       responses:
+#         '204':
+#           description: No response body
+#   /api/v1/papers/formats/:
+#     get:
+#       operationId: papers_formats_list
+#       description: Retrieve all available paper formats (APA, MLA, Chicago, etc.)
+#       summary: Get paper formats
+#       parameters:
+#       - name: page
+#         required: false
+#         in: query
+#         description: A page number within the paginated result set.
+#         schema:
+#           type: integer
+#       tags:
+#       - papers
+#       security:
+#       - jwtAuth: []
+#       - {}
+#       responses:
+#         '200':
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/PaginatedPaperFormatList'
+#           description: ''
+#   /api/v1/papers/generate/:
+#     post:
+#       operationId: papers_generate_create
+#       description: Generate a new paper
+#       tags:
+#       - papers
+#       security:
+#       - jwtAuth: []
+#       responses:
+#         '200':
+#           description: No response body
+#   /api/v1/papers/generate/stream/:
+#     post:
+#       operationId: papers_generate_stream_create
+#       description: Generate paper with streaming response
+#       tags:
+#       - papers
+#       security:
+#       - jwtAuth: []
+#       responses:
+#         '200':
+#           description: No response body
+#   /api/v1/papers/history/:
+#     get:
+#       operationId: papers_history_list
+#       description: Retrieve list of papers generated by the current user
+#       summary: Get user's papers
+#       parameters:
+#       - name: page
+#         required: false
+#         in: query
+#         description: A page number within the paginated result set.
+#         schema:
+#           type: integer
+#       tags:
+#       - papers
+#       security:
+#       - jwtAuth: []
+#       responses:
+#         '200':
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/PaginatedGeneratedPaperListList'
+#           description: ''
+#   /api/v1/papers/templates/:
+#     get:
+#       operationId: papers_templates_list
+#       description: Retrieve paper templates with optional filtering
+#       summary: Get paper templates
+#       parameters:
+#       - in: query
+#         name: format_id
+#         schema:
+#           type: integer
+#         description: Filter by format ID
+#       - in: query
+#         name: is_premium
+#         schema:
+#           type: boolean
+#         description: Filter by premium status
+#       - in: query
+#         name: language
+#         schema:
+#           type: string
+#         description: 'Language code (default: en)'
+#       - name: page
+#         required: false
+#         in: query
+#         description: A page number within the paginated result set.
+#         schema:
+#           type: integer
+#       - in: query
+#         name: paper_type
+#         schema:
+#           type: string
+#         description: Filter by paper type
+#       tags:
+#       - papers
+#       security:
+#       - jwtAuth: []
+#       - {}
+#       responses:
+#         '200':
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/PaginatedPaperTemplateList'
+#           description: ''
+#   /api/v1/papers/templates/{id}/:
+#     get:
+#       operationId: papers_templates_retrieve
+#       description: Retrieve detailed information about a specific template
+#       summary: Get template details
+#       parameters:
+#       - in: path
+#         name: id
+#         schema:
+#           type: integer
+#         description: A unique integer value identifying this paper template.
+#         required: true
+#       tags:
+#       - papers
+#       security:
+#       - jwtAuth: []
+#       - {}
+#       responses:
+#         '200':
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/PaperTemplateDetail'
+#           description: ''
+#   /api/v1/papers/templates/{id}/similar/:
+#     get:
+#       operationId: papers_templates_similar_retrieve
+#       description: Get similar templates
+#       parameters:
+#       - in: path
+#         name: id
+#         schema:
+#           type: integer
+#         description: A unique integer value identifying this paper template.
+#         required: true
+#       tags:
+#       - papers
+#       security:
+#       - jwtAuth: []
+#       - {}
+#       responses:
+#         '200':
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/PaperTemplate'
+#           description: ''
+#   /api/v1/papers/templates/featured/:
+#     get:
+#       operationId: papers_templates_featured_retrieve
+#       description: Get featured templates
+#       tags:
+#       - papers
+#       security:
+#       - jwtAuth: []
+#       - {}
+#       responses:
+#         '200':
+#           description: No response body
+#   /api/v1/papers/templates/recommended/:
+#     get:
+#       operationId: papers_templates_recommended_retrieve
+#       description: Get recommended templates for user
+#       tags:
+#       - papers
+#       security:
+#       - jwtAuth: []
+#       responses:
+#         '200':
+#           description: No response body
+#   /api/v1/papers/templates/search/:
+#     get:
+#       operationId: papers_templates_search_retrieve
+#       description: Search templates
+#       tags:
+#       - papers
+#       security:
+#       - jwtAuth: []
+#       - {}
+#       responses:
+#         '200':
+#           description: No response body
+#   /api/v1/papers/validate/:
+#     post:
+#       operationId: papers_validate_create
+#       description: Validate paper content
+#       tags:
+#       - papers
+#       security:
+#       - jwtAuth: []
+#       responses:
+#         '200':
+#           description: No response body
+# components:
+#   schemas:
+#     BlankEnum:
+#       enum:
+#       - ''
+#     CreditTransaction:
+#       type: object
+#       description: Serializer for credit transactions
+#       properties:
+#         id:
+#           type: integer
+#           readOnly: true
+#         user_email:
+#           type: string
+#           readOnly: true
+#         transaction_type:
+#           $ref: '#/components/schemas/TransactionTypeEnum'
+#         status:
+#           $ref: '#/components/schemas/CreditTransactionStatusEnum'
+#         credits:
+#           type: integer
+#           description: Positive for credit, negative for debit
+#         amount:
+#           type: string
+#           format: decimal
+#           pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+#         currency:
+#           type: string
+#           maxLength: 3
+#         package:
+#           type: integer
+#           nullable: true
+#         package_name:
+#           type: string
+#           readOnly: true
+#         paper:
+#           type: integer
+#           nullable: true
+#         paper_title:
+#           type: string
+#           readOnly: true
+#         payment_method:
+#           type: string
+#           maxLength: 50
+#         payment_id:
+#           type: string
+#           maxLength: 100
+#         description:
+#           type: string
+#         balance_before:
+#           type: integer
+#           readOnly: true
+#         balance_after:
+#           type: integer
+#           readOnly: true
+#         created_at:
+#           type: string
+#           format: date-time
+#           readOnly: true
+#         updated_at:
+#           type: string
+#           format: date-time
+#           readOnly: true
+#       required:
+#       - balance_after
+#       - balance_before
+#       - created_at
+#       - credits
+#       - id
+#       - package_name
+#       - paper_title
+#       - transaction_type
+#       - updated_at
+#       - user_email
+#     CreditTransactionStatusEnum:
+#       enum:
+#       - pending
+#       - completed
+#       - failed
+#       - cancelled
+#       type: string
+#       description: |-
+#         * `pending` - Pending
+#         * `completed` - Completed
+#         * `failed` - Failed
+#         * `cancelled` - Cancelled
+#     EmailVerificationRequest:
+#       type: object
+#       description: Serializer for email verification
+#       properties:
+#         code:
+#           type: string
+#           minLength: 6
+#           maxLength: 6
+#       required:
+#       - code
+#     FAQ:
+#       type: object
+#       description: Serializer for FAQs
+#       properties:
+#         id:
+#           type: integer
+#           readOnly: true
+#         question:
+#           type: string
+#           maxLength: 200
+#         answer:
+#           type: string
+#         language:
+#           type: string
+#           maxLength: 10
+#         category:
+#           type: string
+#           maxLength: 50
+#         is_active:
+#           type: boolean
+#         order:
+#           type: integer
+#         created_at:
+#           type: string
+#           format: date-time
+#           readOnly: true
+#         updated_at:
+#           type: string
+#           format: date-time
+#           readOnly: true
+#       required:
+#       - answer
+#       - created_at
+#       - id
+#       - question
+#       - updated_at
+#     Feature:
+#       type: object
+#       description: Serializer for features
+#       properties:
+#         id:
+#           type: integer
+#           readOnly: true
+#         title:
+#           type: string
+#           maxLength: 100
+#         description:
+#           type: string
+#         icon:
+#           type: string
+#           description: Icon class or name
+#           maxLength: 50
+#         language:
+#           type: string
+#           maxLength: 10
+#         is_active:
+#           type: boolean
+#         order:
+#           type: integer
+#         created_at:
+#           type: string
+#           format: date-time
+#           readOnly: true
+#         updated_at:
+#           type: string
+#           format: date-time
+#           readOnly: true
+#       required:
+#       - created_at
+#       - description
+#       - icon
+#       - id
+#       - title
+#       - updated_at
+#     GenderEnum:
+#       enum:
+#       - male
+#       - female
+#       - other
+#       type: string
+#       description: |-
+#         * `male` - Male
+#         * `female` - Female
+#         * `other` - Other
+#     GeneratedPaper:
+#       type: object
+#       description: Serializer for generated papers
+#       properties:
+#         id:
+#           type: integer
+#           readOnly: true
+#         title:
+#           type: string
+#           maxLength: 200
+#         template:
+#           type: integer
+#         template_name:
+#           type: string
+#           readOnly: true
+#         format_name:
+#           type: string
+#           readOnly: true
+#         user_email:
+#           type: string
+#           readOnly: true
+#         content:
+#           type: string
+#         word_count:
+#           type: integer
+#           readOnly: true
+#         status:
+#           $ref: '#/components/schemas/Status4f7Enum'
+#         credits_used:
+#           type: integer
+#         generation_time:
+#           type: string
+#           readOnly: true
+#           nullable: true
+#         error_message:
+#           type: string
+#         pdf_file:
+#           type: string
+#           format: uri
+#           nullable: true
+#         docx_file:
+#           type: string
+#           format: uri
+#           nullable: true
+#         sections:
+#           type: array
+#           items:
+#             $ref: '#/components/schemas/PaperSection'
+#           readOnly: true
+#         created_at:
+#           type: string
+#           format: date-time
+#           readOnly: true
+#         updated_at:
+#           type: string
+#           format: date-time
+#           readOnly: true
+#       required:
+#       - content
+#       - created_at
+#       - format_name
+#       - generation_time
+#       - id
+#       - sections
+#       - template
+#       - template_name
+#       - title
+#       - updated_at
+#       - user_email
+#       - word_count
+#     GeneratedPaperList:
+#       type: object
+#       description: Simplified serializer for paper list
+#       properties:
+#         id:
+#           type: integer
+#           readOnly: true
+#         title:
+#           type: string
+#           maxLength: 200
+#         template_name:
+#           type: string
+#           readOnly: true
+#         format_name:
+#           type: string
+#           readOnly: true
+#         word_count:
+#           type: integer
+#         status:
+#           $ref: '#/components/schemas/Status4f7Enum'
+#         credits_used:
+#           type: integer
+#         created_at:
+#           type: string
+#           format: date-time
+#           readOnly: true
+#         updated_at:
+#           type: string
+#           format: date-time
+#           readOnly: true
+#       required:
+#       - created_at
+#       - format_name
+#       - id
+#       - template_name
+#       - title
+#       - updated_at
+#     LandingPageSection:
+#       type: object
+#       description: Serializer for landing page sections
+#       properties:
+#         id:
+#           type: integer
+#           readOnly: true
+#         section_type:
+#           $ref: '#/components/schemas/SectionTypeEnum'
+#         language:
+#           type: string
+#           default: en
+#           maxLength: 10
+#         title:
+#           type: string
+#           maxLength: 200
+#         subtitle:
+#           type: string
+#         content:
+#           type: object
+#           additionalProperties: {}
+#           description: Flexible content storage as JSON
+#         is_active:
+#           type: boolean
+#         order:
+#           type: integer
+#         created_at:
+#           type: string
+#           format: date-time
+#           readOnly: true
+#         updated_at:
+#           type: string
+#           format: date-time
+#           readOnly: true
+#       required:
+#       - created_at
+#       - id
+#       - section_type
+#       - title
+#       - updated_at
+#     MethodTypeEnum:
+#       enum:
+#       - credit_card
+#       - paypal
+#       - stripe
+#       - bank_transfer
+#       type: string
+#       description: |-
+#         * `credit_card` - Credit Card
+#         * `paypal` - PayPal
+#         * `stripe` - Stripe
+#         * `bank_transfer` - Bank Transfer
+#     Package:
+#       type: object
+#       description: Serializer for credit packages
+#       properties:
+#         id:
+#           type: integer
+#           readOnly: true
+#         name:
+#           type: string
+#           maxLength: 100
+#         description:
+#           type: string
+#         credits:
+#           type: integer
+#         price:
+#           type: string
+#           format: decimal
+#           pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+#         currency:
+#           type: string
+#           maxLength: 3
+#         features:
+#           type: object
+#           additionalProperties: {}
+#           description: List of package features
+#         is_popular:
+#           type: boolean
+#         is_active:
+#           type: boolean
+#         order:
+#           type: integer
+#         discount_percentage:
+#           type: integer
+#         original_price:
+#           type: string
+#           format: decimal
+#           pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+#           nullable: true
+#         price_per_credit:
+#           type: string
+#           readOnly: true
+#         created_at:
+#           type: string
+#           format: date-time
+#           readOnly: true
+#         updated_at:
+#           type: string
+#           format: date-time
+#           readOnly: true
+#       required:
+#       - created_at
+#       - credits
+#       - description
+#       - id
+#       - name
+#       - price
+#       - price_per_credit
+#       - updated_at
+#     PaginatedCreditTransactionList:
+#       type: object
+#       properties:
+#         count:
+#           type: integer
+#           example: 123
+#         next:
+#           type: string
+#           nullable: true
+#           format: uri
+#           example: http://api.example.org/accounts/?page=4
+#         previous:
+#           type: string
+#           nullable: true
+#           format: uri
+#           example: http://api.example.org/accounts/?page=2
+#         results:
+#           type: array
+#           items:
+#             $ref: '#/components/schemas/CreditTransaction'
+#     PaginatedFAQList:
+#       type: object
+#       properties:
+#         count:
+#           type: integer
+#           example: 123
+#         next:
+#           type: string
+#           nullable: true
+#           format: uri
+#           example: http://api.example.org/accounts/?page=4
+#         previous:
+#           type: string
+#           nullable: true
+#           format: uri
+#           example: http://api.example.org/accounts/?page=2
+#         results:
+#           type: array
+#           items:
+#             $ref: '#/components/schemas/FAQ'
+#     PaginatedFeatureList:
+#       type: object
+#       properties:
+#         count:
+#           type: integer
+#           example: 123
+#         next:
+#           type: string
+#           nullable: true
+#           format: uri
+#           example: http://api.example.org/accounts/?page=4
+#         previous:
+#           type: string
+#           nullable: true
+#           format: uri
+#           example: http://api.example.org/accounts/?page=2
+#         results:
+#           type: array
+#           items:
+#             $ref: '#/components/schemas/Feature'
+#     PaginatedGeneratedPaperListList:
+#       type: object
+#       properties:
+#         count:
+#           type: integer
+#           example: 123
+#         next:
+#           type: string
+#           nullable: true
+#           format: uri
+#           example: http://api.example.org/accounts/?page=4
+#         previous:
+#           type: string
+#           nullable: true
+#           format: uri
+#           example: http://api.example.org/accounts/?page=2
+#         results:
+#           type: array
+#           items:
+#             $ref: '#/components/schemas/GeneratedPaperList'
+#     PaginatedLandingPageSectionList:
+#       type: object
+#       properties:
+#         count:
+#           type: integer
+#           example: 123
+#         next:
+#           type: string
+#           nullable: true
+#           format: uri
+#           example: http://api.example.org/accounts/?page=4
+#         previous:
+#           type: string
+#           nullable: true
+#           format: uri
+#           example: http://api.example.org/accounts/?page=2
+#         results:
+#           type: array
+#           items:
+#             $ref: '#/components/schemas/LandingPageSection'
+#     PaginatedPackageList:
+#       type: object
+#       properties:
+#         count:
+#           type: integer
+#           example: 123
+#         next:
+#           type: string
+#           nullable: true
+#           format: uri
+#           example: http://api.example.org/accounts/?page=4
+#         previous:
+#           type: string
+#           nullable: true
+#           format: uri
+#           example: http://api.example.org/accounts/?page=2
+#         results:
+#           type: array
+#           items:
+#             $ref: '#/components/schemas/Package'
+#     PaginatedPaperFeedbackList:
+#       type: object
+#       properties:
+#         count:
+#           type: integer
+#           example: 123
+#         next:
+#           type: string
+#           nullable: true
+#           format: uri
+#           example: http://api.example.org/accounts/?page=4
+#         previous:
+#           type: string
+#           nullable: true
+#           format: uri
+#           example: http://api.example.org/accounts/?page=2
+#         results:
+#           type: array
+#           items:
+#             $ref: '#/components/schemas/PaperFeedback'
+#     PaginatedPaperFormatList:
+#       type: object
+#       properties:
+#         count:
+#           type: integer
+#           example: 123
+#         next:
+#           type: string
+#           nullable: true
+#           format: uri
+#           example: http://api.example.org/accounts/?page=4
+#         previous:
+#           type: string
+#           nullable: true
+#           format: uri
+#           example: http://api.example.org/accounts/?page=2
+#         results:
+#           type: array
+#           items:
+#             $ref: '#/components/schemas/PaperFormat'
+#     PaginatedPaperTemplateList:
+#       type: object
+#       properties:
+#         count:
+#           type: integer
+#           example: 123
+#         next:
+#           type: string
+#           nullable: true
+#           format: uri
+#           example: http://api.example.org/accounts/?page=4
+#         previous:
+#           type: string
+#           nullable: true
+#           format: uri
+#           example: http://api.example.org/accounts/?page=2
+#         results:
+#           type: array
+#           items:
+#             $ref: '#/components/schemas/PaperTemplate'
+#     PaginatedPaymentMethodList:
+#       type: object
+#       properties:
+#         count:
+#           type: integer
+#           example: 123
+#         next:
+#           type: string
+#           nullable: true
+#           format: uri
+#           example: http://api.example.org/accounts/?page=4
+#         previous:
+#           type: string
+#           nullable: true
+#           format: uri
+#           example: http://api.example.org/accounts/?page=2
+#         results:
+#           type: array
+#           items:
+#             $ref: '#/components/schemas/PaymentMethod'
+#     PaginatedSubscriptionList:
+#       type: object
+#       properties:
+#         count:
+#           type: integer
+#           example: 123
+#         next:
+#           type: string
+#           nullable: true
+#           format: uri
+#           example: http://api.example.org/accounts/?page=4
+#         previous:
+#           type: string
+#           nullable: true
+#           format: uri
+#           example: http://api.example.org/accounts/?page=2
+#         results:
+#           type: array
+#           items:
+#             $ref: '#/components/schemas/Subscription'
+#     PaginatedTestimonialList:
+#       type: object
+#       properties:
+#         count:
+#           type: integer
+#           example: 123
+#         next:
+#           type: string
+#           nullable: true
+#           format: uri
+#           example: http://api.example.org/accounts/?page=4
+#         previous:
+#           type: string
+#           nullable: true
+#           format: uri
+#           example: http://api.example.org/accounts/?page=2
+#         results:
+#           type: array
+#           items:
+#             $ref: '#/components/schemas/Testimonial'
+#     PaperFeedback:
+#       type: object
+#       description: Serializer for paper feedback
+#       properties:
+#         id:
+#           type: integer
+#           readOnly: true
+#         paper:
+#           type: integer
+#         paper_title:
+#           type: string
+#           readOnly: true
+#         user_email:
+#           type: string
+#           readOnly: true
+#         rating:
+#           type: integer
+#           description: Rating from 1 to 5
+#         comment:
+#           type: string
+#         content_quality:
+#           type: integer
+#         structure_quality:
+#           type: integer
+#         language_quality:
+#           type: integer
+#         is_helpful:
+#           type: boolean
+#         created_at:
+#           type: string
+#           format: date-time
+#           readOnly: true
+#         updated_at:
+#           type: string
+#           format: date-time
+#           readOnly: true
+#       required:
+#       - created_at
+#       - id
+#       - paper
+#       - paper_title
+#       - rating
+#       - updated_at
+#       - user_email
+#     PaperFeedbackRequest:
+#       type: object
+#       description: Serializer for paper feedback
+#       properties:
+#         paper:
+#           type: integer
+#         rating:
+#           type: integer
+#           description: Rating from 1 to 5
+#         comment:
+#           type: string
+#         content_quality:
+#           type: integer
+#         structure_quality:
+#           type: integer
+#         language_quality:
+#           type: integer
+#         is_helpful:
+#           type: boolean
+#       required:
+#       - paper
+#       - rating
+#     PaperFormat:
+#       type: object
+#       description: Serializer for paper formats
+#       properties:
+#         id:
+#           type: integer
+#           readOnly: true
+#         name:
+#           type: string
+#           maxLength: 100
+#         description:
+#           type: string
+#         template_structure:
+#           type: object
+#           additionalProperties: {}
+#           description: JSON structure defining paper sections and requirements
+#         style_guidelines:
+#           type: string
+#           description: Formatting and style guidelines
+#         citation_style:
+#           type: string
+#           maxLength: 50
+#         is_active:
+#           type: boolean
+#         order:
+#           type: integer
+#         template_count:
+#           type: string
+#           readOnly: true
+#         created_at:
+#           type: string
+#           format: date-time
+#           readOnly: true
+#         updated_at:
+#           type: string
+#           format: date-time
+#           readOnly: true
+#       required:
+#       - created_at
+#       - description
+#       - id
+#       - name
+#       - style_guidelines
+#       - template_count
+#       - updated_at
+#     PaperSection:
+#       type: object
+#       description: Serializer for paper sections
+#       properties:
+#         id:
+#           type: integer
+#           readOnly: true
+#         section_name:
+#           type: string
+#           maxLength: 100
+#         content:
+#           type: string
+#         order:
+#           type: integer
+#         word_count:
+#           type: integer
+#           readOnly: true
+#         created_at:
+#           type: string
+#           format: date-time
+#           readOnly: true
+#         updated_at:
+#           type: string
+#           format: date-time
+#           readOnly: true
+#       required:
+#       - content
+#       - created_at
+#       - id
+#       - section_name
+#       - updated_at
+#       - word_count
+#     PaperTemplate:
+#       type: object
+#       description: Serializer for paper templates
+#       properties:
+#         id:
+#           type: integer
+#           readOnly: true
+#         name:
+#           type: string
+#           maxLength: 100
+#         paper_type:
+#           $ref: '#/components/schemas/PaperTypeEnum'
+#         format:
+#           type: integer
+#         format_name:
+#           type: string
+#           readOnly: true
+#         language:
+#           type: string
+#           default: en
+#           maxLength: 10
+#         description:
+#           type: string
+#         required_fields:
+#           type: object
+#           additionalProperties: {}
+#           description: List of required input fields from user
+#         optional_fields:
+#           type: object
+#           additionalProperties: {}
+#           description: List of optional input fields from user
+#         estimated_credits:
+#           type: integer
+#         is_active:
+#           type: boolean
+#         is_premium:
+#           type: boolean
+#         order:
+#           type: integer
+#         usage_count:
+#           type: string
+#           readOnly: true
+#         created_at:
+#           type: string
+#           format: date-time
+#           readOnly: true
+#         updated_at:
+#           type: string
+#           format: date-time
+#           readOnly: true
+#       required:
+#       - created_at
+#       - description
+#       - format
+#       - format_name
+#       - id
+#       - name
+#       - paper_type
+#       - updated_at
+#       - usage_count
+#     PaperTemplateDetail:
+#       type: object
+#       description: Detailed serializer for paper templates
+#       properties:
+#         id:
+#           type: integer
+#           readOnly: true
+#         name:
+#           type: string
+#           maxLength: 100
+#         paper_type:
+#           $ref: '#/components/schemas/PaperTypeEnum'
+#         format:
+#           allOf:
+#           - $ref: '#/components/schemas/PaperFormat'
+#           readOnly: true
+#         format_name:
+#           type: string
+#           readOnly: true
+#         language:
+#           type: string
+#           default: en
+#           maxLength: 10
+#         description:
+#           type: string
+#         required_fields:
+#           type: object
+#           additionalProperties: {}
+#           description: List of required input fields from user
+#         optional_fields:
+#           type: object
+#           additionalProperties: {}
+#           description: List of optional input fields from user
+#         estimated_credits:
+#           type: integer
+#         is_active:
+#           type: boolean
+#         is_premium:
+#           type: boolean
+#         order:
+#           type: integer
+#         usage_count:
+#           type: string
+#           readOnly: true
+#         created_at:
+#           type: string
+#           format: date-time
+#           readOnly: true
+#         updated_at:
+#           type: string
+#           format: date-time
+#           readOnly: true
+#         system_prompt:
+#           type: string
+#           description: System prompt for AI generation
+#         user_prompt_template:
+#           type: string
+#           description: Template for user prompt with placeholders
+#         example_output:
+#           type: string
+#           description: Example generated paper
+#         validation_rules:
+#           type: object
+#           additionalProperties: {}
+#           description: Validation rules for user inputs
+#       required:
+#       - created_at
+#       - description
+#       - format
+#       - format_name
+#       - id
+#       - name
+#       - paper_type
+#       - system_prompt
+#       - updated_at
+#       - usage_count
+#       - user_prompt_template
+#     PaperTypeEnum:
+#       enum:
+#       - research
+#       - essay
+#       - thesis
+#       - dissertation
+#       - report
+#       - proposal
+#       - review
+#       type: string
+#       description: |-
+#         * `research` - Research Paper
+#         * `essay` - Essay
+#         * `thesis` - Thesis
+#         * `dissertation` - Dissertation
+#         * `report` - Report
+#         * `proposal` - Proposal
+#         * `review` - Literature Review
+#     PasswordChangeRequest:
+#       type: object
+#       description: Serializer for password change
+#       properties:
+#         old_password:
+#           type: string
+#           minLength: 1
+#         new_password:
+#           type: string
+#           minLength: 8
+#         new_password_confirm:
+#           type: string
+#           minLength: 1
+#       required:
+#       - new_password
+#       - new_password_confirm
+#       - old_password
+#     PasswordResetConfirmRequest:
+#       type: object
+#       description: Serializer for password reset confirmation
+#       properties:
+#         email:
+#           type: string
+#           format: email
+#           minLength: 1
+#         code:
+#           type: string
+#           minLength: 6
+#           maxLength: 6
+#         new_password:
+#           type: string
+#           minLength: 8
+#         new_password_confirm:
+#           type: string
+#           minLength: 8
+#       required:
+#       - code
+#       - email
+#       - new_password
+#       - new_password_confirm
+#     PasswordResetRequestRequest:
+#       type: object
+#       description: Serializer for password reset request
+#       properties:
+#         email:
+#           type: string
+#           format: email
+#           minLength: 1
+#       required:
+#       - email
+#     PatchedPaperFeedbackRequest:
+#       type: object
+#       description: Serializer for paper feedback
+#       properties:
+#         paper:
+#           type: integer
+#         rating:
+#           type: integer
+#           description: Rating from 1 to 5
+#         comment:
+#           type: string
+#         content_quality:
+#           type: integer
+#         structure_quality:
+#           type: integer
+#         language_quality:
+#           type: integer
+#         is_helpful:
+#           type: boolean
+#     PatchedPaymentMethodRequest:
+#       type: object
+#       description: Serializer for payment methods
+#       properties:
+#         method_type:
+#           $ref: '#/components/schemas/MethodTypeEnum'
+#         last_four_digits:
+#           type: string
+#           maxLength: 4
+#         card_brand:
+#           type: string
+#           maxLength: 20
+#         expiry_month:
+#           type: integer
+#           nullable: true
+#         expiry_year:
+#           type: integer
+#           nullable: true
+#         is_default:
+#           type: boolean
+#         is_active:
+#           type: boolean
+#     PatchedUserRequest:
+#       type: object
+#       description: Serializer for user information
+#       properties:
+#         username:
+#           type: string
+#           minLength: 1
+#           description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+#             only.
+#           pattern: ^[\w.@+-]+$
+#           maxLength: 150
+#         email:
+#           type: string
+#           format: email
+#           minLength: 1
+#           maxLength: 254
+#         first_name:
+#           type: string
+#           maxLength: 150
+#         last_name:
+#           type: string
+#           maxLength: 150
+#         credits:
+#           type: integer
+#         is_verified:
+#           type: boolean
+#         language:
+#           type: string
+#           minLength: 1
+#           maxLength: 10
+#         email_notifications:
+#           type: boolean
+#         marketing_emails:
+#           type: boolean
+#     PaymentMethod:
+#       type: object
+#       description: Serializer for payment methods
+#       properties:
+#         id:
+#           type: integer
+#           readOnly: true
+#         user_email:
+#           type: string
+#           readOnly: true
+#         method_type:
+#           $ref: '#/components/schemas/MethodTypeEnum'
+#         last_four_digits:
+#           type: string
+#           maxLength: 4
+#         card_brand:
+#           type: string
+#           maxLength: 20
+#         expiry_month:
+#           type: integer
+#           nullable: true
+#         expiry_year:
+#           type: integer
+#           nullable: true
+#         is_default:
+#           type: boolean
+#         is_active:
+#           type: boolean
+#         card_display:
+#           type: string
+#           readOnly: true
+#         created_at:
+#           type: string
+#           format: date-time
+#           readOnly: true
+#         updated_at:
+#           type: string
+#           format: date-time
+#           readOnly: true
+#       required:
+#       - card_display
+#       - created_at
+#       - id
+#       - method_type
+#       - updated_at
+#       - user_email
+#     PaymentMethodRequest:
+#       type: object
+#       description: Serializer for payment methods
+#       properties:
+#         method_type:
+#           $ref: '#/components/schemas/MethodTypeEnum'
+#         last_four_digits:
+#           type: string
+#           maxLength: 4
+#         card_brand:
+#           type: string
+#           maxLength: 20
+#         expiry_month:
+#           type: integer
+#           nullable: true
+#         expiry_year:
+#           type: integer
+#           nullable: true
+#         is_default:
+#           type: boolean
+#         is_active:
+#           type: boolean
+#       required:
+#       - method_type
+#     PlanTypeEnum:
+#       enum:
+#       - basic
+#       - premium
+#       - enterprise
+#       type: string
+#       description: |-
+#         * `basic` - Basic
+#         * `premium` - Premium
+#         * `enterprise` - Enterprise
+#     RegisterRequest:
+#       type: object
+#       description: Serializer for user registration
+#       properties:
+#         username:
+#           type: string
+#           minLength: 1
+#           description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+#             only.
+#           pattern: ^[\w.@+-]+$
+#           maxLength: 150
+#         email:
+#           type: string
+#           format: email
+#           minLength: 1
+#           maxLength: 254
+#         password:
+#           type: string
+#           writeOnly: true
+#           minLength: 8
+#         password_confirm:
+#           type: string
+#           writeOnly: true
+#           minLength: 1
+#         first_name:
+#           type: string
+#           maxLength: 150
+#         last_name:
+#           type: string
+#           maxLength: 150
+#       required:
+#       - email
+#       - password
+#       - password_confirm
+#       - username
+#     SectionTypeEnum:
+#       enum:
+#       - hero
+#       - features
+#       - testimonials
+#       - cta
+#       - interactive
+#       type: string
+#       description: |-
+#         * `hero` - Hero Section
+#         * `features` - Features Section
+#         * `testimonials` - Testimonials Section
+#         * `cta` - Call to Action Section
+#         * `interactive` - Interactive Section
+#     Status4f7Enum:
+#       enum:
+#       - pending
+#       - generating
+#       - completed
+#       - failed
+#       type: string
+#       description: |-
+#         * `pending` - Pending
+#         * `generating` - Generating
+#         * `completed` - Completed
+#         * `failed` - Failed
+#     Subscription:
+#       type: object
+#       description: Serializer for subscriptions
+#       properties:
+#         id:
+#           type: integer
+#           readOnly: true
+#         user_email:
+#           type: string
+#           readOnly: true
+#         plan_type:
+#           $ref: '#/components/schemas/PlanTypeEnum'
+#         status:
+#           $ref: '#/components/schemas/SubscriptionStatusEnum'
+#         monthly_credits:
+#           type: integer
+#         monthly_price:
+#           type: string
+#           format: decimal
+#           pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+#         currency:
+#           type: string
+#           maxLength: 3
+#         start_date:
+#           type: string
+#           format: date-time
+#         end_date:
+#           type: string
+#           format: date-time
+#         next_billing_date:
+#           type: string
+#           format: date-time
+#           nullable: true
+#         payment_method:
+#           type: string
+#           maxLength: 50
+#         subscription_id:
+#           type: string
+#           maxLength: 100
+#         features:
+#           type: object
+#           additionalProperties: {}
+#         is_currently_active:
+#           type: string
+#           readOnly: true
+#         created_at:
+#           type: string
+#           format: date-time
+#           readOnly: true
+#         updated_at:
+#           type: string
+#           format: date-time
+#           readOnly: true
+#       required:
+#       - created_at
+#       - end_date
+#       - id
+#       - is_currently_active
+#       - monthly_price
+#       - plan_type
+#       - start_date
+#       - updated_at
+#       - user_email
+#     SubscriptionStatusEnum:
+#       enum:
+#       - active
+#       - cancelled
+#       - expired
+#       - suspended
+#       type: string
+#       description: |-
+#         * `active` - Active
+#         * `cancelled` - Cancelled
+#         * `expired` - Expired
+#         * `suspended` - Suspended
+#     Testimonial:
+#       type: object
+#       description: Serializer for testimonials
+#       properties:
+#         id:
+#           type: integer
+#           readOnly: true
+#         name:
+#           type: string
+#           maxLength: 100
+#         role:
+#           type: string
+#           maxLength: 100
+#         company:
+#           type: string
+#           maxLength: 100
+#         content:
+#           type: string
+#         avatar:
+#           type: string
+#           format: uri
+#           nullable: true
+#         rating:
+#           type: integer
+#           description: Rating out of 5
+#         language:
+#           type: string
+#           maxLength: 10
+#         is_featured:
+#           type: boolean
+#         order:
+#           type: integer
+#         created_at:
+#           type: string
+#           format: date-time
+#           readOnly: true
+#         updated_at:
+#           type: string
+#           format: date-time
+#           readOnly: true
+#       required:
+#       - content
+#       - created_at
+#       - id
+#       - name
+#       - role
+#       - updated_at
+#     TokenObtainPairRequest:
+#       type: object
+#       properties:
+#         email:
+#           type: string
+#           writeOnly: true
+#           minLength: 1
+#         password:
+#           type: string
+#           writeOnly: true
+#           minLength: 1
+#       required:
+#       - email
+#       - password
+#     TokenRefresh:
+#       type: object
+#       properties:
+#         access:
+#           type: string
+#           readOnly: true
+#         refresh:
+#           type: string
+#       required:
+#       - access
+#       - refresh
+#     TokenRefreshRequest:
+#       type: object
+#       properties:
+#         refresh:
+#           type: string
+#           minLength: 1
+#       required:
+#       - refresh
+#     TransactionTypeEnum:
+#       enum:
+#       - purchase
+#       - usage
+#       - refund
+#       - bonus
+#       - admin_adjustment
+#       type: string
+#       description: |-
+#         * `purchase` - Purchase
+#         * `usage` - Usage
+#         * `refund` - Refund
+#         * `bonus` - Bonus
+#         * `admin_adjustment` - Admin Adjustment
+#     User:
+#       type: object
+#       description: Serializer for user information
+#       properties:
+#         id:
+#           type: integer
+#           readOnly: true
+#         username:
+#           type: string
+#           description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+#             only.
+#           pattern: ^[\w.@+-]+$
+#           maxLength: 150
+#         email:
+#           type: string
+#           format: email
+#           maxLength: 254
+#         first_name:
+#           type: string
+#           maxLength: 150
+#         last_name:
+#           type: string
+#           maxLength: 150
+#         credits:
+#           type: integer
+#         is_verified:
+#           type: boolean
+#         language:
+#           type: string
+#           maxLength: 10
+#         email_notifications:
+#           type: boolean
+#         marketing_emails:
+#           type: boolean
+#         total_papers_generated:
+#           type: integer
+#           readOnly: true
+#         total_credits_used:
+#           type: integer
+#           readOnly: true
+#         date_joined:
+#           type: string
+#           format: date-time
+#           readOnly: true
+#         profile:
+#           allOf:
+#           - $ref: '#/components/schemas/UserProfile'
+#           readOnly: true
+#       required:
+#       - date_joined
+#       - email
+#       - id
+#       - profile
+#       - total_credits_used
+#       - total_papers_generated
+#       - username
+#     UserProfile:
+#       type: object
+#       description: Serializer for user profile
+#       properties:
+#         avatar:
+#           type: string
+#           format: uri
+#           nullable: true
+#         nickname:
+#           type: string
+#           maxLength: 50
+#         phone:
+#           type: string
+#           maxLength: 20
+#         bio:
+#           type: string
+#         birth_date:
+#           type: string
+#           format: date
+#           nullable: true
+#         gender:
+#           oneOf:
+#           - $ref: '#/components/schemas/GenderEnum'
+#           - $ref: '#/components/schemas/BlankEnum'
+#         location:
+#           type: string
+#           maxLength: 100
+#         website:
+#           type: string
+#           format: uri
+#           maxLength: 200
+#         institution:
+#           type: string
+#           maxLength: 200
+#         field_of_study:
+#           type: string
+#           maxLength: 100
+#     UserProfileRequest:
+#       type: object
+#       description: Serializer for user profile
+#       properties:
+#         avatar:
+#           type: string
+#           format: binary
+#           nullable: true
+#         nickname:
+#           type: string
+#           maxLength: 50
+#         phone:
+#           type: string
+#           maxLength: 20
+#         bio:
+#           type: string
+#         birth_date:
+#           type: string
+#           format: date
+#           nullable: true
+#         gender:
+#           oneOf:
+#           - $ref: '#/components/schemas/GenderEnum'
+#           - $ref: '#/components/schemas/BlankEnum'
+#         location:
+#           type: string
+#           maxLength: 100
+#         website:
+#           type: string
+#           format: uri
+#           maxLength: 200
+#         institution:
+#           type: string
+#           maxLength: 200
+#         field_of_study:
+#           type: string
+#           maxLength: 100
+#     UserRequest:
+#       type: object
+#       description: Serializer for user information
+#       properties:
+#         username:
+#           type: string
+#           minLength: 1
+#           description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+#             only.
+#           pattern: ^[\w.@+-]+$
+#           maxLength: 150
+#         email:
+#           type: string
+#           format: email
+#           minLength: 1
+#           maxLength: 254
+#         first_name:
+#           type: string
+#           maxLength: 150
+#         last_name:
+#           type: string
+#           maxLength: 150
+#         credits:
+#           type: integer
+#         is_verified:
+#           type: boolean
+#         language:
+#           type: string
+#           minLength: 1
+#           maxLength: 10
+#         email_notifications:
+#           type: boolean
+#         marketing_emails:
+#           type: boolean
+#       required:
+#       - email
+#       - username
+#     UserStats:
+#       type: object
+#       description: Serializer for user statistics
+#       properties:
+#         total_papers_generated:
+#           type: integer
+#         total_credits_used:
+#           type: integer
+#         credits:
+#           type: integer
+#         date_joined:
+#           type: string
+#           format: date-time
+#   securitySchemes:
+#     jwtAuth:
+#       type: http
+#       scheme: bearer
+#       bearerFormat: JWT

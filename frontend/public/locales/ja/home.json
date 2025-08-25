@@ -1,0 +1,178 @@
+{
+    "header": {
+      "logoText": "即時論文",
+      "navItems": {
+        "home": "ホーム",
+        "templates": "テンプレート",
+        "history": "履歴",
+        "examples": "作品例"
+      },
+      "profile": "プロフィール",
+      "recharge": "ポイントチャージ"
+    },
+    "hero": {
+      "title1": "AI論文生成ツール",
+      "title2": "30秒で専門的学術論文を生成",
+      "description": "トピックを入力し、テンプレートを選択すると、AIが完全なフォーマットのWord/PDF文書を自動生成します",
+      "stats": {
+        "trustedUsers": "ユーザーの信頼",
+        "templates": "専門テンプレート",
+        "passRate": "合格率",
+        "avgTime": "平均生成時間"
+      }
+    },
+    "coreFeatures": {
+      "subtitle": "コア機能",
+      "title": "専門的学術文書の迅速生成",
+      "description": "課題レポート、卒業論文、学術ジャーナル記事など、あらゆるニーズに対応",
+      "inputSection": {
+        "title": "論文要件を入力",
+        "placeholder": "例：医療分野における人工知能の応用に関する論文を生成してください。要約、序論、関連研究、応用事例、結論を含み、5000字以上とする...",
+        "tip": "詳細な説明ほど精密な結果が得られます"
+      },
+      "templates": {
+        "title": "テンプレートタイプを選択",
+        "undergraduate": "学部卒業論文",
+        "master": "修士論文",
+        "coursework": "課題レポート",
+        "journal": "学術ジャーナル",
+        "research": "研究報告",
+        "proposal": "研究提案書"
+      },
+      "generateButton": {
+        "default": "即座に論文を生成",
+        "loading": "生成中..."
+      },
+      "costTip": "1回の生成につき1ポイント消費 · Word/PDF形式ダウンロード対応",
+      "preview": {
+        "title": "文書プレビュー",
+        "emptyTitle": "プロンプトを入力し、テンプレートを選択してください",
+        "emptyDescription": "AIが完全な学術論文文書を生成します",
+        "emptyTip": "Word/PDF形式ダウンロード対応",
+        "sections": {
+          "abstract": "要約",
+          "introduction": "序論",
+          "methodology": "研究方法",
+          "pageInfo": "第 {{page}} ページ / 全 {{total}} ページ"
+        }
+      }
+    },
+    "features": {
+      "subtitle": "機能特色",
+      "title": "論文生成ツールを選ぶ理由",
+      "items": {
+        "speed": {
+          "title": "超高速生成",
+          "content": "30秒以内で完全な論文を生成。AIモデルは専門的学術データで訓練され、コンテンツ品質を保証"
+        },
+        "plagiarism": {
+          "title": "精密盗作チェック",
+          "content": "内蔵学術盗作チェックシステムで論文の独創性を保証。主要学術データベースとの照合対応"
+        },
+        "templates": {
+          "title": "専門テンプレート",
+          "content": "50+専門学術テンプレートが各分野をカバー。学術規範に厳格に準拠したフォーマット設計"
+        }
+      }
+    },
+    "testimonials": {
+      "subtitle": "ユーザー評価",
+      "title": "10,000名以上のユーザーの選択",
+      "items": {
+        "student": {
+          "name": "田中学生",
+          "content": "このツールを使用後、論文執筆効率が3倍向上しました！生成された文献レビュー部分が特に専門的です"
+        },
+        "professor": {
+          "name": "佐藤教授",
+          "content": "学生にこのツールを初稿作成に使用することを推奨し、学術論文構造の理解を助けています"
+        },
+        "researcher": {
+          "name": "鈴木研究員",
+          "content": "国際会議論文準備時、このツールがIEEE形式に準拠した初稿の迅速生成を助けました"
+        }
+      }
+    },
+    "cta": {
+      "title": "AI論文生成を今すぐ体験",
+      "description": "登録で5ポイントプレゼント、初回AI論文を無料生成",
+      "register": "無料登録",
+      "demo": "デモを見る"
+    },
+    "functionTabs": {
+      "formatter": "文書フォーマット",
+      "generator": "AI生成",
+      "formatterDescription": "文書をアップロードして専門的なフォーマットを適用",
+      "generatorDescription": "トピック要件を入力し、AIが完全な論文を生成"
+    },
+    "formatter": {
+      "uploadTitle": "文書をアップロード",
+      "uploadPlaceholder": "ファイルをここにドラッグするかクリックしてアップロード",
+      "supportedFormats": ".docx、.doc、.pdfファイルをサポート、最大20MB",
+      "fileUploaded": "ファイルがアップロードされました",
+      "formatStyleTitle": "フォーマットスタイルを選択", 
+      "formatButton": "プロフェッショナルフォーマット",
+      "formatting": "フォーマット処理中...",
+      "costTip": "フォーマット1回につき2ポイント消費、専門的な標準フォーマット",
+      "previewTitle": "フォーマットプレビュー",
+      "emptyTitle": "文書をアップロードしてフォーマットを開始",
+      "emptyDescription": "WordとPDF文書をサポート、コンテンツ構造を自動認識し学術標準に従ってフォーマット",
+      "emptyTip": "文書をアップロードしてフォーマットを選択するとプレビューできます",
+      "formats": {
+        "apa": {
+          "name": "APA形式",
+          "description": "アメリカ心理学会形式、心理学・教育学論文によく使用"
+        },
+        "mla": {
+          "name": "MLA形式", 
+          "description": "現代語学協会形式、文学・言語学論文によく使用"
+        },
+        "chicago": {
+          "name": "シカゴ形式",
+          "description": "シカゴ形式、歴史・文学論文によく使用"
+        },
+        "ieee": {
+          "name": "IEEE形式",
+          "description": "電気電子技術者協会形式、工学技術論文によく使用"
+        },
+        "harvard": {
+          "name": "ハーバード形式",
+          "description": "ハーバード形式、ビジネス・社会科学論文によく使用"
+        },
+        "vancouver": {
+          "name": "バンクーバー形式",
+          "description": "バンクーバー形式、医学・生物学論文によく使用"
+        }
+      }
+    },
+    "footer": {
+      "slogan": "最も専門的なAI論文生成ツール、学術研究を支援し、執筆効率を向上",
+      "features": {
+        "title": "製品機能",
+        "items": [
+          "論文生成",
+          "フォーマット調整",
+          "学術盗作チェック",
+          "参考文献管理",
+          "多言語対応"
+        ]
+      },
+      "help": {
+        "title": "ヘルプセンター",
+        "items": [
+          "使用チュートリアル",
+          "よくある質問",
+          "テンプレートセンター",
+          "ポイント説明",
+          "API接続"
+        ]
+      },
+      "contact": {
+        "title": "お問い合わせ",
+        "email": "support@papergen.com",
+        "phone": "03-1234-5678",
+        "address": "東京都渋谷区テクノロジーパーク88番地"
+      },
+      "rights": "© 2025 即時論文. All rights reserved. | 登録番号: JP-12345678"
+    }
+  } 

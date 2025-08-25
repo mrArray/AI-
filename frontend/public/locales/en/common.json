@@ -1,0 +1,86 @@
+{
+  "app": {
+    "name": "Ai Paper Tool",
+    "tagline": "AI-powered accuracy, instant academic papers in Word/PDF"
+  },
+  "nav": {
+    "home": "Home",
+    "templates": "Templates",
+    "history": "History",
+    "profile": "Profile",
+    "pricing": "Pricing",
+    "dashboard": "Dashboard"
+  },
+  "actions": {
+    "recharge": "Recharge Points",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "generate": "Generate Paper",
+    "format": "Format Document",
+    "download": {
+      "word": "Download Word",
+      "pdf": "Download PDF"
+    },
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "edit": "Edit",
+    "delete": "Delete",
+    "view": "View",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "apply": "Apply"
+  },
+  "home": {
+    "input": {
+      "title": "Enter Prompt",
+      "placeholder": "Please enter your paper topic, keywords or specific requirements...",
+      "pure_placeholder": "Please paste your existing paper content, we will format it according to the selected template..."
+    },
+    "template": {
+      "title": "Select Template",
+      "undergraduate": "Undergraduate Thesis",
+      "master": "Master's Thesis",
+      "course": "Course Assignment",
+      "journal": "Academic Journal"
+    },
+    "preview": {
+      "title": "Document Preview",
+      "empty": "Please enter a prompt and select a template",
+      "generating": "Generating your paper...",
+      "formatting": "Formatting your document..."
+    },
+    "features": {
+      "title": "Features",
+      "subtitle": "We offer two document formatting methods to meet your different needs",
+      "pure": {
+        "title": "Pure Formatting",
+        "description": "Format your existing paper content according to the selected template, keeping the original content unchanged and ensuring the format meets requirements. Suitable for users who have completed content creation and only need format adjustment."
+      },
+      "ai": {
+        "title": "AI Extension/Auto Writing",
+        "description": "Based on your provided keywords, outline, or topic, AI automatically generates complete paper content and formats it according to the selected template. Suitable for users who need to quickly complete assignments or seek writing inspiration."
+      }
+    },
+    "points": {
+      "consume": "AI generation consumes",
+      "points": "points",
+      "recharge": "Recharge points"
+    }
+  },
+  "footer": {
+    "copyright": "© 2025 Instant Paper. All rights reserved.",
+    "links": {
+      "about": "About Us",
+      "terms": "Terms of Use",
+      "privacy": "Privacy Policy",
+      "contact": "Contact Us"
+    }
+  },
+  "language": {
+    "name": "English",
+    "select": "Select Language"
+  }
+}

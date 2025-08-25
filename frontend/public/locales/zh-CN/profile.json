@@ -1,0 +1,51 @@
+{
+    "pageTitle": "用户资料",
+    "pageDescription": "管理您的个人资料设置",
+    "tabs": {
+      "profile": "个人资料",
+      "settings": "设置",
+      "usage": "使用情况"
+    },
+    "membership": {
+      "normal": "普通会员",
+      "joinDate": "加入日期"
+    },
+    "stats": {
+      "points": "积分",
+      "documentsGenerated": "生成文档数"
+    },
+    "buttons": {
+      "editProfile": "编辑资料",
+      "saveSettings": "保存设置"
+    },
+    "settings": {
+      "accountInfo": {
+        "title": "账户信息",
+        "description": "更新您的账户详情。",
+        "username": "用户名",
+        "email": "电子邮件地址"
+      },
+      "password": {
+        "title": "修改密码",
+        "description": "定期更新密码以保障账户安全。",
+        "current": "当前密码",
+        "new": "新密码",
+        "confirm": "确认新密码"
+      },
+      "notifications": {
+        "title": "通知设置",
+        "description": "管理您的通知偏好。",
+        "email": "邮件通知",
+        "emailDesc": "通过邮件接收更新和提醒。",
+        "marketing": "营销邮件",
+        "marketingDesc": "接收营销及促销邮件。"
+      }
+    },
+    "usage": {
+      "title": "使用统计",
+      "totalDocuments": "文档总数",
+      "aiGenerated": "AI 生成",
+      "formatted": "格式化"
+    }
+  }
+  

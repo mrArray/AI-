@@ -1,0 +1,132 @@
+{
+    "header": {
+      "logoText": "Takaitaccen Takarda",
+      "navItems": {
+        "home": "Gida",
+        "templates": "Samfura",
+        "history": "Tarihi",
+        "examples": "Misalai na Ayyuka"
+      },
+      "profile": "Bayani",
+      "recharge": "Cika Maki"
+    },
+    "hero": {
+      "title1": "Kayan Aikin Samar da Takarda na AI",
+      "title2": "Samar da Takardun Ilimi a Cikin Daƙiƙa 30",
+      "description": "Ka shigar da taken ka, ka zabi samfuri, AI zai samar da cikakken takarda mai tsari na Word/PDF",
+      "stats": {
+        "trustedUsers": "Amincin Masu Amfani",
+        "templates": "Samfura na Kwararru",
+        "passRate": "Kashi na Nasara",
+        "avgTime": "Matsakaicin Lokacin Samarwa"
+      }
+    },
+    "coreFeatures": {
+      "subtitle": "Muhimman Ayyuka",
+      "title": "Samar da Takardun Ilimi da Sauri",
+      "description": "Ko kana bukatar aikin darasi, takardun kammala karatun ko labarin mujallar ilimi, za mu iya biyan bukatar ka",
+      "inputSection": {
+        "title": "Shigar da Bukatun Takardarka",
+        "placeholder": "Misali: Ka samar da takarda game da amfanin AI a fannin kiwon lafiya, tare da taƙaitawa, gabatarwa, binciken da suka shafi, misalai na amfani da kuma ƙarshe, bai ƙasa da kalmomi 5000 ba...",
+        "tip": "Cikakken bayani zai samar da mafi kyawun sakamako"
+      },
+      "templates": {
+        "title": "Zaɓi Nau'in Samfuri",
+        "undergraduate": "Takardun Kammala Karatun Farko",
+        "master": "Takardun Digiri na Biyu",
+        "coursework": "Aikin Darasi",
+        "journal": "Mujallar Ilimi",
+        "research": "Rahoton Bincike",
+        "proposal": "Takardun Shawara"
+      },
+      "generateButton": {
+        "default": "Samar da Takarda Yanzu",
+        "loading": "Ana Samarwa..."
+      },
+      "costTip": "Samarwa guda ɗaya yana buƙatar maki 1 · Ana goyan bayan sauke Word/PDF",
+      "preview": {
+        "title": "Kallon Takarda",
+        "emptyTitle": "Ka shigar da kalmomin jagora ka zaɓi samfuri",
+        "emptyDescription": "AI zai samar maka da cikakken takardun ilimi",
+        "emptyTip": "Ana goyan bayan sauke Word/PDF",
+        "sections": {
+          "abstract": "Taƙaitawa",
+          "introduction": "Gabatarwa",
+          "methodology": "Hanyar Bincike",
+          "pageInfo": "Shafi na {{page}} / Jimillar {{total}}"
+        }
+      }
+    },
+    "features": {
+      "subtitle": "Fasalolin Ayyuka",
+      "title": "Me yasa za ka zaɓi Kayan Aikin Samar da Takarda namu",
+      "items": {
+        "speed": {
+          "title": "Samarwa Mai Sauri",
+          "content": "Samar da cikakken takarda a cikin daƙiƙa 30. An horar da AI da bayanan ilimi na kwararru don tabbatar da ingancin abun ciki"
+        },
+        "plagiarism": {
+          "title": "Ingantaccen Binciken Sace",
+          "content": "Tsarin binciken sace na ilimi da aka gina ciki don tabbatar da asalin takarda. Yana da damar kwatanta da manyan ma'ajin bayanan ilimi"
+        },
+        "templates": {
+          "title": "Samfura na Kwararru",
+          "content": "Samfura na ilimi sama da 50 da suka rufe kowane fanni. An tsara su a hankali bisa ga ka'idojin ilimi"
+        }
+      }
+    },
+    "testimonials": {
+      "subtitle": "Kimanta Masu Amfani",
+      "title": "Zaɓin Masu Amfani sama da 10,000",
+      "items": {
+        "student": {
+          "name": "Dalibi Ahmad",
+          "content": "Bayan na fara amfani da wannan kayan aiki, ingancin rubuta takardoyi ya haɓaka har sau uku! Ɓangaren nazarin wallafe-wallafen ya fi dacewa"
+        },
+        "professor": {
+          "name": "Farfesa Maryam",
+          "content": "Na ba da shawarar ga ɗalibai su yi amfani da wannan kayan aiki wajen yin farkon rubutu, yana taimaka musu su fahimci tsarin takardun ilimi"
+        },
+        "researcher": {
+          "name": "Mai Bincike Yusuf",
+          "content": "Lokacin shirya takardun tararon ƙasa da ƙasa, wannan kayan aiki ya taimaka min samar da farkon rubutu da ya dace da tsarin IEEE da sauri"
+        }
+      }
+    },
+    "cta": {
+      "title": "Gwada Samar da Takarda ta AI Yanzu",
+      "description": "Yi rajista ka sami maki 5 kyauta, ka samar da farkon takardarka ta AI kyauta",
+      "register": "Yi Rajista Kyauta",
+      "demo": "Duba Misali"
+    },
+    "footer": {
+      "slogan": "Mafi kyawun kayan aikin samar da takarda ta AI, don tallafawa binciken ilimi da haɓaka ingancin rubutu",
+      "features": {
+        "title": "Ayyukan Kayayyaki",
+        "items": [
+          "Samar da Takarda",
+          "Gyaran Tsari",
+          "Binciken Sace na Ilimi",
+          "Sarrafa Nassoshi",
+          "Goyan Bayan Yaruka da Yawa"
+        ]
+      },
+      "help": {
+        "title": "Cibiyar Taimako",
+        "items": [
+          "Koyarwar Amfani",
+          "Tambayoyin Da Ake Yawan Yi",
+          "Cibiyar Samfura",
+          "Bayanin Maki",
+          "Haɗin API"
+        ]
+      },
+      "contact": {
+        "title": "Tuntube Mu",
+        "email": "support@papergen.com",
+        "phone": "400-888-8888",
+        "address": "Filin Fasaha 88, Yankin Haidian, Beijing"
+      },
+      "rights": "© 2025 Takaitaccen Takarda. Dukkan hakkoki an kiyaye su. | ICP 12345678"
+    }
+  } 

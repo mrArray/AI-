@@ -1,0 +1,86 @@
+{
+  "app": {
+    "name": "秒出論文",
+    "tagline": "AI超高準確性，秒出作業論文Word/PDF"
+  },
+  "nav": {
+    "home": "首頁",
+    "templates": "模板瀏覽",
+    "history": "歷史記錄",
+    "profile": "個人中心",
+    "pricing": "價格方案",
+    "dashboard": "儀表板"
+  },
+  "actions": {
+    "recharge": "積分充值",
+    "login": "登錄",
+    "register": "註冊",
+    "logout": "退出登錄",
+    "generate": "生成論文",
+    "format": "開始排版",
+    "download": {
+      "word": "下載Word",
+      "pdf": "下載PDF"
+    },
+    "save": "保存",
+    "cancel": "取消",
+    "confirm": "確認",
+    "edit": "編輯",
+    "delete": "刪除",
+    "view": "查看",
+    "search": "搜索",
+    "filter": "篩選",
+    "sort": "排序",
+    "apply": "應用"
+  },
+  "home": {
+    "input": {
+      "title": "輸入提示詞",
+      "placeholder": "請輸入您的論文主題、關鍵詞或具體要求...",
+      "pure_placeholder": "請粘貼您已有的論文內容，我們將按照選定模板進行排版..."
+    },
+    "template": {
+      "title": "選擇模板",
+      "undergraduate": "本科畢業論文",
+      "master": "碩士學位論文",
+      "course": "課程作業",
+      "journal": "學術期刊"
+    },
+    "preview": {
+      "title": "文檔預覽",
+      "empty": "請輸入提示詞並選擇模板",
+      "generating": "正在生成您的論文...",
+      "formatting": "正在排版您的文檔..."
+    },
+    "features": {
+      "title": "功能介紹",
+      "subtitle": "我們提供兩種文檔排版方式，滿足您的不同需求",
+      "pure": {
+        "title": "純排版",
+        "description": "將您已有的論文內容按照選定的模板進行專業排版，保持原有內容不變，確保格式符合要求。適合已完成內容創作，僅需調整格式的用戶。"
+      },
+      "ai": {
+        "title": "AI擴展/自動寫作",
+        "description": "基於您提供的關鍵詞、提綱或主題，AI自動生成完整的論文內容，並按照選定模板進行排版。適合需要快速完成作業或尋找寫作靈感的用戶。"
+      }
+    },
+    "points": {
+      "consume": "AI生成需消耗",
+      "points": "積分",
+      "recharge": "充值積分"
+    }
+  },
+  "footer": {
+    "copyright": "© 2025 秒出論文. 保留所有權利.",
+    "links": {
+      "about": "關於我們",
+      "terms": "使用條款",
+      "privacy": "隱私政策",
+      "contact": "聯繫我們"
+    }
+  },
+  "language": {
+    "name": "繁體中文",
+    "select": "選擇語言"
+  }
+}

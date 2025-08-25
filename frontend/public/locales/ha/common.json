@@ -1,0 +1,87 @@
+{
+  "app": {
+    "name": "Takaitaccen Takarda",
+    "tagline": "AI mai inganci, takaitaccen takarda na Word/PDF"
+  },
+  "nav": {
+    "home": "Gida",
+    "templates": "Samfura",
+    "history": "Tarihi",
+    "profile": "Bayani",
+    "pricing": "Farashi",
+    "dashboard": "Dashboard",
+    "examples": "Misalai"
+  },
+  "actions": {
+    "recharge": "Cika Maki",
+    "login": "Shiga",
+    "register": "Yi Rajista",
+    "logout": "Fita",
+    "generate": "Samar da Takarda",
+    "format": "Fara Tsarawa",
+    "download": {
+      "word": "Sauke Word",
+      "pdf": "Sauke PDF"
+    },
+    "save": "Ajiye",
+    "cancel": "Soke",
+    "confirm": "Tabbatar",
+    "edit": "Gyara",
+    "delete": "Share",
+    "view": "Duba",
+    "search": "Nema",
+    "filter": "Tacewa",
+    "sort": "Jera",
+    "apply": "Yi Amfani"
+  },
+  "home": {
+    "input": {
+      "title": "Shigar da Kalmomin Jagora",
+      "placeholder": "Ka shigar da taken takardarka, kalmomin muhimmi ko bukatun...",
+      "pure_placeholder": "Ka manna abubuwan takardarka da suka riga sun kasance, za mu tsara su bisa ga samfuran da ka zaba..."
+    },
+    "template": {
+      "title": "Zabi Samfuri",
+      "undergraduate": "Takardun Karatun Farko",
+      "master": "Takardun Digiri na Biyu",
+      "course": "Aikin Darasi",
+      "journal": "Mujallar Ilimi"
+    },
+    "preview": {
+      "title": "Kallon Takarda",
+      "empty": "Ka shigar da kalmomin jagora ka zabi samfuri",
+      "generating": "Ana samar da takardarka...",
+      "formatting": "Ana tsara takardarka..."
+    },
+    "features": {
+      "title": "Bayani Game da Ayyuka",
+      "subtitle": "Muna ba da hanyoyi biyu na tsara takarduka domin biyan bukatunku daban-daban",
+      "pure": {
+        "title": "Tsarawa Kadai",
+        "description": "Za mu tsara abubuwan takardarka da suka riga sun kasance bisa ga samfuran da ka zaba, ba tare da canza abubuwan ba, don tabbatar da tsarin ya dace da bukatun. Ya dace da masu amfani da suka gama rubuta abubuwa kuma suna bukatar gyaran tsari kawai."
+      },
+      "ai": {
+        "title": "AI Fadada/Rubuta Kai-da-Kai",
+        "description": "Bisa ga kalmomin muhimmi, tsarin ko batutuwan da ka ba da su, AI zai samar da cikakken abun ciki na takarda kai-da-kai, sannan ya tsara shi bisa ga samfuran da ka zaba. Ya dace da masu amfani da ke son su gama aiki da sauri ko neman kwarin gwiwa na rubutu."
+      }
+    },
+    "points": {
+      "consume": "Samar da AI yana bukata",
+      "points": "maki",
+      "recharge": "Cika maki"
+    }
+  },
+  "footer": {
+    "copyright": "© 2025 Takaitaccen Takarda. Dukkan hakkoki an kiyaye su.",
+    "links": {
+      "about": "Game da mu",
+      "terms": "Sharuddan Amfani",
+      "privacy": "Manufar Keɓantawa",
+      "contact": "Tuntube mu"
+    }
+  },
+  "language": {
+    "name": "Hausa",
+    "select": "Zaɓi Harshe"
+  }
+} 

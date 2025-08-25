@@ -1,0 +1,67 @@
+# Django and core packages
+Django>=4.2.7
+djangorestframework>=3.14.0
+django-cors-headers>=4.3.1
+django-filter>=23.3
+
+# API documentation
+drf-spectacular>=0.26.5
+drf_spectacular_sidecar
+
+# Authentication and security
+djangorestframework-simplejwt>=5.3.0
+django-ratelimit>=4.1.0
+
+# Database
+psycopg2-binary>=2.9.7
+
+# Caching and performance
+redis>=5.0.1
+django-redis>=5.4.0
+
+# File handling and media
+Pillow>=10.0.1
+python-magic>=0.4.27
+
+# Environment and configuration
+python-decouple>=3.8
+
+# Date and time handling
+python-dateutil>=2.8.2
+
+# HTTP requests
+requests>=2.31.0
+
+# JSON handling
+orjson>=3.9.9
+
+# Validation and utilities
+validators>=0.22.0
+
+# Development and testing
+pytest>=7.4.3
+pytest-django>=4.6.0
+factory-boy>=3.3.0
+coverage>=7.3.2
+
+# Production server
+gunicorn>=21.2.0
+whitenoise>=6.6.0
+
+# Monitoring and logging
+sentry-sdk>=2.0.0
+
+# Task queue (optional)
+celery>=5.3.4
+django-celery-beat>=2.5.0
+
+# Email
+django-anymail>=10.2
+
+# Storage (optional)
+django-storages>=1.14.2
+boto3>=1.29.7
+
+python-docx
+PyPDF2
+google-auth

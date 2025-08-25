@@ -1,0 +1,50 @@
+{
+    "pageTitle": "ユーザープロフィール",
+    "pageDescription": "個人プロフィール設定を管理",
+    "tabs": {
+      "profile": "プロフィール",
+      "settings": "設定",
+      "usage": "使用状況"
+    },
+    "membership": {
+      "normal": "一般会員",
+      "joinDate": "参加日"
+    },
+    "stats": {
+      "points": "ポイント",
+      "documentsGenerated": "生成文書数"
+    },
+    "buttons": {
+      "editProfile": "プロフィール編集",
+      "saveSettings": "設定を保存"
+    },
+    "settings": {
+      "accountInfo": {
+        "title": "アカウント情報",
+        "description": "アカウント詳細を更新してください。",
+        "username": "ユーザー名",
+        "email": "メールアドレス"
+      },
+      "password": {
+        "title": "パスワード変更",
+        "description": "アカウントセキュリティのため定期的にパスワードを更新してください。",
+        "current": "現在のパスワード",
+        "new": "新しいパスワード",
+        "confirm": "新しいパスワード確認"
+      },
+      "notifications": {
+        "title": "通知設定",
+        "description": "通知設定を管理してください。",
+        "email": "メール通知",
+        "emailDesc": "メールで更新とリマインダーを受信。",
+        "marketing": "マーケティングメール",
+        "marketingDesc": "マーケティングおよびプロモーションメールを受信。"
+      }
+    },
+    "usage": {
+      "title": "使用統計",
+      "totalDocuments": "文書総数",
+      "aiGenerated": "AI生成",
+      "formatted": "フォーマット済み"
+    }
+  } 

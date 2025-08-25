@@ -1,0 +1,30 @@
+{
+    "page": {
+      "title": "历史记录",
+      "description": "查看您之前生成的所有论文记录，可以重新编辑或下载"
+    },
+    "table": {
+      "date": "日期",
+      "template": "模板",
+      "type": "类型",
+      "viewDetails": "查看详情"
+    },
+    "types": {
+      "aiExtension": "AI扩展",
+      "formatting": "纯排版"
+    },
+    "status": {
+      "completed": "已完成"
+    },
+    "modal": {
+      "title": "历史记录详情",
+      "generationDate": "生成日期",
+      "templateUsed": "使用模板",
+      "generationType": "生成类型",
+      "status": "状态",
+      "documentPreview": "文档预览",
+      "downloadButton": "下载文档",
+      "editButton": "重新编辑",
+      "closeButton": "关闭"
+    }
+  }

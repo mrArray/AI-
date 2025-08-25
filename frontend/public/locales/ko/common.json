@@ -1,0 +1,86 @@
+{
+  "app": {
+    "name": "즉시 논문",
+    "tagline": "AI 고정확도, 즉시 작성 논문 Word/PDF"
+  },
+  "nav": {
+    "home": "홈",
+    "templates": "템플릿 보기",
+    "history": "기록",
+    "profile": "프로필",
+    "pricing": "가격 플랜",
+    "dashboard": "대시보드"
+  },
+  "actions": {
+    "recharge": "포인트 충전",
+    "login": "로그인",
+    "register": "회원가입",
+    "logout": "로그아웃",
+    "generate": "논문 생성",
+    "format": "서식 적용",
+    "download": {
+      "word": "Word 다운로드",
+      "pdf": "PDF 다운로드"
+    },
+    "save": "저장",
+    "cancel": "취소",
+    "confirm": "확인",
+    "edit": "편집",
+    "delete": "삭제",
+    "view": "보기",
+    "search": "검색",
+    "filter": "필터",
+    "sort": "정렬",
+    "apply": "적용"
+  },
+  "home": {
+    "input": {
+      "title": "프롬프트 입력",
+      "placeholder": "논문 주제, 키워드 또는 구체적인 요구사항을 입력하세요...",
+      "pure_placeholder": "기존 논문 내용을 붙여넣으세요. 선택한 템플릿에 따라 서식을 적용합니다..."
+    },
+    "template": {
+      "title": "템플릿 선택",
+      "undergraduate": "학부 졸업 논문",
+      "master": "석사 학위 논문",
+      "course": "과제 보고서",
+      "journal": "학술 저널"
+    },
+    "preview": {
+      "title": "문서 미리보기",
+      "empty": "프롬프트를 입력하고 템플릿을 선택하세요",
+      "generating": "논문 생성 중...",
+      "formatting": "문서 서식 적용 중..."
+    },
+    "features": {
+      "title": "기능 소개",
+      "subtitle": "다양한 요구에 맞는 두 가지 문서 서식 방법을 제공합니다",
+      "pure": {
+        "title": "순수 서식",
+        "description": "기존 논문 내용을 선택한 템플릿에 따라 전문적으로 서식을 적용하여 원본 내용은 변경하지 않고 형식 요구사항을 충족합니다. 내용 작성을 완료하고 형식만 조정이 필요한 사용자에게 적합합니다."
+      },
+      "ai": {
+        "title": "AI 확장/자동 작성",
+        "description": "제공된 키워드, 개요 또는 주제를 기반으로 AI가 완전한 논문 내용을 자동으로 생성하고 선택한 템플릿에 따라 서식을 적용합니다. 과제를 빠르게 완료하거나 글쓰기 영감이 필요한 사용자에게 적합합니다."
+      }
+    },
+    "points": {
+      "consume": "AI 생성에는",
+      "points": "포인트가 소모됩니다",
+      "recharge": "포인트 충전"
+    }
+  },
+  "footer": {
+    "copyright": "© 2025 즉시 논문. 모든 권리 보유.",
+    "links": {
+      "about": "회사 소개",
+      "terms": "이용 약관",
+      "privacy": "개인정보 처리방침",
+      "contact": "문의하기"
+    }
+  },
+  "language": {
+    "name": "한국어",
+    "select": "언어 선택"
+  }
+}

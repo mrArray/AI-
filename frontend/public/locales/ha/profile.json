@@ -1,0 +1,50 @@
+{
+    "pageTitle": "Bayanan Mai Amfani",
+    "pageDescription": "Sarrafa saitunan bayanan ka na sirri",
+    "tabs": {
+      "profile": "Bayanan Sirri",
+      "settings": "Saituna",
+      "usage": "Yanayin Amfani"
+    },
+    "membership": {
+      "normal": "Mamban Na Yau da Kullun",
+      "joinDate": "Ranar Shiga"
+    },
+    "stats": {
+      "points": "Maki",
+      "documentsGenerated": "Adadin Takardun da aka Samar"
+    },
+    "buttons": {
+      "editProfile": "Gyara Bayanan",
+      "saveSettings": "Ajiye Saituna"
+    },
+    "settings": {
+      "accountInfo": {
+        "title": "Bayanan Asusun",
+        "description": "Sabunta cikakkun bayanan asusun ka.",
+        "username": "Sunan Mai Amfani",
+        "email": "Adireshin Imel"
+      },
+      "password": {
+        "title": "Canza Kalmar Sirri",
+        "description": "A lokaci-lokaci ka sabunta kalmar sirri don kare asusun ka.",
+        "current": "Kalmar Sirrin Yanzu",
+        "new": "Sabuwar Kalmar Sirri",
+        "confirm": "Tabbatar da Sabuwar Kalmar Sirri"
+      },
+      "notifications": {
+        "title": "Saitunan Sanarwa",
+        "description": "Sarrafa abubuwan da ka fi so game da sanarwa.",
+        "email": "Sanarwar Imel",
+        "emailDesc": "Karɓi sabuntawa da tunatarwa ta imel.",
+        "marketing": "Imel na Tallace-tallace",
+        "marketingDesc": "Karɓi imel na tallace-tallace da haɓakawa."
+      }
+    },
+    "usage": {
+      "title": "Ƙididdigar Amfani",
+      "totalDocuments": "Jimillar Takarduka",
+      "aiGenerated": "Wanda AI ya Samar",
+      "formatted": "Wanda aka Tsara"
+    }
+  } 

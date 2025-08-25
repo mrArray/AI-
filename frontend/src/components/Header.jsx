@@ -5,7 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useModal } from '../contexts/ModalContext';
 
 function Header({ activePage }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
   const { isAuthenticated, user, logout } = useAuth();
   const { openLoginModal, openRegisterModal } = useModal();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -112,7 +112,7 @@ function Header({ activePage }) {
                       {/* 积分显示 */}
                       <div className="px-4 py-2 border-b border-gray-100">
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-gray-600">积分余额</span>
+                          <span className="text-sm text-gray-600">{t('user.pointsBalance')}</span>
                           <div className="flex items-center">
                             <span className="font-medium text-gray-900">{user?.credits || 0}</span>
                           </div>
@@ -122,7 +122,7 @@ function Header({ activePage }) {
                       {/* 语言切换 */}
                       <div className="px-4 py-2 border-b border-gray-100">
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-gray-600">语言设置</span>
+                          <span className="text-sm text-gray-600">{t('user.languageSetting')}</span>
                           <div className="scale-75">
                             <LanguageSwitcher />
                           </div>

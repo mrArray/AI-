@@ -5,15 +5,21 @@
     "promotion": "New User First Purchase 15% Off"
   },
   "plans": {
+    "sectionTitle": "Flexible Plan Options",
+    "sectionSubtitle": "Whether you are an individual or an enterprise, you will find the perfect solution for you.",
     "trial": {
       "name": "Trial Package",
-      "description": "Perfect for new users to experience AI paper generation",
-      "badge": "First Time",
+      "description": "Perfect for new users to experience our service",
+      "badge": "Limited Offer",
+      "limitation": "Limit 5 purchases per user",
       "features": [
-        "Generate 3-5 short assignments",
-        "Access to all basic templates",
-        "24/7 customer support"
-      ]
+        "15 basic service calls",
+        "7-day validity",
+        "Experience all features"
+      ],
+      "sectionTitle": "New User Exclusive",
+      "sectionSubtitle": "First time? Try our service now!",
+      "buttonText": "Try Now"
     },
     "basic": {
       "name": "Basic Package",
@@ -55,7 +61,10 @@
   },
   "common": {
     "recommended": "Recommended",
-    "selectPlan": "Select Plan"
+    "selectPlan": "Buy Now",
+    "save": "Save",
+  "baseCredits": "Base Credits",
+  "creditsWithBonus": "Base Credits + Bonus Credits"
   },
   "payment": {
     "title": "Choose Payment Method",

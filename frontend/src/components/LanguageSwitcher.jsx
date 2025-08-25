@@ -11,11 +11,8 @@ const LanguageContext = createContext({
 // 支持的语言列表
 const supportedLanguages = [
   { code: 'zh-CN', name: '简体中文', flag: '🇨🇳' },
-  { code: 'zh-TW', name: '繁體中文', flag: '🇨🇳' },
   { code: 'en', name: 'English', flag: '🇺🇸' },
-  { code: 'ja', name: '日本語', flag: '🇯🇵' },
-  { code: 'ko', name: '한국어', flag: '🇰🇷' },
-  { code: 'ha', name: 'Hausa', flag: '🇳🇬' }
+  // { code: 'ha', name: 'Hausa', flag: '🇳🇬' }
 ];
 
 // 语言提供者组件

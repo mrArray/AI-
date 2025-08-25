@@ -82,5 +82,9 @@
   "language": {
     "name": "简体中文",
     "select": "选择语言"
+  },
+  "user": {
+    "pointsBalance": "积分余额",
+    "languageSetting": "语言设置"
   }
 }

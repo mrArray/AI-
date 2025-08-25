@@ -164,6 +164,13 @@
           "description": "Vancouver format, commonly used for medical and biological papers"
         }
       }
+  ,
+  "browseFiles": "Browse Files",
+  "startButton": "Start AI Formatting",
+  "download": "Download",
+  "downloaded": "Downloaded!",
+  "share": "Share",
+  "history": "History"
     },
     "footer": {
       "slogan": "The most professional AI paper generator for academic research",

@@ -82,5 +82,9 @@
   "language": {
     "name": "English",
     "select": "Select Language"
+  },
+  "user": {
+    "pointsBalance": "Points Balance",
+    "languageSetting": "Language Setting"
   }
 }

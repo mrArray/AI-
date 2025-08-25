@@ -742,3 +742,275 @@ Watching for file changes with StatReloader
 "GET /admin/papers/paperformat/ HTTP/1.1" 200 24060
 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
 "POST /api/v1/papers/generate/ai/ HTTP/1.1" 200 7511
+Watching for file changes with StatReloader
+"OPTIONS /api/v1/auth/pre-register-email/ HTTP/1.1" 200 0
+"POST /api/v1/auth/pre-register-email/ HTTP/1.1" 200 51
+Bad Request: /api/v1/auth/pre-register-email/
+"POST /api/v1/auth/pre-register-email/ HTTP/1.1" 400 40
+"POST /api/v1/auth/pre-register-email/ HTTP/1.1" 200 51
+"OPTIONS /api/v1/auth/pre-register-verify/ HTTP/1.1" 200 0
+"POST /api/v1/auth/pre-register-verify/ HTTP/1.1" 200 51
+Bad Request: /api/v1/auth/pre-register-verify/
+"POST /api/v1/auth/pre-register-verify/ HTTP/1.1" 400 49
+Bad Request: /api/v1/auth/pre-register-verify/
+"POST /api/v1/auth/pre-register-verify/ HTTP/1.1" 400 49
+"POST /api/v1/auth/pre-register-email/ HTTP/1.1" 200 51
+"POST /api/v1/auth/pre-register-verify/ HTTP/1.1" 200 51
+Bad Request: /api/v1/auth/pre-register-verify/
+"POST /api/v1/auth/pre-register-verify/ HTTP/1.1" 400 49
+"POST /api/v1/auth/pre-register-email/ HTTP/1.1" 200 51
+"POST /api/v1/auth/pre-register-verify/ HTTP/1.1" 200 51
+Bad Request: /api/v1/auth/pre-register-verify/
+"POST /api/v1/auth/pre-register-verify/ HTTP/1.1" 400 49
+"POST /api/v1/auth/pre-register-email/ HTTP/1.1" 200 51
+"POST /api/v1/auth/pre-register-verify/ HTTP/1.1" 200 51
+"POST /api/v1/auth/pre-register-email/ HTTP/1.1" 200 51
+"POST /api/v1/auth/pre-register-verify/ HTTP/1.1" 200 51
+Bad Request: /api/v1/auth/pre-register-verify/
+"POST /api/v1/auth/pre-register-verify/ HTTP/1.1" 400 49
+"POST /api/v1/auth/pre-register-email/ HTTP/1.1" 200 51
+Bad Request: /api/v1/auth/pre-register-verify/
+"POST /api/v1/auth/pre-register-verify/ HTTP/1.1" 400 49
+"POST /api/v1/auth/pre-register-email/ HTTP/1.1" 200 51
+Bad Request: /api/v1/auth/pre-register-verify/
+"POST /api/v1/auth/pre-register-verify/ HTTP/1.1" 400 49
+Bad Request: /api/v1/auth/pre-register-verify/
+"POST /api/v1/auth/pre-register-verify/ HTTP/1.1" 400 49
+Bad Request: /api/v1/auth/pre-register-verify/
+"POST /api/v1/auth/pre-register-verify/ HTTP/1.1" 400 49
+"POST /api/v1/auth/pre-register-email/ HTTP/1.1" 200 51
+Bad Request: /api/v1/auth/pre-register-verify/
+"POST /api/v1/auth/pre-register-verify/ HTTP/1.1" 400 49
+"POST /api/v1/auth/pre-register-email/ HTTP/1.1" 200 51
+"POST /api/v1/auth/pre-register-verify/ HTTP/1.1" 200 51
+"POST /api/v1/auth/pre-register-email/ HTTP/1.1" 200 51
+"POST /api/v1/auth/pre-register-verify/ HTTP/1.1" 200 51
+"OPTIONS /api/v1/auth/register/ HTTP/1.1" 200 0
+Bad Request: /api/v1/auth/register/
+"POST /api/v1/auth/register/ HTTP/1.1" 400 81
+"POST /api/v1/auth/pre-register-email/ HTTP/1.1" 200 51
+"POST /api/v1/auth/pre-register-verify/ HTTP/1.1" 200 51
+"POST /api/v1/auth/pre-register-email/ HTTP/1.1" 200 51
+"POST /api/v1/auth/pre-register-verify/ HTTP/1.1" 200 51
+"POST /api/v1/auth/pre-register-email/ HTTP/1.1" 200 51
+"POST /api/v1/auth/pre-register-verify/ HTTP/1.1" 200 51
+"POST /api/v1/auth/register/ HTTP/1.1" 201 38
+"OPTIONS /api/v1/auth/login/ HTTP/1.1" 200 0
+"POST /api/v1/auth/login/ HTTP/1.1" 200 930
+"OPTIONS /api/v1/auth/profile/ HTTP/1.1" 200 0
+"OPTIONS /api/v1/auth/stats/ HTTP/1.1" 200 0
+"OPTIONS /api/v1/billing/transactions/ HTTP/1.1" 200 0
+"OPTIONS /api/v1/auth/token/refresh/ HTTP/1.1" 200 0
+"OPTIONS /api/v1/auth/profile/ HTTP/1.1" 200 0
+"OPTIONS /api/v1/auth/stats/ HTTP/1.1" 200 0
+"OPTIONS /api/v1/billing/transactions/ HTTP/1.1" 200 0
+"OPTIONS /api/v1/auth/token/refresh/ HTTP/1.1" 200 0
+Unauthorized: /api/v1/auth/profile/
+"GET /api/v1/auth/profile/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/auth/stats/
+"GET /api/v1/auth/stats/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/billing/transactions/
+"GET /api/v1/billing/transactions/ HTTP/1.1" 401 58
+"POST /api/v1/auth/token/refresh/ HTTP/1.1" 200 491
+Unauthorized: /api/v1/auth/token/refresh/
+"POST /api/v1/auth/token/refresh/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/auth/profile/
+"GET /api/v1/auth/profile/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/auth/token/refresh/
+"POST /api/v1/auth/token/refresh/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/auth/stats/
+"GET /api/v1/auth/stats/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/auth/token/refresh/
+"POST /api/v1/auth/token/refresh/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/billing/transactions/
+"GET /api/v1/billing/transactions/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/auth/token/refresh/
+"POST /api/v1/auth/token/refresh/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/auth/profile/
+"GET /api/v1/auth/profile/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/auth/stats/
+"GET /api/v1/auth/stats/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/billing/transactions/
+"GET /api/v1/billing/transactions/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/auth/profile/
+"GET /api/v1/auth/profile/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/auth/stats/
+"GET /api/v1/auth/stats/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/billing/transactions/
+"GET /api/v1/billing/transactions/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/auth/profile/
+Unauthorized: /api/v1/auth/stats/
+Unauthorized: /api/v1/billing/transactions/
+"GET /api/v1/auth/profile/ HTTP/1.1" 401 58
+"GET /api/v1/auth/stats/ HTTP/1.1" 401 58
+"GET /api/v1/billing/transactions/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/auth/profile/
+Unauthorized: /api/v1/auth/stats/
+Unauthorized: /api/v1/billing/transactions/
+"GET /api/v1/auth/profile/ HTTP/1.1" 401 58
+"GET /api/v1/auth/stats/ HTTP/1.1" 401 58
+"GET /api/v1/billing/transactions/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/auth/profile/
+Unauthorized: /api/v1/auth/stats/
+Unauthorized: /api/v1/billing/transactions/
+"GET /api/v1/auth/profile/ HTTP/1.1" 401 58
+"GET /api/v1/auth/stats/ HTTP/1.1" 401 58
+"GET /api/v1/billing/transactions/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/auth/profile/
+Unauthorized: /api/v1/auth/stats/
+Unauthorized: /api/v1/billing/transactions/
+"GET /api/v1/auth/profile/ HTTP/1.1" 401 58
+"GET /api/v1/auth/stats/ HTTP/1.1" 401 58
+"GET /api/v1/billing/transactions/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/auth/profile/
+Unauthorized: /api/v1/auth/stats/
+Unauthorized: /api/v1/billing/transactions/
+"GET /api/v1/auth/profile/ HTTP/1.1" 401 58
+"GET /api/v1/auth/stats/ HTTP/1.1" 401 58
+"GET /api/v1/billing/transactions/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/auth/profile/
+Unauthorized: /api/v1/auth/stats/
+Unauthorized: /api/v1/billing/transactions/
+"GET /api/v1/auth/profile/ HTTP/1.1" 401 58
+"GET /api/v1/auth/stats/ HTTP/1.1" 401 58
+"GET /api/v1/billing/transactions/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/auth/profile/
+Unauthorized: /api/v1/auth/stats/
+Unauthorized: /api/v1/billing/transactions/
+"GET /api/v1/auth/profile/ HTTP/1.1" 401 58
+"GET /api/v1/auth/stats/ HTTP/1.1" 401 58
+"GET /api/v1/billing/transactions/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/auth/profile/
+Unauthorized: /api/v1/billing/transactions/
+Unauthorized: /api/v1/auth/stats/
+"GET /api/v1/auth/profile/ HTTP/1.1" 401 58
+"GET /api/v1/billing/transactions/ HTTP/1.1" 401 58
+"GET /api/v1/auth/stats/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/auth/profile/
+Unauthorized: /api/v1/auth/stats/
+Unauthorized: /api/v1/billing/transactions/
+"GET /api/v1/auth/profile/ HTTP/1.1" 401 58
+"GET /api/v1/auth/stats/ HTTP/1.1" 401 58
+"GET /api/v1/billing/transactions/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/auth/profile/
+Unauthorized: /api/v1/auth/stats/
+Unauthorized: /api/v1/billing/transactions/
+"GET /api/v1/auth/profile/ HTTP/1.1" 401 58
+"GET /api/v1/auth/stats/ HTTP/1.1" 401 58
+"GET /api/v1/billing/transactions/ HTTP/1.1" 401 58
+"POST /api/v1/auth/login/ HTTP/1.1" 200 930
+"OPTIONS /api/v1/auth/logout/ HTTP/1.1" 200 0
+"POST /api/v1/auth/logout/ HTTP/1.1" 200 37
+"POST /api/v1/auth/login/ HTTP/1.1" 200 920
+Unauthorized: /api/v1/auth/profile/
+Unauthorized: /api/v1/auth/stats/
+Unauthorized: /api/v1/billing/transactions/
+"GET /api/v1/auth/profile/ HTTP/1.1" 401 58
+"GET /api/v1/auth/stats/ HTTP/1.1" 401 58
+"GET /api/v1/billing/transactions/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/auth/profile/
+"GET /api/v1/auth/profile/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/auth/stats/
+"GET /api/v1/auth/stats/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/billing/transactions/
+"GET /api/v1/billing/transactions/ HTTP/1.1" 401 58
+"POST /api/v1/auth/token/refresh/ HTTP/1.1" 200 491
+"POST /api/v1/auth/token/refresh/ HTTP/1.1" 200 491
+Unauthorized: /api/v1/auth/token/refresh/
+"POST /api/v1/auth/token/refresh/ HTTP/1.1" 401 58
+"POST /api/v1/auth/token/refresh/ HTTP/1.1" 200 491
+Unauthorized: /api/v1/auth/token/refresh/
+Unauthorized: /api/v1/auth/token/refresh/
+"POST /api/v1/auth/token/refresh/ HTTP/1.1" 401 58
+"POST /api/v1/auth/token/refresh/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/auth/token/refresh/
+"POST /api/v1/auth/token/refresh/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/auth/token/refresh/
+"POST /api/v1/auth/token/refresh/ HTTP/1.1" 401 58
+"GET /api/v1/auth/profile/ HTTP/1.1" 200 421
+Unauthorized: /api/v1/auth/profile/
+Unauthorized: /api/v1/auth/stats/
+Unauthorized: /api/v1/billing/transactions/
+"GET /api/v1/auth/profile/ HTTP/1.1" 401 58
+"GET /api/v1/auth/stats/ HTTP/1.1" 401 58
+"GET /api/v1/billing/transactions/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/auth/profile/
+Unauthorized: /api/v1/auth/stats/
+Unauthorized: /api/v1/billing/transactions/
+"GET /api/v1/auth/profile/ HTTP/1.1" 401 58
+"GET /api/v1/auth/stats/ HTTP/1.1" 401 58
+"GET /api/v1/billing/transactions/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/auth/profile/
+Unauthorized: /api/v1/auth/stats/
+Unauthorized: /api/v1/billing/transactions/
+"GET /api/v1/auth/profile/ HTTP/1.1" 401 58
+"GET /api/v1/auth/stats/ HTTP/1.1" 401 58
+"GET /api/v1/billing/transactions/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/auth/profile/
+Unauthorized: /api/v1/billing/transactions/
+Unauthorized: /api/v1/auth/stats/
+"GET /api/v1/auth/profile/ HTTP/1.1" 401 58
+"GET /api/v1/billing/transactions/ HTTP/1.1" 401 58
+"GET /api/v1/auth/stats/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/auth/profile/
+Unauthorized: /api/v1/auth/stats/
+Unauthorized: /api/v1/billing/transactions/
+"GET /api/v1/auth/profile/ HTTP/1.1" 401 58
+"GET /api/v1/auth/stats/ HTTP/1.1" 401 58
+"GET /api/v1/billing/transactions/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/auth/stats/
+Unauthorized: /api/v1/auth/profile/
+Unauthorized: /api/v1/billing/transactions/
+"GET /api/v1/auth/stats/ HTTP/1.1" 401 58
+"GET /api/v1/auth/profile/ HTTP/1.1" 401 58
+"GET /api/v1/billing/transactions/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/auth/profile/
+Unauthorized: /api/v1/auth/stats/
+Unauthorized: /api/v1/billing/transactions/
+"GET /api/v1/auth/profile/ HTTP/1.1" 401 58
+"GET /api/v1/auth/stats/ HTTP/1.1" 401 58
+"GET /api/v1/billing/transactions/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/auth/profile/
+Unauthorized: /api/v1/auth/stats/
+Unauthorized: /api/v1/billing/transactions/
+"GET /api/v1/auth/profile/ HTTP/1.1" 401 58
+"GET /api/v1/auth/stats/ HTTP/1.1" 401 58
+"GET /api/v1/billing/transactions/ HTTP/1.1" 401 58
+"POST /api/v1/auth/login/ HTTP/1.1" 200 920
+Unauthorized: /api/v1/auth/profile/
+Unauthorized: /api/v1/auth/stats/
+Unauthorized: /api/v1/billing/transactions/
+"GET /api/v1/auth/profile/ HTTP/1.1" 401 58
+"GET /api/v1/auth/stats/ HTTP/1.1" 401 58
+"GET /api/v1/billing/transactions/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/auth/profile/
+"GET /api/v1/auth/profile/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/auth/stats/
+"GET /api/v1/auth/stats/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/billing/transactions/
+"GET /api/v1/billing/transactions/ HTTP/1.1" 401 58
+"POST /api/v1/auth/token/refresh/ HTTP/1.1" 200 491
+Unauthorized: /api/v1/auth/token/refresh/
+"POST /api/v1/auth/token/refresh/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/auth/token/refresh/
+Unauthorized: /api/v1/auth/token/refresh/
+"POST /api/v1/auth/token/refresh/ HTTP/1.1" 401 58
+"POST /api/v1/auth/token/refresh/ HTTP/1.1" 401 58
+"POST /api/v1/auth/token/refresh/ HTTP/1.1" 200 491
+Unauthorized: /api/v1/auth/token/refresh/
+Unauthorized: /api/v1/auth/token/refresh/
+"POST /api/v1/auth/token/refresh/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/auth/token/refresh/
+"POST /api/v1/auth/token/refresh/ HTTP/1.1" 401 58
+"POST /api/v1/auth/token/refresh/ HTTP/1.1" 401 58
+"POST /api/v1/auth/login/ HTTP/1.1" 200 920
+"POST /api/v1/auth/token/refresh/ HTTP/1.1" 200 491
+"POST /api/v1/auth/token/refresh/ HTTP/1.1" 200 491
+"POST /api/v1/auth/token/refresh/ HTTP/1.1" 200 491
+"POST /api/v1/auth/token/refresh/ HTTP/1.1" 200 491
+"POST /api/v1/auth/token/refresh/ HTTP/1.1" 200 491
+"POST /api/v1/auth/token/refresh/ HTTP/1.1" 200 491
+"POST /api/v1/auth/token/refresh/ HTTP/1.1" 200 491
+"POST /api/v1/auth/token/refresh/ HTTP/1.1" 200 491
+"POST /api/v1/auth/token/refresh/ HTTP/1.1" 200 491
+"POST /api/v1/auth/token/refresh/ HTTP/1.1" 200 491

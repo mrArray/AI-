@@ -6,17 +6,54 @@ import { authService } from '../services/authService';
 import UserProfileModal from './UserProfileModal';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 
+import { useToast, TOAST_TYPES } from '../contexts/ToastContext';
+
 function AuthModal() {
   const { t } = useTranslation('auth');
   const { isLoginModalOpen, loginModalMode, closeLoginModal, setLoginModalMode } = useModal();
   const { login, register } = useAuth();
+  const { showToast } = useToast();
+  // 标记验证码是否已通过验证
+  const [isCodeVerified, setIsCodeVerified] = useState(false);
+  const [codeVerifyMessage, setCodeVerifyMessage] = useState('');
+  const [codeVerifyError, setCodeVerifyError] = useState('');
+  // 验证码输入完成后自动验证
+  const [isVerifyingCode, setIsVerifyingCode] = useState(false);
+  // 监听验证码输入，6位时自动验证
+  const handleVerificationCodeChange = async (e) => {
+    const value = e.target.value;
+    setFormData(prev => ({ ...prev, verificationCode: value }));
+    setError('');
+    setCodeVerifyMessage('');
+    setCodeVerifyError('');
+    if (value.length === 6 && formData.email) {
+      setIsVerifyingCode(true);
+      const result = await authService.verifyEmail(formData.email, value);
+      setIsVerifyingCode(false);
+      if (result.success) {
+        setIsCodeVerified(true);
+        setCodeVerifyMessage(result.message || t('register.emailVerifiedSuccess'));
+        setCodeVerifyError('');
+        showToast({ type: TOAST_TYPES.SUCCESS, message: result.message || t('register.emailVerifiedSuccess') });
+      } else {
+        setIsCodeVerified(false);
+        setCodeVerifyMessage('');
+        setCodeVerifyError(result.error || '验证码无效或已过期');
+        showToast({ type: TOAST_TYPES.ERROR, message: result.error || '验证码无效或已过期' });
+      }
+    } else {
+      setIsCodeVerified(false);
+    }
+  };
 
-  const [formData, setFormData] = useState({
+  const initialFormData = {
+    full_name: '',
     email: '',
     password: '',
-    confirmPassword: '',
+    password2: '',
     verificationCode: '',
-  });
+  };
+  const [formData, setFormData] = useState(initialFormData);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
@@ -29,12 +66,7 @@ function AuthModal() {
   // 清空表单数据
   useEffect(() => {
     if (!isLoginModalOpen) {
-      setFormData({
-        email: '',
-        password: '',
-        confirmPassword: '',
-        verificationCode: '',
-      });
+      setFormData({ ...initialFormData });
       setError('');
       setSuccessMessage('');
       setIsCodeSent(false);
@@ -113,8 +145,19 @@ function AuthModal() {
     setLoading(true);
     setError('');
 
-    if (formData.password !== formData.confirmPassword) {
-      setError('密码不匹配');
+
+    if (formData.password !== formData.password2) {
+      setError(t('register.passwordMismatch'));
+      setLoading(false);
+      return;
+    }
+    if (!formData.full_name) {
+      setError('请输入姓名');
+      setLoading(false);
+      return;
+    }
+    if (!formData.password2) {
+      setError('请再次输入密码');
       setLoading(false);
       return;
     }
@@ -128,8 +171,10 @@ function AuthModal() {
     try {
       // 注册
       const registerResult = await authService.register({
+        full_name: formData.full_name,
         email: formData.email,
         password: formData.password,
+        password2: formData.password2,
         verification_code: formData.verificationCode,
       });
       
@@ -272,7 +317,21 @@ function AuthModal() {
             <form onSubmit={handleRegister} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  邮箱地址
+                  {t('register.name')}
+                </label>
+                <input
+                  type="text"
+                  name="full_name"
+                  value={formData.full_name}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  placeholder={t('register.namePlaceholder')}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('register.email')}
                 </label>
                 <input
                   type="email"
@@ -281,36 +340,57 @@ function AuthModal() {
                   onChange={handleInputChange}
                   required
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                  placeholder="请输入邮箱地址"
+                  placeholder={t('register.emailPlaceholder')}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  验证码
-                </label>
-                <div className="flex space-x-2">
-                  <input
-                    type="text"
-                    name="verificationCode"
-                    value={formData.verificationCode}
-                    onChange={handleInputChange}
-                    required
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                    placeholder="请输入验证码"
-                  />
-                  <button
-                    type="button"
-                    onClick={sendVerificationCode}
-                    disabled={loading || countdown > 0}
-                    className="px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-indigo-600 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
-                  >
-                    {countdown > 0 ? `${countdown}s` : isCodeSent ? '重新发送' : '发送验证码'}
-                  </button>
+                <div className="flex items-center mb-1">
+                  <label className="block text-sm font-medium text-gray-700">
+                    {t('register.verificationCode')}
+                  </label>
+                  {isVerifyingCode && (
+                    <span className="ml-2">
+                      <svg className="animate-spin h-5 w-5 text-indigo-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                      </svg>
+                    </span>
+                  )}
+                </div>
+                <div className="flex flex-col space-y-1">
+                  <div className="flex space-x-2">
+                    <div className="relative flex-1">
+                      <input
+                        type="text"
+                        name="verificationCode"
+                        value={formData.verificationCode}
+                        onChange={handleVerificationCodeChange}
+                        maxLength={6}
+                        required
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent pr-8"
+                        placeholder={t('register.verificationCodePlaceholder')}
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={sendVerificationCode}
+                      disabled={loading || countdown > 0}
+                      className="px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-indigo-600 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                    >
+                      {countdown > 0 ? `${countdown}s` : isCodeSent ? t('register.sendVerificationCode') : t('register.sendVerificationCode')}
+                    </button>
+                  </div>
+                  {codeVerifyMessage && (
+                    <div className="text-green-600 text-xs mt-1">{codeVerifyMessage}</div>
+                  )}
+                  {codeVerifyError && (
+                    <div className="text-red-600 text-xs mt-1">{codeVerifyError}</div>
+                  )}
                 </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  密码
+                  {t('register.password')}
                 </label>
                 <div className="relative">
                   <input
@@ -320,7 +400,7 @@ function AuthModal() {
                     onChange={handleInputChange}
                     required
                     className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                    placeholder="请输入密码"
+                    placeholder={t('register.passwordPlaceholder')}
                   />
                   <button
                     type="button"
@@ -337,17 +417,17 @@ function AuthModal() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  确认密码
+                  {t('register.confirmPassword')}
                 </label>
                 <div className="relative">
                   <input
                     type={showConfirmPassword ? "text" : "password"}
-                    name="confirmPassword"
-                    value={formData.confirmPassword}
+                    name="password2"
+                    value={formData.password2}
                     onChange={handleInputChange}
                     required
                     className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                    placeholder="请再次输入密码"
+                    placeholder={t('register.confirmPasswordPlaceholder')}
                   />
                   <button
                     type="button"
@@ -364,10 +444,10 @@ function AuthModal() {
               </div>
               <button
                 type="submit"
-                disabled={loading}
+                disabled={loading || !isCodeVerified}
                 className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-2 px-4 rounded-lg font-medium hover:from-indigo-700 hover:to-purple-700 transition-all disabled:opacity-50"
               >
-                {loading ? '注册中...' : '立即注册'}
+                {loading ? t('register.submit') : t('register.submit')}
               </button>
             </form>
           )}

@@ -242,18 +242,16 @@ class LLMService:
         )
     
     def generate_response(self, messages: List[Dict], **kwargs) -> str:
-        """Generate a response optimized for Deepseek-coder"""
-        cache_key = None
-        if self.config.enable_caching:
-            cache_key = f"llm_response_{self.provider.id}_{self.model.id}_{hash(str(messages))}"
-            if cached := cache.get(cache_key):
-                return cached
-        
+        """Generate a response optimized for Deepseek-coder (cache disabled)"""
+        # cache_key = None
+        # if self.config.enable_caching:
+        #     cache_key = f"llm_response_{self.provider.id}_{self.model.id}_{hash(str(messages))}"
+        #     if cached := cache.get(cache_key):
+        #         return cached
         try:
             url = self._get_endpoint_url()
             headers = self._get_headers()
             data = self._build_request_data(messages, **kwargs)
-            
             # Special streaming handling for Deepseek-coder
             if self.provider.provider_type == 'ollama' and self.model.name.startswith('deepseek'):
                 # Use sequential token collection for reliability
@@ -261,12 +259,8 @@ class LLMService:
             else:
                 response = self._request_with_retry(url, headers, data)
                 content = self._extract_content(response)
-            
-            # Cache and return
-            if content and cache_key:
-                cache.set(cache_key, content, self.config.cache_ttl)
+            # Cache disabled: do not cache content
             return content
-            
         except Exception as e:
             logger.error(f"Generation failed: {str(e)}")
             if isinstance(e, LLMServiceError):
@@ -354,13 +348,7 @@ class PromptService:
     
     @classmethod
     def get_prompt_template(cls, name: str, language: str = 'en', prompt_type: str = 'system') -> Optional[PromptTemplate]:
-        """Get a prompt template with caching"""
-        cache_key = cls._cache_key(name, language, prompt_type)
-        template = cache.get(cache_key)
-        
-        if template:
-            return template
-        
+        """Get a prompt template (cache disabled)"""
         try:
             template = PromptTemplate.objects.get(
                 name=name,
@@ -368,11 +356,8 @@ class PromptService:
                 prompt_type=prompt_type,
                 is_active=True
             )
-            cache.set(cache_key, template, cls._CACHE_TIMEOUT)
             return template
         except PromptTemplate.DoesNotExist:
-            # Cache negative results to reduce DB hits
-            cache.set(cache_key, None, 300)  # 5 minutes
             return None
     
     @classmethod

@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-
+import { papersAPI } from '../api/papers';
 
 const outputFormats = [
   { key: 'docx', icon: 'fas fa-file-word text-blue-600', label: 'DOCX' },
@@ -26,11 +26,18 @@ function HomePage() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [downloaded, setDownloaded] = useState(false);
 
+  const [formattedContent, setFormattedContent] = useState(null);
+  const [fileUrl, setFileUrl] = useState(null);
+  const [fileName, setFileName] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
+
   // File upload handlers
+
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       setFile(e.target.files[0]);
-      setShowFileModal(true);
+      setShowFilePreview(true);
+      setShowFileModal(false);
     }
   };
 
@@ -45,32 +52,84 @@ function HomePage() {
   };
 
   // Start formatting simulation
-  const handleStart = () => {
-    if (!file) {
-      setShowFilePreview(true);
-    }
+  const handleStart = async () => {
+    setShowFilePreview(true);
     setProcessing(true);
     setShowSuccess(false);
     setDownloaded(false);
     setProgress(0);
-    let prog = 0;
-    const interval = setInterval(() => {
-      prog += 10;
-      setProgress(prog);
-      if (prog >= 100) {
-        clearInterval(interval);
-        setTimeout(() => {
-          setProcessing(false);
-          setShowSuccess(true);
-        }, 1000);
+    setErrorMsg('');
+    setFormattedContent(null);
+    setFileUrl(null);
+    setFileName('');
+    if (!file || !requirements) {
+      setProcessing(false);
+      setErrorMsg('Please upload a file and enter requirements.');
+      return;
+    }
+    try {
+      // Progress simulation
+      let prog = 0;
+      const interval = setInterval(() => {
+        prog += 10;
+        setProgress(prog);
+        if (prog >= 100) {
+          clearInterval(interval);
+        }
+      }, 300);
+
+      // Use PapersAPI for backend call
+      const data = await papersAPI.aiFormatPaper({
+        file,
+        requirements,
+        output_format: selectedFormat,
+        title: '', // Optionally add title
+        language: 'en', // Optionally add language
+      });
+      setProcessing(false);
+      if (data.error) {
+        setErrorMsg(data.error || 'Formatting failed.');
+        return;
       }
-    }, 300);
+      setShowSuccess(true);
+      setFormattedContent(data.formatted_content || null);
+      setFileUrl(data.file_url || null);
+      setFileName(data.file_name || 'formatted_paper.' + selectedFormat);
+    } catch (err) {
+      setProcessing(false);
+      // If error is ApiError and has data, show the error string (human readable)
+      if (err && err.data) {
+        if (typeof err.data === 'object') {
+          if (err.data.error) {
+            setErrorMsg(err.data.error);
+            return;
+          } else if (err.data.detail) {
+            setErrorMsg(err.data.detail);
+            return;
+          }
+        }
+        // fallback: show as string
+        setErrorMsg(typeof err.data === 'string' ? err.data : JSON.stringify(err.data));
+      } else if (err && err.message) {
+        setErrorMsg(err.message);
+      } else {
+        setErrorMsg('Network or server error.');
+      }
+    }
   };
 
-  // Download simulation
+  // Download handler for fileUrl
   const handleDownload = () => {
-    setDownloaded(true);
-    setTimeout(() => setDownloaded(false), 2000);
+    if (fileUrl) {
+      const link = document.createElement('a');
+      link.href = fileUrl;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setDownloaded(true);
+      setTimeout(() => setDownloaded(false), 2000);
+    }
   };
 
   return (
@@ -188,6 +247,22 @@ function HomePage() {
                 <p className="text-xs text-gray-600">{t('formatter.processingStatusDesc', 'Document analysis and formatting in progress...')}</p>
               </div>
             )}
+            {/* Error Message */}
+            {errorMsg && (
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg">
+                {(() => {
+                  try {
+                    // Try to parse as JSON and pretty print
+                    const errObj = typeof errorMsg === 'string' ? JSON.parse(errorMsg) : errorMsg;
+                    if (typeof errObj === 'object' && errObj !== null) {
+                      return <pre className="whitespace-pre-wrap text-xs text-red-800 bg-red-100 p-2 rounded overflow-x-auto">{JSON.stringify(errObj, null, 2)}</pre>;
+                    }
+                  } catch (e) {}
+                  // Fallback: plain text
+                  return errorMsg;
+                })()}
+              </div>
+            )}
 
             {/* Start Button */}
             <button
@@ -206,115 +281,66 @@ function HomePage() {
 
           {/* Right Panel */}
           <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 flex flex-col">
-            {/* Preview Area */}
+            {/* Unified Preview Area */}
             <div className="flex-1 mb-6">
               <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
                 <i className="fas fa-eye text-indigo-600 mr-3"></i>
                 {t('formatter.previewTitle', 'Overview of The Finished One')}
               </h3>
-              <div className="bg-gray-50 rounded-xl h-full p-4 border-2 border-gray-200 overflow-y-auto min-h-[400px]">
-                {/* Default Preview State */}
-                {!processing && !showSuccess && (
+              <div className="bg-gray-50 rounded-xl h-full p-4 border-2 border-gray-200 overflow-y-auto min-h-[400px] mb-4">
+                {/* Show formatted content as HTML in an iframe if available */}
+                {formattedContent ? (
+                  <iframe
+                    title="Formatted Preview"
+                    srcDoc={formattedContent}
+                    style={{ width: '100%', minHeight: '380px', border: 'none', background: 'transparent' }}
+                    sandbox="allow-same-origin allow-scripts"
+                  />
+                ) : (
+                  // Show static preview before formatting or while processing
                   <div className="flex flex-col items-center justify-center h-full text-gray-400">
                     <i className="fas fa-file-alt text-6xl mb-4"></i>
                     <p className="text-lg font-medium mb-2">{t('formatter.preview.title')}</p>
                     <p className="text-sm text-center">{t('formatter.preview.content')}</p>
                   </div>
                 )}
-                {/* Formatted Document Preview */}
-                {(processing || showSuccess) && (
-                  <div className="bg-white p-6 rounded-lg shadow-sm min-h-full">
-                    <div className="text-center mb-6">
-                      <h2 className="text-3xl font-bold text-gray-900 mb-2">{t('formatter.title')}</h2>
-                      <p className="text-gray-600">{t('formatter.subtitle')}</p>
-                      <p className="text-xs text-gray-500">University of Technology</p>
-                    </div>
-                    <div className="space-y-4 text-sm">
-                      <div>
-                        <h2 className="font-semibold mb-2 text-base">Abstract</h2>
-                        <p className="text-gray-700 leading-relaxed text-justify">This paper presents a comprehensive analysis of machine learning applications in modern healthcare systems. We examine various algorithms and their practical implementations in clinical settings, demonstrating significant improvements in diagnostic accuracy and patient outcomes.</p>
-                      </div>
-                      <div>
-                        <h2 className="font-semibold mb-2 text-base">1. Introduction</h2>
-                        <p className="text-gray-700 leading-relaxed text-justify">Healthcare systems worldwide are experiencing rapid digital transformation. Machine learning technologies offer unprecedented opportunities to improve patient outcomes, reduce costs, and enhance the efficiency of medical processes. This study investigates the current state and future potential of AI-driven healthcare solutions.</p>
-                      </div>
-                      <div>
-                        <h2 className="font-semibold mb-2 text-base">2. Literature Review</h2>
-                        <p className="text-gray-700 leading-relaxed text-justify">Recent advances in deep learning have revolutionized medical image analysis, natural language processing of clinical notes, and predictive modeling for patient risk assessment. Studies have shown...</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
+                             <div className="my-6"></div>
 
-            {/* Download Section */}
-            <div className="mt-auto">
-              {/* Success State */}
-              {showSuccess && (
-                <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-4 mb-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-semibold text-green-800">Formatting Complete!</p>
-                      <p className="text-sm text-green-600">research_paper_formatted.docx</p>
-                    </div>
-                    <i className="fas fa-check-circle text-green-500 text-2xl"></i>
-                  </div>
-                </div>
+            <button
+              id="download-btn"
+              className={`w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-4 rounded-xl text-lg font-semibold hover:from-green-600 hover:to-emerald-700 transition-all duration-300 shadow-lg ${!showSuccess || !fileUrl ? 'disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed' : ''}`}
+              disabled={!showSuccess || !fileUrl}
+              onClick={handleDownload}
+            >
+              {downloaded ? (
+                <><i className="fas fa-check mr-2"></i>{t('formatter.downloaded', 'Downloaded!')}</>
+              ) : (
+                <><i className="fas fa-download mr-2"></i>{t('formatter.download', 'Download')}</>
               )}
+            </button>
+              <div className="my-3"></div>
 
-              {/* Download Button */}
-              <button
-                id="download-btn"
-                className={`w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-4 rounded-xl text-lg font-semibold hover:from-green-600 hover:to-emerald-700 transition-all duration-300 shadow-lg ${!showSuccess ? 'disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed' : ''}`}
-                disabled={!showSuccess}
-                onClick={handleDownload}
-              >
-                {downloaded ? (
-                  <><i className="fas fa-check mr-2"></i>{t('formatter.downloaded', 'Downloaded!')}</>
-                ) : (
-                  <><i className="fas fa-download mr-2"></i>{t('formatter.download', 'Download')}</>
-                )}
+          {/* Additional Options */}
+            <div className="mt-3 flex space-x-2">
+              <button className="flex-1 bg-gray-100 text-gray-700 py-2 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50" disabled>
+                <i className="fas fa-share mr-1"></i>
+                {t('formatter.share', 'Share')}
               </button>
-
-              {/* Additional Options */}
-              <div className="mt-3 flex space-x-2">
-                <button className="flex-1 bg-gray-100 text-gray-700 py-2 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50" disabled>
-                  <i className="fas fa-share mr-1"></i>
-                  {t('formatter.share', 'Share')}
-                </button>
-                <button className="flex-1 bg-gray-100 text-gray-700 py-2 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50" disabled>
-                  <i className="fas fa-history mr-1"></i>
-                  {t('formatter.history', 'History')}
-                </button>
-              </div>
+              <button className="flex-1 bg-gray-100 text-gray-700 py-2 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50" disabled>
+                <i className="fas fa-history mr-1"></i>
+                {t('formatter.history', 'History')}
+              </button>
             </div>
+            
           </div>
+          
         </div>
       </div>
 
-      {/* File Upload Modal */}
-      {showFileModal && file && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-          <div className="bg-white rounded-2xl p-8 max-w-md w-full mx-4">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i className="fas fa-check text-white text-2xl"></i>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">File Uploaded Successfully</h3>
-              <p className="text-gray-600 mb-6" id="file-info">
-                {file.name} ({(file.size / 1024 / 1024).toFixed(1)} MB) has been uploaded and is ready for processing.
-              </p>
-              <button
-                onClick={closeFileModal}
-                className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-2 rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all duration-300"
-              >
-                Continue
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+
+  {/* File Upload Modal removed: now preview is shown directly after upload */}
 
 
       {/* Features Section */}

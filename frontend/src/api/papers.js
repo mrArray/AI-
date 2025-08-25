@@ -160,6 +160,17 @@ class PapersAPI {
     const data = await apiClient.get(`/papers/feedback/${query}`);
     return normalizePaginatedResponse(data);
   }
+
+  // AI Paper Formatting (HomePage integration)
+  async aiFormatPaper({ file, requirements, output_format, title, language }) {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('requirements', requirements);
+    formData.append('output_format', output_format);
+    if (title) formData.append('title', title);
+    if (language) formData.append('language', language);
+    return apiClient.upload('/papers/ai-format/', formData);
+  }
 }
 
 export const papersAPI = new PapersAPI();

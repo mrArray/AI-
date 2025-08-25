@@ -1,7 +1,8 @@
+from .views import AIPaperFormatView
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from . import views
-from .views import PaperFormatWithLLMView, TemplateSearchView, FeaturedTemplatesView, RecommendedTemplatesView, AIPaperGenerationView
+from .views import PaperFormatWithLLMView, TemplateSearchView, FeaturedTemplatesView, RecommendedTemplatesView
 
 router = DefaultRouter()
 router.register(r'templates', views.PaperTemplateViewSet, basename='paper-templates')
@@ -30,8 +31,8 @@ urlpatterns = [
     # Router URLs
     path('', include(router.urls)),
     path('formats/format/', PaperFormatWithLLMView.as_view(), name='format_with_llm'),
-    
-    # AI Paper Generation
-    path('generate/ai/', AIPaperGenerationView.as_view(), name='generate_ai_paper'),
+        
+    # New: AI Paper Format for HomePage integration
+    path('ai-format/', AIPaperFormatView.as_view(), name='ai_paper_format'),
 ]
 

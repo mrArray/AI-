@@ -1,3 +1,4 @@
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from rest_framework import generics, permissions, status, viewsets, serializers
 from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.response import Response
@@ -29,6 +30,168 @@ from rest_framework import status, permissions, parsers
 from .utils import extract_text_from_file
 from apps.core.llm_service import LLMManager, extract_html_from_response
 
+# New API for HomePage integration
+class AIPaperFormatView(APIView):
+    """API endpoint for AI paper formatting (HomePage integration)"""
+    permission_classes = [permissions.AllowAny]
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
+
+    @extend_schema(
+        summary="AI Paper Formatting (HomePage integration)",
+        description="Format a paper using AI based on uploaded file and requirements.",
+        request={
+            'multipart/form-data': {
+                'type': 'object',
+                'properties': {
+                    'file': {'type': 'string', 'format': 'binary'},
+                    'requirements': {'type': 'string'},
+                    'output_format': {'type': 'string', 'enum': ['docx', 'pdf', 'latex', 'md'], 'default': 'docx'},
+                    'title': {'type': 'string', 'required': False},
+                    'language': {'type': 'string', 'default': 'en'}
+                }
+            },
+            'application/json': {
+                'type': 'object',
+                'properties': {
+                    'requirements': {'type': 'string'},
+                    'output_format': {'type': 'string', 'enum': ['docx', 'pdf', 'latex', 'md'], 'default': 'docx'},
+                    'title': {'type': 'string', 'required': False},
+                    'language': {'type': 'string', 'default': 'en'}
+                }
+            }
+        },
+        responses={200: OpenApiTypes.OBJECT}
+    )
+    def post(self, request):
+        """Format a paper using AI (for HomePage, no template, direct LLM prompt)"""
+        file = request.FILES.get('file')
+        requirements = request.data.get('requirements', '')
+        output_format = request.data.get('output_format', 'docx')
+        title = request.data.get('title')
+        language = request.data.get('language', 'en')
+
+        # Validate required fields
+        if not file or not requirements:
+            return Response({'error': 'File and requirements are required.'}, status=400)
+
+        valid_formats = ['docx', 'pdf', 'latex', 'md']
+        if output_format not in valid_formats:
+            return Response({'error': 'Invalid output format.'}, status=400)
+
+        try:
+            text = extract_text_from_file(file)
+        except Exception as e:
+            return Response({'error': f'File extraction failed: {str(e)}'}, status=400)
+
+
+
+        # Use the same prompt structure as PaperFormatWithLLMView, but requirements as the template
+        # requirements is expected to be a JSON string or dict with structure/formatting info
+        try:
+            user_template = requirements
+            if isinstance(user_template, str):
+                try:
+                    user_template = json.loads(user_template)
+                except Exception:
+                    user_template = {'description': user_template}
+        except Exception:
+            user_template = {'description': requirements}
+
+        # Prepare variables for prompt
+        description = user_template.get('description', '') if isinstance(user_template, dict) else str(user_template)
+        sections = user_template.get('sections', []) if isinstance(user_template, dict) else []
+        formatting = user_template.get('formatting', {}) if isinstance(user_template, dict) else {}
+        style_guidelines = user_template.get('style_guidelines', '') if isinstance(user_template, dict) else ''
+        citation_style = user_template.get('citation_style', '') if isinstance(user_template, dict) else ''
+
+        sections_str = "\n".join(
+            [f"{s.get('order', i+1)}. {s.get('name', '')} ({'Required' if s.get('required', False) else 'Optional'})" for i, s in enumerate(sections)]
+        )
+        formatting_str = "\n".join(
+            [f"- {k.replace('_', ' ').capitalize()}: {v}" for k, v in formatting.items()]
+        )
+
+        # Select prompt template based on language
+        if language.startswith('zh'):
+            prompt_template = (
+                "你是一位资深学术编辑。请根据下述要求对论文内容进行格式化和润色。\n\n"
+                "描述：{description}\n\n"
+                "章节顺序：\n{sections}\n\n"
+                "格式要求：\n{formatting}\n\n"
+                "风格指南：\n{style_guidelines}\n\n"
+                "引用格式：{citation_style}\n\n"
+                "期望输出格式：{output_format}\n"
+                "标题：{title}\n"
+                "语言：{language}\n"
+                "---\n"
+                "以下是用户上传文件提取的未排版内容：\n"
+                "{text}\n\n"
+                "---\n"
+                "请直接返回排版后的论文内容（HTML或纯文本），无需解释说明，仅输出排版结果。"
+            )
+        else:
+            prompt_template = (
+                "You are an expert academic editor. Format the following paper according to the provided requirements.\n\n"
+                "Description: {description}\n\n"
+                "Sections (in order):\n{sections}\n\n"
+                "Formatting requirements:\n{formatting}\n\n"
+                "Style Guidelines:\n{style_guidelines}\n\n"
+                "Citation Style: {citation_style}\n\n"
+                "Preferred output format: {output_format}\n"
+                "Title: {title}\n"
+                "Language: {language}\n"
+                "---\n"
+                "Here is the unformatted content extracted from the user's file:\n"
+                "{text}\n\n"
+                "---\n"
+                "Please return the formatted paper as HTML or plain text, ready for download in the requested format. "
+                "Do not include explanations, only the formatted paper."
+            )
+
+        prompt = prompt_template.format(
+            description=description,
+            sections=sections_str,
+            formatting=formatting_str,
+            style_guidelines=style_guidelines,
+            citation_style=citation_style,
+            output_format=output_format.upper(),
+            title=title if title else '[No Title Provided]',
+            language=language,
+            text=text
+        )
+
+        llm_manager = LLMManager()
+        try:
+            # Always use the default prompt template for the detected language
+            system_template = llm_manager.prompt_service.get_default_prompt(language, 'system')
+            if not system_template:
+                return Response({"error": f"No default prompt template found for language '{language}'."}, status=500)
+            system_prompt = llm_manager.prompt_service.render_prompt(
+                system_template,
+                description=description,
+                sections=sections_str,
+                formatting=formatting_str,
+                style_guidelines=style_guidelines,
+                citation_style=citation_style,
+                output_format=output_format.upper(),
+                title=title if title else '[No Title Provided]',
+                language=language,
+                text=text
+            )
+            messages = [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": text}
+            ]
+            formatted_content = llm_manager.llm_service.generate_response(messages)
+            formatted_content = extract_html_from_response(formatted_content)
+        except Exception as e:
+            return Response({'error': f'LLM formatting failed: {str(e)}'}, status=500)
+
+        file_name = f"formatted_paper.{output_format}"
+        return Response({
+            'formatted_content': formatted_content,
+            'file_name': file_name
+        })
 
 class PaperFormatListView(generics.ListAPIView):
     """List available paper formats"""
@@ -747,120 +910,4 @@ class PaperFormatWithLLMView(APIView):
             'format': PaperFormatSerializer(paper_format).data
         })
 
-
-
-class AIPaperGenerationView(APIView):
-    """Generate paper using AI based on user requirements"""
-    permission_classes = [permissions.AllowAny]
-    parser_classes = [parsers.MultiPartParser, parsers.FormParser, parsers.JSONParser]
-
-    @extend_schema(
-        summary="Generate paper with AI",
-        description="Generate a formatted academic paper based on user requirements and format preferences",
-        request={
-            'multipart/form-data': {
-                'type': 'object',
-                'properties': {
-                    'requirements': {'type': 'string', 'description': 'Formatting and content requirements'},
-                    'output_format': {'type': 'string', 'enum': ['docx', 'pdf', 'latex', 'md'], 'default': 'docx'},
-                    'title': {'type': 'string', 'required': False, 'description': 'Optional paper title'},
-                    'language': {'type': 'string', 'default': 'en', 'description': 'Language preference'}
-                }
-            },
-            'application/json': {
-                'type': 'object',
-                'properties': {
-                    'requirements': {'type': 'string', 'description': 'Formatting and content requirements'},
-                    'output_format': {'type': 'string', 'enum': ['docx', 'pdf', 'latex', 'md'], 'default': 'docx'},
-                    'title': {'type': 'string', 'required': False, 'description': 'Optional paper title'},
-                    'language': {'type': 'string', 'default': 'en', 'description': 'Language preference'}
-                }
-            }
-        },
-        responses={200: OpenApiTypes.OBJECT}
-    )
-    def post(self, request):
-        """Generate paper using AI"""
-        from .ai_paper_generator import AIPaperGenerator
-        
-        # Extract data from request
-        requirements = request.data.get('requirements', '')
-        output_format = request.data.get('output_format', 'docx')
-        title = request.data.get('title')
-        language = request.data.get('language', 'en')
-        
-        # Validate required fields
-        if not requirements:
-            return Response({
-                'error': 'Requirements field is required',
-                'success': False
-            }, status=400)
-        
-        # Validate output format
-        valid_formats = ['docx', 'pdf', 'latex', 'md']
-        if output_format not in valid_formats:
-            return Response({
-                'error': f'Invalid output format. Must be one of: {", ".join(valid_formats)}',
-                'success': False
-            }, status=400)
-        
-        # Check if user has enough credits
-        # For simplicity, let's assume each AI paper generation costs 1 credit
-        # You might want to make this dynamic based on complexity or length
-        required_credits = 1  # Example: 1 credit per AI paper generation
-
-        if not request.user.is_authenticated:
-            return Response({
-                'error': 'Authentication required for AI paper generation',
-                'success': False
-            }, status=status.HTTP_401_UNAUTHORIZED)
-
-        if request.user.credits < required_credits:
-            return Response({
-                'error': 'Insufficient credits',
-                'required_credits': required_credits,
-                'user_credits': request.user.credits,
-                'success': False
-            }, status=status.HTTP_402_PAYMENT_REQUIRED)
-
-        try:
-            # Generate paper using AI
-            generator = AIPaperGenerator()
-            result = generator.generate_paper(
-                requirements=requirements,
-                output_format=output_format,
-                title=title,
-                language=language
-            )
-            
-            if result['success']:
-                # Deduct credits and update user's total_papers_generated and total_credits_used
-                request.user.credits -= required_credits
-                request.user.total_papers_generated += 1
-                request.user.total_credits_used += required_credits
-                request.user.save()
-
-                # Return response compatible with UI, including remaining credits
-                return Response({
-                    'formatted_content': result['formatted_content'],
-                    'format': result['format'],
-                    'success': True,
-                    'title': result['title'],
-                    'word_count': result['word_count'],
-                    'output_format': result['output_format'],
-                    'remaining_credits': request.user.credits
-                }, status=200)
-            else:
-                return Response({
-                    'error': result['error'],
-                    'success': False,
-                    'formatted_content': result.get('formatted_content', ''),
-                    'format': result.get('format', {})
-                }, status=400)
-                
-        except Exception as e:
-            return Response({
-                'error': f'Paper generation failed: {str(e)}',
-                'success': False
-            }, status=500)
 

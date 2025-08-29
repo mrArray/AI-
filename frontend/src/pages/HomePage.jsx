@@ -68,7 +68,6 @@ function HomePage() {
       return;
     }
     try {
-      // Progress simulation
       let prog = 0;
       const interval = setInterval(() => {
         prog += 10;
@@ -78,13 +77,12 @@ function HomePage() {
         }
       }, 300);
 
-      // Use PapersAPI for backend call
       const data = await papersAPI.aiFormatPaper({
         file,
         requirements,
         output_format: selectedFormat,
-        title: '', // Optionally add title
-        language: 'en', // Optionally add language
+        title: '',
+        language: 'en',
       });
       setProcessing(false);
       if (data.error) {
@@ -92,29 +90,29 @@ function HomePage() {
         return;
       }
       setShowSuccess(true);
+      // For all formats, set preview if present
       setFormattedContent(data.formatted_content || null);
-      setFileUrl(data.file_url || null);
-      setFileName(data.file_name || 'formatted_paper.' + selectedFormat);
+      if (selectedFormat === 'md' || selectedFormat === 'latex') {
+        if (data.file_base64) {
+          const byteCharacters = atob(data.file_base64);
+          const byteNumbers = new Array(byteCharacters.length);
+          for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+          }
+          const byteArray = new Uint8Array(byteNumbers);
+          const blob = new Blob([byteArray], { type: data.content_type || 'text/plain' });
+          const url = window.URL.createObjectURL(blob);
+          setFileUrl(url);
+          setFileName(data.file_name || 'formatted_paper.' + selectedFormat);
+        }
+      } else {
+        // pdf/docx
+        setFileUrl(data.file_url);
+        setFileName(data.file_name || 'formatted_paper.' + selectedFormat);
+      }
     } catch (err) {
       setProcessing(false);
-      // If error is ApiError and has data, show the error string (human readable)
-      if (err && err.data) {
-        if (typeof err.data === 'object') {
-          if (err.data.error) {
-            setErrorMsg(err.data.error);
-            return;
-          } else if (err.data.detail) {
-            setErrorMsg(err.data.detail);
-            return;
-          }
-        }
-        // fallback: show as string
-        setErrorMsg(typeof err.data === 'string' ? err.data : JSON.stringify(err.data));
-      } else if (err && err.message) {
-        setErrorMsg(err.message);
-      } else {
-        setErrorMsg('Network or server error.');
-      }
+      setErrorMsg(err.message || 'Network or server error.');
     }
   };
 
@@ -288,22 +286,24 @@ function HomePage() {
                 {t('formatter.previewTitle', 'Overview of The Finished One')}
               </h3>
               <div className="bg-gray-50 rounded-xl h-full p-4 border-2 border-gray-200 overflow-y-auto min-h-[400px] mb-4">
-                {/* Show formatted content as HTML in an iframe if available */}
-                {formattedContent ? (
-                  <iframe
-                    title="Formatted Preview"
-                    srcDoc={formattedContent}
-                    style={{ width: '100%', minHeight: '380px', border: 'none', background: 'transparent' }}
-                    sandbox="allow-same-origin allow-scripts"
-                  />
-                ) : (
-                  // Show static preview before formatting or while processing
-                  <div className="flex flex-col items-center justify-center h-full text-gray-400">
-                    <i className="fas fa-file-alt text-6xl mb-4"></i>
-                    <p className="text-lg font-medium mb-2">{t('formatter.preview.title')}</p>
-                    <p className="text-sm text-center">{t('formatter.preview.content')}</p>
-                  </div>
-                )}
+                {/* Preview for all formats if present, else message */}
+                <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
+                  {formattedContent ? (
+                    selectedFormat === 'md' ? (
+                      <div dangerouslySetInnerHTML={{ __html: window.marked ? window.marked(formattedContent) : formattedContent.replace(/\n/g, '<br/>') }} />
+                    ) : selectedFormat === 'latex' ? (
+                      <pre>{formattedContent}</pre>
+                    ) : (
+                      <pre className="whitespace-pre-wrap break-words">{formattedContent}</pre>
+                    )
+                  ) : (
+                    <div className="flex flex-col items-center justify-center h-full text-gray-400">
+                      <i className="fas fa-file-alt text-6xl mb-4"></i>
+                      <p className="text-lg font-medium mb-2">{t('formatter.preview.title')}</p>
+                      <p className="text-sm text-center">{t('formatter.preview.content')}</p>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
                              <div className="my-6"></div>
@@ -339,12 +339,8 @@ function HomePage() {
         </div>
       </div>
 
-
-  {/* File Upload Modal removed: now preview is shown directly after upload */}
-
-
       {/* Features Section */}
-      <div className="py-16 bg-gradient-to-br from-indigo-50 to-blue-100">
+      {/* <div className="py-16 bg-gradient-to-br from-indigo-50 to-blue-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h2 className="text-base text-indigo-600 font-semibold tracking-wide uppercase">
@@ -373,10 +369,10 @@ function HomePage() {
             ))}
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Testimonials */}
-      <div className="py-16 bg-white">
+      {/* <div className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h2 className="text-base text-indigo-600 font-semibold tracking-wide uppercase">
@@ -410,10 +406,10 @@ function HomePage() {
             ))}
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* CTA Section */}
-      <div className="py-16 bg-gradient-to-r from-indigo-600 to-purple-600">
+      {/* <div className="py-16 bg-gradient-to-r from-indigo-600 to-purple-600">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-extrabold text-white sm:text-4xl">
             {t('cta.title')}
@@ -436,7 +432,7 @@ function HomePage() {
             </button>
           </div>
         </div>
-      </div>
+      </div> */}
 
       <Footer />
     </div>

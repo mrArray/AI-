@@ -29,6 +29,9 @@ from rest_framework.response import Response
 from rest_framework import status, permissions, parsers
 from .utils import extract_text_from_file
 from apps.core.llm_service import LLMManager, extract_html_from_response
+from django.http import HttpResponse, JsonResponse
+import base64
+import re
 
 # New API for HomePage integration
 class AIPaperFormatView(APIView):
@@ -63,11 +66,11 @@ class AIPaperFormatView(APIView):
         responses={200: OpenApiTypes.OBJECT}
     )
     def post(self, request):
-        """Format a paper using AI (for HomePage, no template, direct LLM prompt)"""
+        """Format a paper using AI (for HomePage, accepts user payload for custom formatting)"""
         file = request.FILES.get('file')
         requirements = request.data.get('requirements', '')
         output_format = request.data.get('output_format', 'docx')
-        title = request.data.get('title')
+        title = request.data.get('title', '')
         language = request.data.get('language', 'en')
 
         # Validate required fields
@@ -83,115 +86,247 @@ class AIPaperFormatView(APIView):
         except Exception as e:
             return Response({'error': f'File extraction failed: {str(e)}'}, status=400)
 
-
-
-        # Use the same prompt structure as PaperFormatWithLLMView, but requirements as the template
-        # requirements is expected to be a JSON string or dict with structure/formatting info
-        try:
-            user_template = requirements
-            if isinstance(user_template, str):
-                try:
-                    user_template = json.loads(user_template)
-                except Exception:
-                    user_template = {'description': user_template}
-        except Exception:
-            user_template = {'description': requirements}
-
-        # Prepare variables for prompt
-        description = user_template.get('description', '') if isinstance(user_template, dict) else str(user_template)
-        sections = user_template.get('sections', []) if isinstance(user_template, dict) else []
-        formatting = user_template.get('formatting', {}) if isinstance(user_template, dict) else {}
-        style_guidelines = user_template.get('style_guidelines', '') if isinstance(user_template, dict) else ''
-        citation_style = user_template.get('citation_style', '') if isinstance(user_template, dict) else ''
-
-        sections_str = "\n".join(
-            [f"{s.get('order', i+1)}. {s.get('name', '')} ({'Required' if s.get('required', False) else 'Optional'})" for i, s in enumerate(sections)]
-        )
-        formatting_str = "\n".join(
-            [f"- {k.replace('_', ' ').capitalize()}: {v}" for k, v in formatting.items()]
-        )
-
-        # Select prompt template based on language
-        if language.startswith('zh'):
-            prompt_template = (
-                "你是一位资深学术编辑。请根据下述要求对论文内容进行格式化和润色。\n\n"
-                "描述：{description}\n\n"
-                "章节顺序：\n{sections}\n\n"
-                "格式要求：\n{formatting}\n\n"
-                "风格指南：\n{style_guidelines}\n\n"
-                "引用格式：{citation_style}\n\n"
-                "期望输出格式：{output_format}\n"
-                "标题：{title}\n"
-                "语言：{language}\n"
-                "---\n"
-                "以下是用户上传文件提取的未排版内容：\n"
-                "{text}\n\n"
-                "---\n"
-                "请直接返回排版后的论文内容（HTML或纯文本），无需解释说明，仅输出排版结果。"
-            )
-        else:
-            prompt_template = (
-                "You are an expert academic editor. Format the following paper according to the provided requirements.\n\n"
-                "Description: {description}\n\n"
-                "Sections (in order):\n{sections}\n\n"
-                "Formatting requirements:\n{formatting}\n\n"
-                "Style Guidelines:\n{style_guidelines}\n\n"
-                "Citation Style: {citation_style}\n\n"
-                "Preferred output format: {output_format}\n"
-                "Title: {title}\n"
-                "Language: {language}\n"
-                "---\n"
-                "Here is the unformatted content extracted from the user's file:\n"
-                "{text}\n\n"
-                "---\n"
-                "Please return the formatted paper as HTML or plain text, ready for download in the requested format. "
-                "Do not include explanations, only the formatted paper."
-            )
-
-        prompt = prompt_template.format(
-            description=description,
-            sections=sections_str,
-            formatting=formatting_str,
-            style_guidelines=style_guidelines,
-            citation_style=citation_style,
-            output_format=output_format.upper(),
-            title=title if title else '[No Title Provided]',
+        # Parse user requirements - can be JSON or plain text
+        user_requirements = self._parse_requirements(requirements)
+        
+        # Construct optimal prompt based on user requirements and output format
+        prompt = self._construct_optimal_prompt(
+            user_requirements=user_requirements,
+            output_format=output_format,
+            title=title,
             language=language,
             text=text
         )
 
-        llm_manager = LLMManager()
+        # Generate formatted content using LLM
         try:
-            # Always use the default prompt template for the detected language
-            system_template = llm_manager.prompt_service.get_default_prompt(language, 'system')
-            if not system_template:
-                return Response({"error": f"No default prompt template found for language '{language}'."}, status=500)
-            system_prompt = llm_manager.prompt_service.render_prompt(
-                system_template,
-                description=description,
-                sections=sections_str,
-                formatting=formatting_str,
-                style_guidelines=style_guidelines,
-                citation_style=citation_style,
-                output_format=output_format.upper(),
-                title=title if title else '[No Title Provided]',
-                language=language,
-                text=text
-            )
+            llm_manager = LLMManager()
             messages = [
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": text}
+                {"role": "system", "content": "You are an expert academic editor. Format papers according to user specifications. Return only the formatted content without explanations or AI commentary."},
+                {"role": "user", "content": prompt}
             ]
             formatted_content = llm_manager.llm_service.generate_response(messages)
-            formatted_content = extract_html_from_response(formatted_content)
+            # Clean up and extract relevant content based on output_format
+            formatted_content = self._clean_ai_response(formatted_content, output_format)
         except Exception as e:
             return Response({'error': f'LLM formatting failed: {str(e)}'}, status=500)
 
-        file_name = f"formatted_paper.{output_format}"
-        return Response({
-            'formatted_content': formatted_content,
-            'file_name': file_name
-        })
+        # Return response based on format type
+        return self._format_response(formatted_content, output_format, title)
+
+    def _parse_requirements(self, requirements):
+        """Parse user requirements from JSON or plain text"""
+        try:
+            # Try to parse as JSON first
+            if isinstance(requirements, str) and requirements.strip().startswith('{'):
+                return json.loads(requirements)
+        except json.JSONDecodeError:
+            pass
+        
+        # If not JSON, treat as plain text description
+        return {
+            'description': requirements,
+            'sections': [],
+            'formatting': {},
+            'style_guidelines': '',
+            'citation_style': ''
+        }
+
+    def _construct_optimal_prompt(self, user_requirements, output_format, title, language, text):
+        """Construct the best possible prompt for optimal formatting results"""
+        
+        # Extract requirements components
+        description = user_requirements.get('description', '')
+        sections = user_requirements.get('sections', [])
+        formatting = user_requirements.get('formatting', {})
+        style_guidelines = user_requirements.get('style_guidelines', '')
+        citation_style = user_requirements.get('citation_style', '')
+        
+        # Build sections string
+        sections_str = ""
+        if sections:
+            sections_str = "\n".join([
+                f"{i+1}. {section.get('name', section) if isinstance(section, dict) else section}"
+                for i, section in enumerate(sections)
+            ])
+        
+        # Build formatting requirements string
+        formatting_str = ""
+        if formatting:
+            formatting_str = "\n".join([
+                f"- {key.replace('_', ' ').title()}: {value}"
+                for key, value in formatting.items()
+            ])
+        
+        # Select language-appropriate prompt template
+        if language.startswith('zh'):
+            prompt_template = """请按照以下要求格式化学术论文：
+
+用户要求：{description}
+
+{sections_section}
+{formatting_section}
+{style_section}
+{citation_section}
+
+输出格式：{output_format}
+{title_section}
+
+原始内容：
+{text}
+
+请直接输出格式化后的{output_format}内容，不要包含任何解释或说明。"""
+        else:
+            prompt_template = """Format this academic paper according to the following specifications:
+
+User Requirements: {description}
+
+{sections_section}
+{formatting_section}
+{style_section}
+{citation_section}
+
+Output Format: {output_format}
+{title_section}
+
+Original Content:
+{text}
+
+Return only the formatted {output_format} content without any explanations or commentary."""
+
+        # Build conditional sections
+        sections_section = f"Required Sections:\n{sections_str}" if sections_str else ""
+        formatting_section = f"Formatting Requirements:\n{formatting_str}" if formatting_str else ""
+        style_section = f"Style Guidelines: {style_guidelines}" if style_guidelines else ""
+        citation_section = f"Citation Style: {citation_style}" if citation_style else ""
+        title_section = f"Title: {title}" if title else ""
+        
+        return prompt_template.format(
+            description=description,
+            sections_section=sections_section,
+            formatting_section=formatting_section,
+            style_section=style_section,
+            citation_section=citation_section,
+            output_format=output_format.upper(),
+            title_section=title_section,
+            text=text
+        )
+
+    def _clean_ai_response(self, content, output_format=None):
+        """
+        Remove AI talk, explanations, and other conversational artifacts from the response.
+        Additionally, extract the relevant content for latex, md, etc. based on output_format.
+        """
+        ai_patterns = [
+            r"^\s*here is the formatted document.*?\n",
+            r"^\s*i have formatted the paper as requested.*?\n",
+            r"^\s*certainly, here is the formatted version.*?\n",
+            r"^\s*of course, here is the document.*?\n",
+            r"^\s*alright, i've formatted the paper.*?\n",
+            r"^\s*here's the formatted version of your document.*?\n",
+            r"i've applied the specified formatting.*?\n",
+            r"the document now follows the.*?guidelines.*?\n",
+            r"please note that i have made the following changes.*?\n",
+            r"i have also taken the liberty of.*?\n",
+            r"Okay,*?\n",
+            r"i hope this meets your requirements.*?\n",
+            r"let me know if you need any further adjustments.*?\n",
+            r"if you have any other questions, feel free to ask.*?\n",
+            r"^\s*```[a-zA-Z]*\n",
+            r"\n```\s*$",
+            r"^\s*sure, here.*?\n",
+            r"^\s*absolutely, here.*?\n",
+            r"^\s*no problem, here.*?\n",
+        ]
+
+        cleaned_content = content
+        for pattern in ai_patterns:
+            cleaned_content = re.sub(pattern, '', cleaned_content, flags=re.IGNORECASE | re.MULTILINE)
+        cleaned_content = cleaned_content.strip()
+
+        # Format-specific extraction
+        if output_format:
+            fmt = output_format.lower()
+            if fmt == 'latex':
+                # Ensure output starts with \documentclass
+                match = re.search(r'(\\documentclass[\s\S]*?\\end{document})', cleaned_content, re.MULTILINE)
+                if match:
+                    return match.group(1).strip()
+                idx = cleaned_content.find('\\documentclass')
+                if idx != -1:
+                    return cleaned_content[idx:].strip()
+            elif fmt == 'md':
+                # If markdown is inside triple backticks, extract it
+                md_match = re.search(r'```(?:markdown)?\n([\s\S]*?)\n```', cleaned_content, re.IGNORECASE)
+                if md_match:
+                    md_content = md_match.group(1).strip()
+                else:
+                    md_content = cleaned_content
+                # Ensure markdown starts with # (header)
+                lines = md_content.lstrip().splitlines()
+                for i, line in enumerate(lines):
+                    if line.strip().startswith('#'):
+                        return '\n'.join(lines[i:]).strip()
+                # If no header found, return all
+                return md_content.strip()
+            elif fmt == 'docx':
+                # For docx preview, start from first line with ** (heading)
+                lines = cleaned_content.lstrip().splitlines()
+                for i, line in enumerate(lines):
+                    if line.strip().startswith('**'):
+                        return '\n'.join(lines[i:]).strip()
+                return cleaned_content
+            elif fmt == 'pdf':
+                # For pdf, just return the cleaned content
+                return cleaned_content
+        return cleaned_content
+
+    def _format_response(self, formatted_content, output_format, title):
+        """Format the response based on output format"""
+        file_ext = output_format.lower()
+        file_name = f"{title or 'formatted_paper'}.{file_ext}"
+        content_types = {
+            'pdf': 'application/pdf',
+            'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'latex': 'application/x-latex',
+            'md': 'text/markdown',
+        }
+        content_type = content_types.get(file_ext, 'application/octet-stream')
+
+        if file_ext in ['md', 'latex']:
+            encoded = base64.b64encode(formatted_content.encode('utf-8')).decode('utf-8')
+            return JsonResponse({
+                'formatted_content': formatted_content,
+                'file_name': file_name,
+                'file_base64': encoded,
+                'content_type': content_type
+            })
+        elif file_ext in ['pdf', 'docx']:
+            # For binary formats, return both file and preview text, and a file_url for frontend download
+            if isinstance(formatted_content, str):
+                file_bytes = formatted_content.encode('utf-8')
+            else:
+                file_bytes = formatted_content
+            encoded = base64.b64encode(file_bytes).decode('utf-8')
+            # Serve the file as a temporary download URL (in-memory, not persistent)
+            # For now, return a data URL for direct download
+            file_url = f"data:{content_type};base64,{encoded}"
+            return JsonResponse({
+                'formatted_content': formatted_content,
+                'file_name': file_name,
+                'file_base64': encoded,
+                'file_url': file_url,
+                'content_type': content_type
+            })
+        else:
+            # Default fallback: just return as file download
+            if isinstance(formatted_content, str):
+                file_bytes = formatted_content.encode('utf-8')
+            else:
+                file_bytes = formatted_content
+            response = HttpResponse(file_bytes, content_type=content_type)
+            response['Content-Disposition'] = f'attachment; filename="{file_name}"'
+            return response
 
 class PaperFormatListView(generics.ListAPIView):
     """List available paper formats"""

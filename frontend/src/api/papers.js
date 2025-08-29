@@ -169,7 +169,31 @@ class PapersAPI {
     formData.append('output_format', output_format);
     if (title) formData.append('title', title);
     if (language) formData.append('language', language);
-    return apiClient.upload('/papers/ai-format/', formData);
+
+    // Use apiClient.upload for all formats
+    const apiUrl = '/papers/ai-format/';
+    const response = await apiClient.upload(apiUrl, formData);
+
+    // If response is a Blob (pdf/docx), convert to download info
+    if (output_format === 'pdf' || output_format === 'docx') {
+      // apiClient.upload should return the raw Response for blobs
+      if (response instanceof Blob) {
+        const url = window.URL.createObjectURL(response);
+        let filename = 'formatted_paper.' + output_format;
+        // Try to get filename from headers if possible (apiClient.upload may need to expose headers)
+        // If not possible, fallback to default filename
+        return {
+          file_url: url,
+          file_name: filename,
+          content_type: response.type || '',
+        };
+      } else if (response && response.file_url) {
+        // fallback for previous logic
+        return response;
+      }
+    }
+    // For md/latex, expect JSON
+    return response;
   }
 }
 

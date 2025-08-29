@@ -41,3 +41,19 @@ Watching for file changes with StatReloader
 Watching for file changes with StatReloader
 "POST /api/v1/papers/ai-format/ HTTP/1.1" 200 8952
 Watching for file changes with StatReloader
+"POST /api/v1/papers/ai-format/ HTTP/1.1" 200 20980
+"POST /api/v1/papers/ai-format/ HTTP/1.1" 200 11913
+"POST /api/v1/papers/ai-format/ HTTP/1.1" 200 8134
+"OPTIONS /api/v1/auth/token/refresh/ HTTP/1.1" 200 0
+"OPTIONS /api/v1/auth/token/refresh/ HTTP/1.1" 200 0
+"POST /api/v1/auth/token/refresh/ HTTP/1.1" 200 491
+Unauthorized: /api/v1/auth/token/refresh/
+"POST /api/v1/auth/token/refresh/ HTTP/1.1" 401 58
+"POST /api/v1/papers/ai-format/ HTTP/1.1" 200 22157
+"POST /api/v1/auth/token/refresh/ HTTP/1.1" 200 491
+Unauthorized: /api/v1/auth/token/refresh/
+"POST /api/v1/auth/token/refresh/ HTTP/1.1" 401 58
+"POST /api/v1/papers/ai-format/ HTTP/1.1" 200 10514
+Internal Server Error: /api/v1/papers/ai-format/
+"POST /api/v1/papers/ai-format/ HTTP/1.1" 500 60
+"POST /api/v1/papers/ai-format/ HTTP/1.1" 200 8879

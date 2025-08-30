@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
@@ -15,11 +16,14 @@ import {
   Plus,
   ArrowRight
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+
 
 const Overview = () => {
+  const { t } = useTranslation('dashboard');
   const stats = [
     {
-      name: 'LLM Providers',
+      name: t('overview.llmProviders'),
       value: '4',
       change: '+1',
       changeType: 'positive',
@@ -28,7 +32,7 @@ const Overview = () => {
       href: '/admin/providers'
     },
     {
-      name: 'Active Models',
+      name: t('overview.activeModels'),
       value: '12',
       change: '+3',
       changeType: 'positive',
@@ -37,7 +41,7 @@ const Overview = () => {
       href: '/admin/models'
     },
     {
-      name: 'Prompt Templates',
+      name: t('overview.promptTemplates'),
       value: '8',
       change: '0',
       changeType: 'neutral',
@@ -46,7 +50,7 @@ const Overview = () => {
       href: '/admin/templates'
     },
     {
-      name: 'API Calls Today',
+      name: t('overview.apiCallsToday'),
       value: '1,247',
       change: '+15%',
       changeType: 'positive',
@@ -60,70 +64,70 @@ const Overview = () => {
     {
       id: 1,
       type: 'provider_added',
-      message: 'New provider "Anthropic Claude" was added',
+      message: t('overview.activity.newProvider', { provider: 'Anthropic Claude' }),
       time: '2 minutes ago',
       status: 'success',
-      user: 'Admin User'
+      user: t('overview.activity.providerTimeAgo', { time: '2 minutes', user: t('overview.activity.adminUser', 'Admin User') })
     },
     {
       id: 2,
       type: 'model_updated',
-      message: 'GPT-4 model configuration updated',
+      message: t('overview.activity.modelUpdated', { model: 'GPT-4' }),
       time: '15 minutes ago',
       status: 'info',
-      user: 'Admin User'
+      user: t('overview.activity.adminUser', 'Admin User')
     },
     {
       id: 3,
       type: 'template_created',
-      message: 'New prompt template "Code Review" created',
+      message: t('overview.activity.templateCreated', { template: 'Code Review' }),
       time: '1 hour ago',
       status: 'success',
-      user: 'Admin User'
+      user: t('overview.activity.adminUser', 'Admin User')
     },
     {
       id: 4,
       type: 'provider_error',
-      message: 'Connection test failed for OpenAI provider',
+      message: t('overview.activity.connectionFailed', { provider: 'OpenAI' }),
       time: '2 hours ago',
       status: 'error',
-      user: 'System'
+      user: t('overview.activity.system', 'System')
     },
     {
       id: 5,
       type: 'config_updated',
-      message: 'System configuration updated',
+      message: t('overview.activity.systemConfigUpdated'),
       time: '3 hours ago',
       status: 'info',
-      user: 'Admin User'
+      user: t('overview.activity.adminUser', 'Admin User')
     }
   ];
 
   const quickActions = [
     {
-      name: 'Add Provider',
-      description: 'Connect a new LLM provider',
+      name: t('overview.addProvider'),
+      description: t('overview.addProviderDesc'),
       icon: Server,
       href: '/admin/providers/new',
       color: 'blue'
     },
     {
-      name: 'Create Model',
-      description: 'Add a new model configuration',
+      name: t('overview.createModel'),
+      description: t('overview.createModelDesc'),
       icon: Brain,
       href: '/admin/models/new',
       color: 'green'
     },
     {
-      name: 'New Template',
-      description: 'Create a prompt template',
+      name: t('overview.newTemplate'),
+      description: t('overview.newTemplateDesc'),
       icon: FileText,
       href: '/admin/templates/new',
       color: 'purple'
     },
     {
-      name: 'System Config',
-      description: 'Update system settings',
+      name: t('overview.systemConfig'),
+      description: t('overview.systemConfigDesc'),
       icon: Settings,
       href: '/admin/config',
       color: 'gray'
@@ -131,10 +135,10 @@ const Overview = () => {
   ];
 
   const systemHealth = [
-    { name: 'OpenAI Provider', status: 'healthy', latency: '120ms' },
-    { name: 'Anthropic Provider', status: 'healthy', latency: '95ms' },
-    { name: 'Local Provider', status: 'warning', latency: '250ms' },
-    { name: 'Database', status: 'healthy', latency: '15ms' }
+    { name: t('overview.openaiProvider'), status: 'healthy', latency: '120ms' },
+    { name: t('overview.anthropicProvider'), status: 'healthy', latency: '95ms' },
+    { name: t('overview.localProvider'), status: 'warning', latency: '250ms' },
+    { name: t('overview.database'), status: 'healthy', latency: '15ms' }
   ];
 
   const getStatusIcon = (status) => {
@@ -161,9 +165,9 @@ const Overview = () => {
       >
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold">Welcome back, Admin!</h1>
+            <h1 className="text-2xl font-bold">{t('overview.welcome')}</h1>
             <p className="text-blue-100 mt-2">
-              Your LLM infrastructure is running smoothly. Here's what's happening today.
+              {t('overview.subtitle')}
             </p>
           </div>
           <div className="hidden md:block">
@@ -197,7 +201,7 @@ const Overview = () => {
                       }`}>
                         {stat.change}
                       </span>
-                      <span className="text-sm text-gray-500 ml-1">from last week</span>
+                      <span className="text-sm text-gray-500 ml-1">{t('overview.fromLastWeek')}</span>
                     </div>
                   </div>
                   <div className={`p-3 rounded-lg bg-${stat.color}-100`}>
@@ -219,9 +223,9 @@ const Overview = () => {
         >
           <div className="p-6 border-b border-gray-200">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-gray-900">Recent Activity</h2>
+              <h2 className="text-lg font-semibold text-gray-900">{t('overview.recentActivity')}</h2>
               <Link to="/admin/activity" className="text-blue-600 hover:text-blue-700 text-sm font-medium">
-                View all
+                {t('overview.viewAll')}
               </Link>
             </div>
           </div>
@@ -303,7 +307,7 @@ const Overview = () => {
             className="bg-white rounded-lg shadow"
           >
             <div className="p-6 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900">System Health</h2>
+              <h2 className="text-lg font-semibold text-gray-900">{t('overview.systemHealth')}</h2>
             </div>
             <div className="p-6">
               <div className="space-y-3">

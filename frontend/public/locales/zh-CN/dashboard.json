@@ -1,0 +1,250 @@
+{
+  "createProvider": {
+    "title": "创建LLM服务商",
+    "desc": "将新的大语言模型服务商添加到您的基础设施中",
+    "successTitle": "服务商创建成功！",
+    "successDesc": "正在跳转到服务商列表..."
+  }
+  ,
+  "sidebar": {
+    "overview": "总览",
+    "providers": "大模型服务商",
+    "models": "大模型列表",
+    "templates": "提示词模板",
+    "config": "系统配置",
+    "active": "启用",
+    "new": "新建",
+    "title": "管理后台",
+    "subtitle": "大模型管理",
+    "user": "管理员",
+    "email": "admin@example.com"
+  }
+  ,
+  "header": {
+    "dashboard": "仪表盘",
+    "searchPlaceholder": "搜索服务商、模型、模板...",
+    "quickAdd": "快速添加",
+    "notifications": {
+      "title": "通知",
+      "modelAdded": "新大模型添加成功",
+      "providerFailed": "服务商连接测试失败",
+      "configUpdated": "系统配置已更新",
+      "time2min": "2分钟前",
+      "time5min": "5分钟前",
+      "time1hr": "1小时前"
+    },
+    "pageDesc": "管理您的大模型基础设施和配置",
+    "lastUpdated": "最近更新：2分钟前"
+  }
+  ,
+  "llmProviders": {
+    "title": "大模型服务商",
+    "description": "管理您的大语言模型服务商及其配置",
+    "addProvider": "添加服务商",
+    "totalProviders": "服务商总数",
+    "active": "启用",
+    "inactive": "禁用",
+    "default": "默认",
+    "none": "无",
+    "totalModels": "模型总数",
+    "providerName": "服务商名称",
+    "baseUrl": "基础 URL",
+    "models": "模型",
+    "modelsCount": "{{count}} 个模型",
+    "status": "状态",
+    "healthy": "正常",
+    "warning": "警告",
+    "error": "错误",
+    "created": "创建时间",
+    "quickActions": {
+      "title": "快捷操作",
+      "testAllConnections": "测试所有连接",
+      "verifyAllConnections": "验证所有服务商连接",
+      "importConfig": "导入配置",
+      "importSettings": "导入服务商设置",
+      "exportConfig": "导出配置",
+      "exportSettings": "导出服务商设置"
+    }
+  },
+  "llmModels": {
+    "title": "大模型列表",
+    "desc": "管理和配置可用的大模型。",
+    "table": {
+      "model": "模型",
+      "provider": "服务商",
+      "contextLength": "上下文长度",
+      "costPer1K": "每千Token费用",
+      "streaming": "流式输出",
+      "status": "状态",
+      "added": "添加时间"
+    },
+    "status": {
+      "active": "启用",
+      "inactive": "禁用",
+      "default": "默认"
+    },
+    "add": {
+      "title": "新建模型",
+      "name": "名称",
+      "provider": "服务商",
+      "type": "类型",
+      "button": "添加模型"
+    },
+    "actions": {
+      "edit": "编辑",
+      "delete": "删除"
+    },
+    "free": "免费",
+    "yes": "是",
+    "no": "否",
+    "stats": {
+      "total": "模型总数",
+      "active": "启用模型",
+      "default": "默认模型",
+      "avgCost": "平均每千Token费用"
+    },
+    "byProvider": "按服务商分类",
+    "modelsCount": "{{count}} 个模型",
+    "performance": {
+      "title": "性能分析",
+      "contextLength": "上下文长度分布",
+      "cost": "费用分析"
+    }
+  },
+  "overview": {
+    "welcome": "欢迎回来，管理员！",
+    "subtitle": "您的大模型基础设施运行正常。以下是今日动态。",
+    "llmProviders": "大模型服务商",
+    "activeModels": "启用模型",
+    "promptTemplates": "提示词模板",
+    "apiCallsToday": "今日 API 调用",
+    "fromLastWeek": "较上周",
+    "recentActivity": "最近活动",
+    "viewAll": "查看全部",
+    "activity": {
+      "newProvider": "新服务商“{{provider}}”已添加",
+      "providerTimeAgo": "{{time}}前 • {{user}}",
+      "modelUpdated": "{{model}}模型配置已更新",
+      "templateCreated": "新提示词模板“{{template}}”已创建",
+      "connectionFailed": "{{provider}}服务商连接测试失败",
+      "systemConfigUpdated": "系统配置已更新"
+    },
+    "quickActions": "快捷操作",
+    "addProvider": "添加服务商",
+    "addProviderDesc": "连接新的大模型服务商",
+    "createModel": "新建模型",
+    "createModelDesc": "添加新的模型配置",
+    "newTemplate": "新建模板",
+    "newTemplateDesc": "创建提示词模板",
+    "systemConfig": "系统配置",
+    "systemConfigDesc": "更新系统设置",
+    "systemHealth": "系统健康",
+    "openaiProvider": "OpenAI 服务商",
+    "anthropicProvider": "Anthropic 服务商",
+    "localProvider": "本地服务商",
+    "database": "数据库"
+  },
+  "systemConfig": {
+    "title": "系统配置",
+    "description": "管理系统范围的设置和运行状态。",
+    "reset": "重置",
+    "saveChanges": "保存更改",
+    "systemStatus": {
+      "title": "系统状态",
+      "operational": "运行中",
+      "apiStatus": "API 状态",
+      "healthy": "健康",
+      "activeModels": "启用模型",
+      "modelsCount": "{{count}} 个模型",
+      "uptime": "运行时间",
+      "uptimeValue": "{{value}} 小时"
+    },
+    "defaultSettings": {
+      "title": "默认设置",
+      "defaultProvider": {
+        "label": "默认服务商",
+        "description": "用于 LLM 请求的默认服务商。"
+      },
+      "defaultModel": {
+        "label": "默认模型",
+        "description": "用于文本生成的默认模型。"
+      },
+      "defaultTemperature": {
+        "label": "默认温度",
+        "description": "控制模型输出的随机性。0 = 最确定，2 = 最随机。"
+      },
+      "defaultMaxTokens": {
+        "label": "默认最大 Token 数",
+        "description": "每次响应的最大 Token 数。"
+      }
+    },
+    "features": {
+      "title": "功能",
+      "enableStreaming": {
+        "label": "启用流式输出",
+        "description": "允许 LLM 返回流式响应。"
+      },
+      "enableCaching": {
+        "label": "启用缓存",
+        "description": "缓存 LLM 响应以提升性能。"
+      },
+      "cacheTtl": {
+        "label": "缓存有效期（秒）",
+        "description": "缓存响应的时长（秒）。"
+      }
+    },
+    "rateLimiting": {
+      "title": "限流",
+      "requestsPerMinute": {
+        "label": "每分钟请求数",
+        "description": "每分钟允许的最大 API 请求数。"
+      }
+    },
+    "logging": {
+      "title": "日志",
+      "enableLogging": {
+        "label": "启用日志",
+        "description": "记录所有 API 请求和响应。"
+      },
+      "logLevel": {
+        "label": "日志级别",
+        "options": {
+          "info": "信息"
+        },
+        "description": "设置日志的详细程度。"
+      }
+    },
+    "recentChanges": {
+      "title": "最近更改",
+      "defaultModelChanged": "默认模型已更改为 GPT-4。",
+      "date1": "2025-08-01",
+      "adminUser": "管理员",
+      "streamingEnabled": "已启用流式输出。",
+      "date2": "2025-08-15",
+      "rateLimitIncreased": "限流已提升至每分钟 60 次请求。"
+    }
+  },
+  "promptTemplates": {
+    "title": "提示词模板",
+    "description": "创建和管理可复用的多任务提示词模板",
+    "createTemplate": "新建模板",
+    "totalTemplates": "模板总数",
+    "active": "启用",
+    "languages": "语言",
+    "totalUsage": "总使用量",
+    "byLanguage": "按语言分类",
+    "byType": "按类型分类",
+    "templatesCount": "{{count}} 个模板",
+    "mostUsed": "最常用模板",
+    "viewAnalytics": "查看分析",
+    "uses": "{{count}} 次使用",
+    "type": {
+      "code_review": "代码审查",
+      "summarization": "文档摘要",
+      "email_generation": "邮件生成",
+      "bug_analysis": "缺陷分析",
+      "translation": "文档翻译"
+    }
+
+  }
+}

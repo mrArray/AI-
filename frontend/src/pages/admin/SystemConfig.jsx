@@ -1,4 +1,6 @@
+
 import React, { useState, useEffect } from 'react';
+import { coreAPI } from '../../api/core';
 import { motion } from 'framer-motion';
 import {
   Settings,
@@ -14,8 +16,11 @@ import {
   CheckCircle,
   Info
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+
 
 const SystemConfig = () => {
+  const { t } = useTranslation('dashboard');
   const [config, setConfig] = useState({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -23,39 +28,29 @@ const SystemConfig = () => {
 
   // Mock data - in real app, this would come from API
   useEffect(() => {
-    const mockConfig = {
-      default_provider: 1,
-      default_model: 1,
-      default_temperature: 0.7,
-      default_max_tokens: 2048,
-      enable_streaming: true,
-      enable_caching: true,
-      cache_ttl: 3600,
-      rate_limit_per_minute: 60,
-      enable_logging: true,
-      log_level: 'INFO',
-      created_at: '2024-01-15T10:30:00Z',
-      updated_at: '2024-01-20T14:30:00Z'
-    };
-
-    setTimeout(() => {
-      setConfig(mockConfig);
+    async function fetchData() {
+      setLoading(true);
+      try {
+        // Fetch providers and models
+        const [providersRes, modelsRes] = await Promise.all([
+          coreAPI.getLLMProviders(),
+          coreAPI.getLLMModels()
+        ]);
+        setProviders(providersRes.data || providersRes);
+        setModels(modelsRes.data || modelsRes);
+        // TODO: Fetch config from backend if endpoint exists
+        // setConfig(await coreAPI.getSystemConfig());
+        // For now, keep config as empty or static
+      } catch (e) {
+        // handle error
+      }
       setLoading(false);
-    }, 1000);
+    }
+    fetchData();
   }, []);
 
-  const providers = [
-    { id: 1, name: 'OpenAI', is_active: true },
-    { id: 2, name: 'Anthropic Claude', is_active: true },
-    { id: 3, name: 'Local Ollama', is_active: true }
-  ];
-
-  const models = [
-    { id: 1, name: 'GPT-4', provider_id: 1, is_active: true },
-    { id: 2, name: 'GPT-3.5 Turbo', provider_id: 1, is_active: true },
-    { id: 3, name: 'Claude 3 Opus', provider_id: 2, is_active: true },
-    { id: 4, name: 'Claude 3 Sonnet', provider_id: 2, is_active: true }
-  ];
+  const [providers, setProviders] = useState([]);
+  const [models, setModels] = useState([]);
 
   const handleConfigChange = (key, value) => {
     setConfig(prev => ({ ...prev, [key]: value }));
@@ -78,107 +73,107 @@ const SystemConfig = () => {
 
   const configSections = [
     {
-      title: 'Default Settings',
+      title: t('systemConfig.defaultSettings.title'),
       icon: Settings,
       color: 'blue',
       fields: [
         {
           key: 'default_provider',
-          label: 'Default Provider',
+          label: t('systemConfig.defaultSettings.defaultProvider.label'),
           type: 'select',
           options: providers.filter(p => p.is_active).map(p => ({ value: p.id, label: p.name })),
-          description: 'The default LLM provider to use for new requests'
+          description: t('systemConfig.defaultSettings.defaultProvider.description')
         },
         {
           key: 'default_model',
-          label: 'Default Model',
+          label: t('systemConfig.defaultSettings.defaultModel.label'),
           type: 'select',
           options: models.filter(m => m.is_active).map(m => ({ value: m.id, label: m.name })),
-          description: 'The default model to use when no specific model is requested'
+          description: t('systemConfig.defaultSettings.defaultModel.description')
         },
         {
           key: 'default_temperature',
-          label: 'Default Temperature',
+          label: t('systemConfig.defaultSettings.defaultTemperature.label'),
           type: 'range',
           min: 0,
           max: 2,
           step: 0.1,
-          description: 'Controls randomness in responses (0 = deterministic, 2 = very random)'
+          description: t('systemConfig.defaultSettings.defaultTemperature.description')
         },
         {
           key: 'default_max_tokens',
-          label: 'Default Max Tokens',
+          label: t('systemConfig.defaultSettings.defaultMaxTokens.label'),
           type: 'number',
           min: 1,
           max: 8192,
-          description: 'Maximum number of tokens to generate in responses'
+          description: t('systemConfig.defaultSettings.defaultMaxTokens.description')
         }
       ]
     },
     {
-      title: 'Features',
+      title: t('systemConfig.features.title'),
       icon: Zap,
       color: 'green',
       fields: [
         {
           key: 'enable_streaming',
-          label: 'Enable Streaming',
+          label: t('systemConfig.features.enableStreaming.label'),
           type: 'toggle',
-          description: 'Allow real-time streaming of responses for better user experience'
+          description: t('systemConfig.features.enableStreaming.description')
         },
         {
           key: 'enable_caching',
-          label: 'Enable Caching',
+          label: t('systemConfig.features.enableCaching.label'),
           type: 'toggle',
-          description: 'Cache responses to improve performance and reduce API costs'
+          description: t('systemConfig.features.enableCaching.description')
         },
         {
           key: 'cache_ttl',
-          label: 'Cache TTL (seconds)',
+          label: t('systemConfig.features.cacheTtl.label'),
           type: 'number',
           min: 60,
           max: 86400,
-          description: 'How long to keep cached responses before expiring'
+          description: t('systemConfig.features.cacheTtl.description')
         }
       ]
     },
     {
-      title: 'Rate Limiting',
+      title: t('systemConfig.rateLimiting.title'),
       icon: Shield,
       color: 'orange',
       fields: [
         {
           key: 'rate_limit_per_minute',
-          label: 'Requests per Minute',
+          label: t('systemConfig.rateLimiting.requestsPerMinute.label'),
           type: 'number',
           min: 1,
           max: 1000,
-          description: 'Maximum number of requests allowed per minute per user'
+          description: t('systemConfig.rateLimiting.requestsPerMinute.description')
         }
       ]
     },
     {
-      title: 'Logging',
+      title: t('systemConfig.logging.title'),
       icon: Activity,
       color: 'purple',
       fields: [
         {
           key: 'enable_logging',
-          label: 'Enable Logging',
+          label: t('systemConfig.logging.enableLogging.label'),
           type: 'toggle',
-          description: 'Log requests and responses for debugging and analytics'
+          description: t('systemConfig.logging.enableLogging.description')
         },
         {
           key: 'log_level',
-          label: 'Log Level',
+          label: t('systemConfig.logging.logLevel.label'),
           type: 'select',
           options: [
-            { value: 'DEBUG', label: 'Debug' },
-            { value: 'INFO', label: 'Info' },
-            { value: 'WARNING', label: 'Warning' },
-            { value: 'ERROR', label: 'Error' }
+            { value: 'DEBUG', label: t('systemConfig.logging.logLevel.options.debug') },
+            { value: 'INFO', label: t('systemConfig.logging.logLevel.options.info') },
+            { value: 'WARNING', label: t('systemConfig.logging.logLevel.options.warning') },
+            { value: 'ERROR', label: t('systemConfig.logging.logLevel.options.error') }
           ],
-          description: 'Minimum level of logs to record'
+          description: t('systemConfig.logging.logLevel.description')
         }
       ]
     }
@@ -290,9 +285,9 @@ const SystemConfig = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">System Configuration</h1>
+          <h1 className="text-2xl font-bold text-gray-900">{t('systemConfig.title')}</h1>
           <p className="text-gray-600 mt-1">
-            Configure global settings for your LLM infrastructure
+            {t('systemConfig.description')}
           </p>
         </div>
         <div className="flex items-center space-x-3">
@@ -312,7 +307,7 @@ const SystemConfig = () => {
             className="inline-flex items-center px-3 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <RotateCcw className="w-4 h-4 mr-2" />
-            Reset
+            {t('systemConfig.reset')}
           </button>
           <motion.button
             whileHover={{ scale: 1.05 }}
@@ -326,7 +321,7 @@ const SystemConfig = () => {
             ) : (
               <Save className="w-4 h-4 mr-2" />
             )}
-            {saving ? 'Saving...' : 'Save Changes'}
+            {saving ? t('systemConfig.saving') : t('systemConfig.saveChanges')}
           </motion.button>
         </div>
       </div>
@@ -338,32 +333,32 @@ const SystemConfig = () => {
         className="bg-white rounded-lg p-6 shadow"
       >
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-gray-900">System Status</h2>
+          <h2 className="text-lg font-semibold text-gray-900">{t('systemConfig.systemStatus.title')}</h2>
           <div className="flex items-center space-x-2">
             <CheckCircle className="w-5 h-5 text-green-500" />
-            <span className="text-sm font-medium text-green-700">All systems operational</span>
+            <span className="text-sm font-medium text-green-700">{t('systemConfig.systemStatus.operational')}</span>
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="flex items-center space-x-3 p-3 bg-green-50 rounded-lg">
             <Server className="w-5 h-5 text-green-600" />
             <div>
-              <p className="text-sm font-medium text-gray-900">API Status</p>
-              <p className="text-xs text-gray-600">Healthy</p>
+              <p className="text-sm font-medium text-gray-900">{t('systemConfig.systemStatus.apiStatus')}</p>
+              <p className="text-xs text-gray-600">{t('systemConfig.systemStatus.healthy')}</p>
             </div>
           </div>
           <div className="flex items-center space-x-3 p-3 bg-blue-50 rounded-lg">
             <Brain className="w-5 h-5 text-blue-600" />
             <div>
-              <p className="text-sm font-medium text-gray-900">Active Models</p>
-              <p className="text-xs text-gray-600">4 models</p>
+              <p className="text-sm font-medium text-gray-900">{t('systemConfig.systemStatus.activeModels')}</p>
+              <p className="text-xs text-gray-600">{t('systemConfig.systemStatus.modelsCount', { count: 4 })}</p>
             </div>
           </div>
           <div className="flex items-center space-x-3 p-3 bg-purple-50 rounded-lg">
             <Clock className="w-5 h-5 text-purple-600" />
             <div>
-              <p className="text-sm font-medium text-gray-900">Uptime</p>
-              <p className="text-xs text-gray-600">99.9%</p>
+              <p className="text-sm font-medium text-gray-900">{t('systemConfig.systemStatus.uptime')}</p>
+              <p className="text-xs text-gray-600">{t('systemConfig.systemStatus.uptimeValue', { value: '99.9%' })}</p>
             </div>
           </div>
         </div>
@@ -430,28 +425,28 @@ const SystemConfig = () => {
         transition={{ delay: 0.5 }}
         className="bg-white rounded-lg p-6 shadow"
       >
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Changes</h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('systemConfig.recentChanges.title')}</h3>
         <div className="space-y-3">
           <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
             <div>
-              <p className="text-sm font-medium text-gray-900">Default model changed to GPT-4</p>
-              <p className="text-xs text-gray-500">January 20, 2024 at 2:30 PM</p>
+              <p className="text-sm font-medium text-gray-900">{t('systemConfig.recentChanges.defaultModelChanged')}</p>
+              <p className="text-xs text-gray-500">{t('systemConfig.recentChanges.date1')}</p>
             </div>
-            <span className="text-xs text-gray-500">Admin User</span>
+            <span className="text-xs text-gray-500">{t('systemConfig.recentChanges.adminUser')}</span>
           </div>
           <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
             <div>
-              <p className="text-sm font-medium text-gray-900">Streaming enabled</p>
-              <p className="text-xs text-gray-500">January 19, 2024 at 4:15 PM</p>
+              <p className="text-sm font-medium text-gray-900">{t('systemConfig.recentChanges.streamingEnabled')}</p>
+              <p className="text-xs text-gray-500">{t('systemConfig.recentChanges.date2')}</p>
             </div>
-            <span className="text-xs text-gray-500">Admin User</span>
+            <span className="text-xs text-gray-500">{t('systemConfig.recentChanges.adminUser')}</span>
           </div>
           <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
             <div>
-              <p className="text-sm font-medium text-gray-900">Rate limit increased to 60/min</p>
-              <p className="text-xs text-gray-500">January 18, 2024 at 10:45 AM</p>
+              <p className="text-sm font-medium text-gray-900">{t('systemConfig.recentChanges.rateLimitIncreased')}</p>
+              <p className="text-xs text-gray-500">{t('systemConfig.recentChanges.date3')}</p>
             </div>
-            <span className="text-xs text-gray-500">Admin User</span>
+            <span className="text-xs text-gray-500">{t('systemConfig.recentChanges.adminUser')}</span>
           </div>
         </div>
       </motion.div>

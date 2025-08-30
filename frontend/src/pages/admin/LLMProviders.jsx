@@ -1,4 +1,6 @@
+
 import React, { useState, useEffect } from 'react';
+import { coreAPI } from '../../api/core';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
@@ -12,68 +14,35 @@ import {
   Zap
 } from 'lucide-react';
 import DataTable from '../../components/admin/DataTable';
+import { useTranslation } from 'react-i18next';
+
 
 const LLMProviders = () => {
+  const { t } = useTranslation('dashboard');
   const [providers, setProviders] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Mock data - in real app, this would come from API
   useEffect(() => {
-    const mockProviders = [
-      {
-        id: 1,
-        name: 'OpenAI',
-        provider_type: 'openai',
-        base_url: 'https://api.openai.com/v1',
-        is_active: true,
-        is_default: true,
-        created_at: '2024-01-15T10:30:00Z',
-        models_count: 5,
-        last_test: 'success',
-        last_test_time: '2024-01-20T14:30:00Z'
-      },
-      {
-        id: 2,
-        name: 'Anthropic Claude',
-        provider_type: 'anthropic',
-        base_url: 'https://api.anthropic.com/v1',
-        is_active: true,
-        is_default: false,
-        created_at: '2024-01-18T09:15:00Z',
-        models_count: 3,
-        last_test: 'success',
-        last_test_time: '2024-01-20T14:25:00Z'
-      },
-      {
-        id: 3,
-        name: 'Local Ollama',
-        provider_type: 'ollama',
-        base_url: 'http://localhost:11434',
-        is_active: true,
-        is_default: false,
-        created_at: '2024-01-19T16:45:00Z',
-        models_count: 2,
-        last_test: 'warning',
-        last_test_time: '2024-01-20T14:20:00Z'
-      },
-      {
-        id: 4,
-        name: 'Azure OpenAI',
-        provider_type: 'azure_openai',
-        base_url: 'https://myresource.openai.azure.com',
-        is_active: false,
-        is_default: false,
-        created_at: '2024-01-10T11:20:00Z',
-        models_count: 0,
-        last_test: 'error',
-        last_test_time: '2024-01-19T10:15:00Z'
+    async function fetchProviders() {
+      setLoading(true);
+      try {
+        // Use the correct endpoint for providers list
+        const res = await coreAPI.getLLMProviders();
+        let data = res.data || res;
+        console.log('Providers API response:', data);
+        // Ensure data is always an array
+        if (data && !Array.isArray(data)) {
+          data = [data];
+        }
+        setProviders(data || []);
+      } catch (e) {
+        console.error('Failed to fetch providers:', e);
+        setProviders([]);
       }
-    ];
-
-    setTimeout(() => {
-      setProviders(mockProviders);
       setLoading(false);
-    }, 1000);
+    }
+    fetchProviders();
   }, []);
 
   const columns = [
@@ -104,11 +73,11 @@ const LLMProviders = () => {
       )
     },
     {
-      key: 'models_count',
+      key: 'models',
       label: 'Models',
-      render: (value) => (
+      render: (value, item) => (
         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-          {value} models
+          {Array.isArray(item.models) ? item.models.length : 0} models
         </span>
       )
     },
@@ -198,9 +167,9 @@ const LLMProviders = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">LLM Providers</h1>
+          <h1 className="text-2xl font-bold text-gray-900">{t('llmProviders.title')}</h1>
           <p className="text-gray-600 mt-1">
-            Manage your LLM service providers and their configurations
+            {t('llmProviders.description')}
           </p>
         </div>
         <motion.div
@@ -212,7 +181,7 @@ const LLMProviders = () => {
             className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
             <Plus className="w-4 h-4 mr-2" />
-            Add Provider
+            {t('llmProviders.addProvider')}
           </Link>
         </motion.div>
       </div>
@@ -229,7 +198,7 @@ const LLMProviders = () => {
               <Server className="w-5 h-5 text-blue-600" />
             </div>
             <div className="ml-3">
-              <p className="text-sm font-medium text-gray-600">Total Providers</p>
+              <p className="text-sm font-medium text-gray-600">{t('llmProviders.totalProviders')}</p>
               <p className="text-lg font-semibold text-gray-900">{providers.length}</p>
             </div>
           </div>
@@ -246,7 +215,7 @@ const LLMProviders = () => {
               <CheckCircle className="w-5 h-5 text-green-600" />
             </div>
             <div className="ml-3">
-              <p className="text-sm font-medium text-gray-600">Active</p>
+              <p className="text-sm font-medium text-gray-600">{t('llmProviders.active')}</p>
               <p className="text-lg font-semibold text-gray-900">
                 {providers.filter(p => p.is_active).length}
               </p>
@@ -265,9 +234,9 @@ const LLMProviders = () => {
               <Zap className="w-5 h-5 text-yellow-600" />
             </div>
             <div className="ml-3">
-              <p className="text-sm font-medium text-gray-600">Default</p>
+              <p className="text-sm font-medium text-gray-600">{t('llmProviders.default')}</p>
               <p className="text-lg font-semibold text-gray-900">
-                {providers.find(p => p.is_default)?.name || 'None'}
+                {providers.find(p => p.is_default)?.name || t('llmProviders.none')}
               </p>
             </div>
           </div>
@@ -284,7 +253,7 @@ const LLMProviders = () => {
               <Settings className="w-5 h-5 text-purple-600" />
             </div>
             <div className="ml-3">
-              <p className="text-sm font-medium text-gray-600">Total Models</p>
+              <p className="text-sm font-medium text-gray-600">{t('llmProviders.totalModels')}</p>
               <p className="text-lg font-semibold text-gray-900">
                 {providers.reduce((sum, p) => sum + p.models_count, 0)}
               </p>
@@ -319,7 +288,7 @@ const LLMProviders = () => {
         transition={{ delay: 0.5 }}
         className="bg-white rounded-lg p-6 shadow"
       >
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+  <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('llmProviders.quickActions.title')}</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <button
             onClick={() => handleTestConnection()}
@@ -327,8 +296,8 @@ const LLMProviders = () => {
           >
             <CheckCircle className="w-5 h-5 text-green-600 mr-3" />
             <div className="text-left">
-              <p className="font-medium text-gray-900">Test All Connections</p>
-              <p className="text-sm text-gray-500">Verify all provider connections</p>
+              <p className="font-medium text-gray-900">{t('llmProviders.quickActions.testAllConnections')}</p>
+              <p className="text-sm text-gray-500">{t('llmProviders.quickActions.verifyAllConnections')}</p>
             </div>
           </button>
 
@@ -338,8 +307,8 @@ const LLMProviders = () => {
           >
             <Server className="w-5 h-5 text-blue-600 mr-3" />
             <div className="text-left">
-              <p className="font-medium text-gray-900">Import Configuration</p>
-              <p className="text-sm text-gray-500">Import provider settings</p>
+              <p className="font-medium text-gray-900">{t('llmProviders.quickActions.importConfig')}</p>
+              <p className="text-sm text-gray-500">{t('llmProviders.quickActions.importSettings')}</p>
             </div>
           </Link>
 
@@ -349,8 +318,8 @@ const LLMProviders = () => {
           >
             <Settings className="w-5 h-5 text-purple-600 mr-3" />
             <div className="text-left">
-              <p className="font-medium text-gray-900">Export Configuration</p>
-              <p className="text-sm text-gray-500">Export provider settings</p>
+              <p className="font-medium text-gray-900">{t('llmProviders.quickActions.exportConfig')}</p>
+              <p className="text-sm text-gray-500">{t('llmProviders.quickActions.exportSettings')}</p>
             </div>
           </Link>
         </div>

@@ -1,10 +1,14 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, CheckCircle } from 'lucide-react';
 import DynamicForm from '../../components/admin/DynamicForm';
+import { useTranslation } from 'react-i18next';
+
 
 const CreateProvider = () => {
+  const { t } = useTranslation('dashboard');
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -53,8 +57,8 @@ const CreateProvider = () => {
           >
             <CheckCircle className="w-8 h-8 text-green-600" />
           </motion.div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">Provider Created Successfully!</h2>
-          <p className="text-gray-600">Redirecting to providers list...</p>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">{t('createProvider.successTitle')}</h2>
+          <p className="text-gray-600">{t('createProvider.successDesc')}</p>
         </div>
       </motion.div>
     );
@@ -71,9 +75,9 @@ const CreateProvider = () => {
           <ArrowLeft className="w-5 h-5 text-gray-600" />
         </button>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Create LLM Provider</h1>
+          <h1 className="text-2xl font-bold text-gray-900">{t('createProvider.title')}</h1>
           <p className="text-gray-600 mt-1">
-            Add a new LLM service provider to your infrastructure
+            {t('createProvider.desc')}
           </p>
         </div>
       </div>
@@ -89,10 +93,9 @@ const CreateProvider = () => {
             <span className="text-white text-xs font-bold">i</span>
           </div>
           <div>
-            <h3 className="text-sm font-medium text-blue-900">Config-Driven Form</h3>
+            <h3 className="text-sm font-medium text-blue-900">{t('createProvider.infoCard.title')}</h3>
             <p className="text-sm text-blue-700 mt-1">
-              This form is automatically generated from the Django model schema using drf-spectacular. 
-              Fields, validation rules, and UI components are all derived from the backend configuration.
+              {t('createProvider.infoCard.desc')}
             </p>
           </div>
         </div>
@@ -114,24 +117,24 @@ const CreateProvider = () => {
         transition={{ delay: 0.3 }}
         className="bg-gray-50 rounded-lg p-6"
       >
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">How Config-Driven Forms Work</h3>
+  <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('createProvider.schemaInfo.title')}</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <h4 className="font-medium text-gray-900 mb-2">Schema Parsing</h4>
+            <h4 className="font-medium text-gray-900 mb-2">{t('createProvider.schemaInfo.schemaParsing.title')}</h4>
             <ul className="text-sm text-gray-600 space-y-1">
-              <li>• Fetches OpenAPI schema from drf-spectacular</li>
-              <li>• Parses field types, validation rules, and constraints</li>
-              <li>• Generates form configuration automatically</li>
-              <li>• Supports all Django field types</li>
+              <li>{t('createProvider.schemaInfo.schemaParsing.fetches')}</li>
+              <li>{t('createProvider.schemaInfo.schemaParsing.parses')}</li>
+              <li>{t('createProvider.schemaInfo.schemaParsing.generates')}</li>
+              <li>{t('createProvider.schemaInfo.schemaParsing.supports')}</li>
             </ul>
           </div>
           <div>
-            <h4 className="font-medium text-gray-900 mb-2">Dynamic Rendering</h4>
+            <h4 className="font-medium text-gray-900 mb-2">{t('createProvider.schemaInfo.dynamicRendering.title')}</h4>
             <ul className="text-sm text-gray-600 space-y-1">
-              <li>• Renders appropriate input components</li>
-              <li>• Applies validation rules from schema</li>
-              <li>• Groups fields into logical sections</li>
-              <li>• Handles relationships and foreign keys</li>
+              <li>{t('createProvider.schemaInfo.dynamicRendering.renders')}</li>
+              <li>{t('createProvider.schemaInfo.dynamicRendering.applies')}</li>
+              <li>{t('createProvider.schemaInfo.dynamicRendering.groups')}</li>
+              <li>{t('createProvider.schemaInfo.dynamicRendering.handles')}</li>
             </ul>
           </div>
         </div>

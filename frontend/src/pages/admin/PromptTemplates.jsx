@@ -1,4 +1,6 @@
+
 import React, { useState, useEffect } from 'react';
+import { coreAPI } from '../../api/core';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
@@ -14,156 +16,40 @@ import {
   Copy
 } from 'lucide-react';
 import DataTable from '../../components/admin/DataTable';
+import { useTranslation } from 'react-i18next';
+
 
 const PromptTemplates = () => {
+  const { t } = useTranslation('dashboard');
   const [templates, setTemplates] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Mock data - in real app, this would come from API
   useEffect(() => {
-    const mockTemplates = [
-      {
-        id: 1,
-        name: 'Code Review Assistant',
-        language: 'en',
-        prompt_type: 'code_review',
-        description: 'Template for reviewing code and providing feedback',
-        template: 'Please review the following code and provide constructive feedback:\n\n{code}\n\nFocus on:\n- Code quality\n- Best practices\n- Potential bugs\n- Performance improvements',
-        variables: 'code',
-        is_active: true,
-        is_default: true,
-        created_at: '2024-01-15T10:30:00Z',
-        usage_count: 245
-      },
-      {
-        id: 2,
-        name: 'Document Summarizer',
-        language: 'en',
-        prompt_type: 'summarization',
-        description: 'Template for summarizing long documents',
-        template: 'Please provide a concise summary of the following document:\n\n{document}\n\nSummary should include:\n- Key points\n- Main conclusions\n- Action items (if any)',
-        variables: 'document',
-        is_active: true,
-        is_default: false,
-        created_at: '2024-01-16T14:20:00Z',
-        usage_count: 189
-      },
-      {
-        id: 3,
-        name: 'Email Composer',
-        language: 'en',
-        prompt_type: 'email_generation',
-        description: 'Template for composing professional emails',
-        template: 'Compose a professional email with the following details:\n\nTo: {recipient}\nSubject: {subject}\nTone: {tone}\nKey points: {key_points}\n\nPlease make it clear, concise, and appropriate for business communication.',
-        variables: 'recipient, subject, tone, key_points',
-        is_active: true,
-        is_default: false,
-        created_at: '2024-01-17T09:45:00Z',
-        usage_count: 156
-      },
-      {
-        id: 4,
-        name: 'Bug Report Analyzer',
-        language: 'en',
-        prompt_type: 'bug_analysis',
-        description: 'Template for analyzing bug reports',
-        template: 'Analyze the following bug report and provide:\n\n{bug_report}\n\n1. Severity assessment\n2. Potential root causes\n3. Suggested investigation steps\n4. Workaround recommendations',
-        variables: 'bug_report',
-        is_active: false,
-        is_default: false,
-        created_at: '2024-01-18T16:30:00Z',
-        usage_count: 67
-      },
-      {
-        id: 5,
-        name: '中文文档翻译',
-        language: 'zh-CN',
-        prompt_type: 'translation',
-        description: '用于翻译技术文档的模板',
-        template: '请将以下文档翻译成中文，保持技术术语的准确性：\n\n{document}\n\n翻译要求：\n- 保持原文格式\n- 技术术语使用标准译名\n- 语言自然流畅',
-        variables: 'document',
-        is_active: true,
-        is_default: false,
-        created_at: '2024-01-19T11:15:00Z',
-        usage_count: 98
+    async function fetchTemplates() {
+      setLoading(true);
+      try {
+        const res = await coreAPI.getPromptTemplates();
+        let data = res.data || res;
+        console.log('PromptTemplates API response:', data);
+        // Ensure data is always an array
+        if (data && !Array.isArray(data)) {
+          data = [data];
+        }
+        setTemplates(data || []);
+      } catch (e) {
+        console.error('Failed to fetch prompt templates:', e);
+        setTemplates([]);
       }
-    ];
-
-    setTimeout(() => {
-      setTemplates(mockTemplates);
       setLoading(false);
-    }, 1000);
+    }
+    fetchTemplates();
   }, []);
 
   const columns = [
     {
       key: 'name',
-      label: 'Template Name',
-      render: (value, item) => (
-        <div className="flex items-center space-x-3">
-          <div className="flex-shrink-0">
-            <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-              <FileText className="w-4 h-4 text-green-600" />
-            </div>
-          </div>
-          <div>
-            <div className="text-sm font-medium text-gray-900">{value}</div>
-            <div className="text-sm text-gray-500">{item.description}</div>
-          </div>
-        </div>
-      )
-    },
-    {
-      key: 'language',
-      label: 'Language',
-      render: (value) => (
-        <div className="flex items-center space-x-1">
-          <Globe className="w-4 h-4 text-gray-400" />
-          <span className="text-sm text-gray-900 uppercase">{value}</span>
-        </div>
-      )
-    },
-    {
-      key: 'prompt_type',
-      label: 'Type',
-      render: (value) => (
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-          <Tag className="w-3 h-3 mr-1" />
-          {value.replace('_', ' ')}
-        </span>
-      )
-    },
-    {
-      key: 'usage_count',
-      label: 'Usage',
-      render: (value) => (
-        <div className="text-sm text-gray-900">
-          <span className="font-medium">{value}</span>
-          <span className="text-gray-500 ml-1">times</span>
-        </div>
-      )
-    },
-    {
-      key: 'is_active',
-      label: 'Status',
-      render: (value, item) => (
-        <div className="flex items-center space-x-2">
-          <div className={`p-1 rounded-full ${value ? 'bg-green-100' : 'bg-gray-100'}`}>
-            {value ? (
-              <CheckCircle className="w-3 h-3 text-green-500" />
-            ) : (
-              <XCircle className="w-3 h-3 text-gray-500" />
-            )}
-          </div>
-          <span className="text-sm text-gray-900">{value ? 'Active' : 'Inactive'}</span>
-          {item.is_default && (
-            <span className="inline-flex items-center px-1.5 py-0.5 text-xs font-medium rounded bg-yellow-100 text-yellow-800">
-              <Zap className="w-3 h-3 mr-1" />
-              Default
-            </span>
-          )}
-        </div>
-      )
+      label: 'Name',
+      render: (value) => value
     },
     {
       key: 'created_at',
@@ -210,9 +96,9 @@ const PromptTemplates = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Prompt Templates</h1>
+          <h1 className="text-2xl font-bold text-gray-900">{t('promptTemplates.title')}</h1>
           <p className="text-gray-600 mt-1">
-            Create and manage reusable prompt templates for various tasks
+            {t('promptTemplates.description')}
           </p>
         </div>
         <motion.div
@@ -224,7 +110,7 @@ const PromptTemplates = () => {
             className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
           >
             <Plus className="w-4 h-4 mr-2" />
-            Create Template
+            {t('promptTemplates.createTemplate')}
           </Link>
         </motion.div>
       </div>
@@ -241,7 +127,7 @@ const PromptTemplates = () => {
               <FileText className="w-5 h-5 text-green-600" />
             </div>
             <div className="ml-3">
-              <p className="text-sm font-medium text-gray-600">Total Templates</p>
+              <p className="text-sm font-medium text-gray-600">{t('promptTemplates.totalTemplates')}</p>
               <p className="text-lg font-semibold text-gray-900">{templates.length}</p>
             </div>
           </div>
@@ -258,7 +144,7 @@ const PromptTemplates = () => {
               <CheckCircle className="w-5 h-5 text-blue-600" />
             </div>
             <div className="ml-3">
-              <p className="text-sm font-medium text-gray-600">Active</p>
+              <p className="text-sm font-medium text-gray-600">{t('promptTemplates.active')}</p>
               <p className="text-lg font-semibold text-gray-900">
                 {templates.filter(t => t.is_active).length}
               </p>
@@ -277,7 +163,7 @@ const PromptTemplates = () => {
               <Globe className="w-5 h-5 text-purple-600" />
             </div>
             <div className="ml-3">
-              <p className="text-sm font-medium text-gray-600">Languages</p>
+              <p className="text-sm font-medium text-gray-600">{t('promptTemplates.languages')}</p>
               <p className="text-lg font-semibold text-gray-900">
                 {Object.keys(languageStats).length}
               </p>
@@ -296,7 +182,7 @@ const PromptTemplates = () => {
               <Eye className="w-5 h-5 text-orange-600" />
             </div>
             <div className="ml-3">
-              <p className="text-sm font-medium text-gray-600">Total Usage</p>
+              <p className="text-sm font-medium text-gray-600">{t('promptTemplates.totalUsage')}</p>
               <p className="text-lg font-semibold text-gray-900">
                 {templates.reduce((sum, t) => sum + t.usage_count, 0)}
               </p>
@@ -313,7 +199,7 @@ const PromptTemplates = () => {
           transition={{ delay: 0.4 }}
           className="bg-white rounded-lg p-6 shadow"
         >
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Templates by Language</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('promptTemplates.byLanguage')}</h3>
           <div className="space-y-3">
             {Object.entries(languageStats).map(([language, count]) => (
               <div key={language} className="flex items-center justify-between">
@@ -321,7 +207,7 @@ const PromptTemplates = () => {
                   <Globe className="w-4 h-4 text-gray-400" />
                   <span className="font-medium text-gray-900 uppercase">{language}</span>
                 </div>
-                <span className="text-sm text-gray-600">{count} templates</span>
+                <span className="text-sm text-gray-600">{t('promptTemplates.templatesCount', { count })}</span>
               </div>
             ))}
           </div>
@@ -333,7 +219,7 @@ const PromptTemplates = () => {
           transition={{ delay: 0.5 }}
           className="bg-white rounded-lg p-6 shadow"
         >
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Templates by Type</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('promptTemplates.byType')}</h3>
           <div className="space-y-3">
             {Object.entries(typeStats).map(([type, count]) => (
               <div key={type} className="flex items-center justify-between">
@@ -341,7 +227,7 @@ const PromptTemplates = () => {
                   <Tag className="w-4 h-4 text-gray-400" />
                   <span className="font-medium text-gray-900">{type.replace('_', ' ')}</span>
                 </div>
-                <span className="text-sm text-gray-600">{count} templates</span>
+                <span className="text-sm text-gray-600">{t('promptTemplates.templatesCount', { count })}</span>
               </div>
             ))}
           </div>
@@ -376,9 +262,9 @@ const PromptTemplates = () => {
         className="bg-white rounded-lg p-6 shadow"
       >
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-gray-900">Most Used Templates</h3>
+          <h3 className="text-lg font-semibold text-gray-900">{t('promptTemplates.mostUsed')}</h3>
           <Link to="/admin/templates/analytics" className="text-blue-600 hover:text-blue-700 text-sm font-medium">
-            View Analytics
+            {t('promptTemplates.viewAnalytics')}
           </Link>
         </div>
         <div className="space-y-4">
@@ -399,11 +285,11 @@ const PromptTemplates = () => {
                   </div>
                   <div>
                     <p className="font-medium text-gray-900">{template.name}</p>
-                    <p className="text-sm text-gray-500">{template.prompt_type.replace('_', ' ')}</p>
+                    <p className="text-sm text-gray-500">{t('promptTemplates.type.' + template.prompt_type, { defaultValue: template.prompt_type.replace('_', ' ') })}</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-4">
-                  <span className="text-sm text-gray-600">{template.usage_count} uses</span>
+                  <span className="text-sm text-gray-600">{t('promptTemplates.uses', { count: template.usage_count })}</span>
                   <div className="flex space-x-2">
                     <button
                       onClick={() => handleView(template)}

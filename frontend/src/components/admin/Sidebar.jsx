@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -10,36 +11,39 @@ import {
   X,
   ChevronRight
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+
 
 const Sidebar = ({ onClose }) => {
+  const { t } = useTranslation('dashboard');
   const location = useLocation();
 
   const navigationItems = [
     {
-      name: 'Overview',
+      name: t('sidebar.overview', 'Overview'),
       href: '/admin',
       icon: LayoutDashboard,
       exact: true
     },
     {
-      name: 'LLM Providers',
+      name: t('sidebar.providers', 'LLM Providers'),
       href: '/admin/providers',
       icon: Server,
-      badge: 'Active'
+      badge: t('sidebar.active', 'Active')
     },
     {
-      name: 'LLM Models',
+      name: t('sidebar.models', 'LLM Models'),
       href: '/admin/models',
       icon: Brain,
-      badge: 'New'
+      badge: t('sidebar.new', 'New')
     },
     {
-      name: 'Prompt Templates',
+      name: t('sidebar.templates', 'Prompt Templates'),
       href: '/admin/templates',
       icon: FileText
     },
     {
-      name: 'Configuration',
+      name: t('sidebar.config', 'Configuration'),
       href: '/admin/config',
       icon: Settings
     }
@@ -61,8 +65,8 @@ const Sidebar = ({ onClose }) => {
             <LayoutDashboard className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h1 className="text-lg font-semibold text-gray-900">Admin Panel</h1>
-            <p className="text-sm text-gray-500">LLM Management</p>
+            <h1 className="text-lg font-semibold text-gray-900">{t('sidebar.title', 'Admin Panel')}</h1>
+            <p className="text-sm text-gray-500">{t('sidebar.subtitle', 'LLM Management')}</p>
           </div>
         </div>
         <button
@@ -105,7 +109,7 @@ const Sidebar = ({ onClose }) => {
                   {item.badge && (
                     <span className={`
                       px-2 py-1 text-xs font-medium rounded-full
-                      ${item.badge === 'Active' 
+                      ${item.badge === t('sidebar.active', 'Active') 
                         ? 'bg-green-100 text-green-700' 
                         : 'bg-blue-100 text-blue-700'
                       }
@@ -131,8 +135,8 @@ const Sidebar = ({ onClose }) => {
             <span className="text-sm font-medium text-gray-700">A</span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-gray-900 truncate">Admin User</p>
-            <p className="text-xs text-gray-500 truncate">admin@example.com</p>
+            <p className="text-sm font-medium text-gray-900 truncate">{t('sidebar.user', 'Admin User')}</p>
+            <p className="text-xs text-gray-500 truncate">{t('sidebar.email', 'admin@example.com')}</p>
           </div>
         </div>
       </div>

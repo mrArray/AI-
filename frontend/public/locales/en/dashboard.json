@@ -1,0 +1,250 @@
+{
+  "createProvider": {
+    "title": "Create LLM Provider",
+    "desc": "Add a new LLM service provider to your infrastructure",
+    "successTitle": "Provider Created Successfully!",
+    "successDesc": "Redirecting to providers list..."
+  }
+  ,
+  "sidebar": {
+    "overview": "Overview",
+    "providers": "LLM Providers",
+    "models": "LLM Models",
+    "templates": "Prompt Templates",
+    "config": "Configuration",
+    "active": "Active",
+    "new": "New",
+    "title": "Admin Panel",
+    "subtitle": "LLM Management",
+    "user": "Admin User",
+    "email": "admin@example.com"
+  }
+  ,
+  "header": {
+    "dashboard": "Dashboard",
+    "searchPlaceholder": "Search providers, models, templates...",
+    "quickAdd": "Quick Add",
+    "notifications": {
+      "title": "Notifications",
+      "modelAdded": "New LLM model added successfully",
+      "providerFailed": "Provider connection test failed",
+      "configUpdated": "System configuration updated",
+      "time2min": "2 min ago",
+      "time5min": "5 min ago",
+      "time1hr": "1 hour ago"
+    },
+    "pageDesc": "Manage your LLM infrastructure and configurations",
+    "lastUpdated": "Last updated: 2 minutes ago"
+  }
+  ,
+  "llmProviders": {
+    "title": "LLM Providers",
+    "description": "Manage your LLM service providers and their configurations",
+    "addProvider": "Add Provider",
+    "totalProviders": "Total Providers",
+    "active": "Active",
+    "inactive": "Inactive",
+    "default": "Default",
+    "none": "None",
+    "totalModels": "Total Models",
+    "providerName": "Provider Name",
+    "baseUrl": "Base URL",
+    "models": "Models",
+    "modelsCount": "{{count}} models",
+    "status": "Status",
+    "healthy": "Healthy",
+    "warning": "Warning",
+    "error": "Error",
+    "created": "Created",
+    "quickActions": {
+      "title": "Quick Actions",
+      "testAllConnections": "Test All Connections",
+      "verifyAllConnections": "Verify all provider connections",
+      "importConfig": "Import Configuration",
+      "importSettings": "Import provider settings",
+      "exportConfig": "Export Configuration",
+      "exportSettings": "Export provider settings"
+    }
+  },
+  "llmModels": {
+    "title": "LLM Models",
+    "desc": "Manage and configure available LLM models.",
+    "table": {
+      "model": "Model",
+      "provider": "Provider",
+      "contextLength": "Context Length",
+      "costPer1K": "Cost per 1K",
+      "streaming": "Streaming",
+      "status": "Status",
+      "added": "Added"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "default": "Default"
+    },
+    "add": {
+      "title": "Add New Model",
+      "name": "Name",
+      "provider": "Provider",
+      "type": "Type",
+      "button": "Add Model"
+    },
+    "actions": {
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "free": "Free",
+    "yes": "Yes",
+    "no": "No",
+    "stats": {
+      "total": "Total Models",
+      "active": "Active Models",
+      "default": "Default Model",
+      "avgCost": "Avg Cost/1K"
+    },
+    "byProvider": "Models by Provider",
+    "modelsCount": "{{count}} models",
+    "performance": {
+      "title": "Performance Insights",
+      "contextLength": "Context Length Distribution",
+      "cost": "Cost Analysis"
+    }
+  },
+  "overview": {
+    "welcome": "Welcome back, Admin!",
+    "subtitle": "Your LLM infrastructure is running smoothly. Here's what's happening today.",
+    "llmProviders": "LLM Providers",
+    "activeModels": "Active Models",
+    "promptTemplates": "Prompt Templates",
+    "apiCallsToday": "API Calls Today",
+    "fromLastWeek": "from last week",
+    "recentActivity": "Recent Activity",
+    "viewAll": "View all",
+    "activity": {
+      "newProvider": "New provider \"{{provider}}\" was added",
+      "providerTimeAgo": "{{time}} ago • {{user}}",
+      "modelUpdated": "{{model}} model configuration updated",
+      "templateCreated": "New prompt template \"{{template}}\" created",
+      "connectionFailed": "Connection test failed for {{provider}} provider",
+      "systemConfigUpdated": "System configuration updated"
+    },
+    "quickActions": "Quick Actions",
+    "addProvider": "Add Provider",
+    "addProviderDesc": "Connect a new LLM provider",
+    "createModel": "Create Model",
+    "createModelDesc": "Add a new model configuration",
+    "newTemplate": "New Template",
+    "newTemplateDesc": "Create a prompt template",
+    "systemConfig": "System Config",
+    "systemConfigDesc": "Update system settings",
+    "systemHealth": "System Health",
+    "openaiProvider": "OpenAI Provider",
+    "anthropicProvider": "Anthropic Provider",
+    "localProvider": "Local Provider",
+    "database": "Database"
+  },
+  "systemConfig": {
+    "title": "System Configuration",
+    "description": "Manage system-wide settings and operational status.",
+    "reset": "Reset",
+    "saveChanges": "Save Changes",
+    "systemStatus": {
+      "title": "System Status",
+      "operational": "Operational",
+      "apiStatus": "API Status",
+      "healthy": "Healthy",
+      "activeModels": "Active Models",
+      "modelsCount": "{{count}} models",
+      "uptime": "Uptime",
+      "uptimeValue": "{{value}} hours"
+    },
+    "defaultSettings": {
+      "title": "Default Settings",
+      "defaultProvider": {
+        "label": "Default Provider",
+        "description": "The provider used by default for LLM requests."
+      },
+      "defaultModel": {
+        "label": "Default Model",
+        "description": "The model used by default for text generation."
+      },
+      "defaultTemperature": {
+        "label": "Default Temperature",
+        "description": "Controls the randomness of model outputs. 0 = deterministic, 2 = most random."
+      },
+      "defaultMaxTokens": {
+        "label": "Default Max Tokens",
+        "description": "Maximum number of tokens for each response."
+      }
+    },
+    "features": {
+      "title": "Features",
+      "enableStreaming": {
+        "label": "Enable Streaming",
+        "description": "Allow streaming responses from the LLM."
+      },
+      "enableCaching": {
+        "label": "Enable Caching",
+        "description": "Cache LLM responses to improve performance."
+      },
+      "cacheTtl": {
+        "label": "Cache TTL (seconds)",
+        "description": "How long to cache responses (in seconds)."
+      }
+    },
+    "rateLimiting": {
+      "title": "Rate Limiting",
+      "requestsPerMinute": {
+        "label": "Requests per Minute",
+        "description": "Maximum number of API requests allowed per minute."
+      }
+    },
+    "logging": {
+      "title": "Logging",
+      "enableLogging": {
+        "label": "Enable Logging",
+        "description": "Log all API requests and responses."
+      },
+      "logLevel": {
+        "label": "Log Level",
+        "options": {
+          "info": "Info"
+        },
+        "description": "Set the level of detail for logs."
+      }
+    },
+    "recentChanges": {
+      "title": "Recent Changes",
+      "defaultModelChanged": "Default model changed to GPT-4.",
+      "date1": "2025-08-01",
+      "adminUser": "Admin User",
+      "streamingEnabled": "Streaming enabled.",
+      "date2": "2025-08-15",
+      "rateLimitIncreased": "Rate limit increased to 60 requests/minute."
+    }
+  },
+  "promptTemplates": {
+    "title": "Prompt Templates",
+    "description": "Create and manage reusable prompt templates for various tasks",
+    "createTemplate": "Create Template",
+    "totalTemplates": "Total Templates",
+    "active": "Active",
+    "languages": "Languages",
+    "totalUsage": "Total Usage",
+    "byLanguage": "Templates by Language",
+    "byType": "Templates by Type",
+    "templatesCount": "{{count}} templates",
+    "mostUsed": "Most Used Templates",
+    "viewAnalytics": "View Analytics",
+    "uses": "{{count}} uses",
+    "type": {
+      "code_review": "Code Review",
+      "summarization": "Summarization",
+      "email_generation": "Email Generation",
+      "bug_analysis": "Bug Analysis",
+      "translation": "Translation"
+    }
+
+  }
+}

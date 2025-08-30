@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -10,8 +11,11 @@ import {
   ChevronRight,
   Plus
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+
 
 const Header = ({ onToggleSidebar, sidebarOpen }) => {
+  const { t } = useTranslation('dashboard');
   const [searchQuery, setSearchQuery] = useState('');
   const [showNotifications, setShowNotifications] = useState(false);
   const location = useLocation();
@@ -22,16 +26,16 @@ const Header = ({ onToggleSidebar, sidebarOpen }) => {
     const breadcrumbs = [];
 
     if (pathSegments.length === 1 && pathSegments[0] === 'admin') {
-      return [{ name: 'Overview', path: '/admin' }];
+      return [{ name: t('sidebar.overview', 'Overview'), path: '/admin' }];
     }
 
-    breadcrumbs.push({ name: 'Admin', path: '/admin' });
+    breadcrumbs.push({ name: t('sidebar.title', 'Admin Panel'), path: '/admin' });
 
     const routeMap = {
-      'providers': 'LLM Providers',
-      'models': 'LLM Models',
-      'templates': 'Prompt Templates',
-      'config': 'Configuration'
+      'providers': t('sidebar.providers', 'LLM Providers'),
+      'models': t('sidebar.models', 'LLM Models'),
+      'templates': t('sidebar.templates', 'Prompt Templates'),
+      'config': t('sidebar.config', 'Configuration')
     };
 
     for (let i = 1; i < pathSegments.length; i++) {
@@ -45,12 +49,12 @@ const Header = ({ onToggleSidebar, sidebarOpen }) => {
   };
 
   const breadcrumbs = generateBreadcrumbs();
-  const currentPage = breadcrumbs[breadcrumbs.length - 1]?.name || 'Dashboard';
+  const currentPage = breadcrumbs[breadcrumbs.length - 1]?.name || t('header.dashboard', 'Dashboard');
 
   const notifications = [
-    { id: 1, message: 'New LLM model added successfully', time: '2 min ago', type: 'success' },
-    { id: 2, message: 'Provider connection test failed', time: '5 min ago', type: 'error' },
-    { id: 3, message: 'System configuration updated', time: '1 hour ago', type: 'info' }
+    { id: 1, message: t('header.notifications.modelAdded', 'New LLM model added successfully'), time: t('header.notifications.time2min', '2 min ago'), type: 'success' },
+    { id: 2, message: t('header.notifications.providerFailed', 'Provider connection test failed'), time: t('header.notifications.time5min', '5 min ago'), type: 'error' },
+    { id: 3, message: t('header.notifications.configUpdated', 'System configuration updated'), time: t('header.notifications.time1hr', '1 hour ago'), type: 'info' }
   ];
 
   return (
@@ -90,7 +94,7 @@ const Header = ({ onToggleSidebar, sidebarOpen }) => {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
               type="text"
-              placeholder="Search providers, models, templates..."
+              placeholder={t('header.searchPlaceholder', 'Search providers, models, templates...')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
@@ -107,7 +111,7 @@ const Header = ({ onToggleSidebar, sidebarOpen }) => {
             className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
             <Plus className="w-4 h-4" />
-            <span className="hidden sm:inline">Quick Add</span>
+            <span className="hidden sm:inline">{t('header.quickAdd', 'Quick Add')}</span>
           </motion.button>
 
           {/* Notifications */}
@@ -127,7 +131,7 @@ const Header = ({ onToggleSidebar, sidebarOpen }) => {
                 className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50"
               >
                 <div className="p-4 border-b border-gray-200">
-                  <h3 className="text-sm font-semibold text-gray-900">Notifications</h3>
+                  <h3 className="text-sm font-semibold text-gray-900">{t('header.notifications.title', 'Notifications')}</h3>
                 </div>
                 <div className="max-h-64 overflow-y-auto">
                   {notifications.map((notification) => (
@@ -160,7 +164,7 @@ const Header = ({ onToggleSidebar, sidebarOpen }) => {
             <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
               <User className="w-4 h-4 text-white" />
             </div>
-            <span className="hidden sm:inline text-sm font-medium text-gray-700">Admin</span>
+            <span className="hidden sm:inline text-sm font-medium text-gray-700">{t('sidebar.user', 'Admin User')}</span>
           </button>
         </div>
       </div>
@@ -171,11 +175,11 @@ const Header = ({ onToggleSidebar, sidebarOpen }) => {
           <div>
             <h1 className="text-xl font-semibold text-gray-900">{currentPage}</h1>
             <p className="text-sm text-gray-600 mt-1">
-              Manage your LLM infrastructure and configurations
+              {t('header.pageDesc', 'Manage your LLM infrastructure and configurations')}
             </p>
           </div>
           <div className="flex items-center space-x-2 text-sm text-gray-500">
-            <span>Last updated: 2 minutes ago</span>
+            <span>{t('header.lastUpdated', 'Last updated: 2 minutes ago')}</span>
             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
           </div>
         </div>

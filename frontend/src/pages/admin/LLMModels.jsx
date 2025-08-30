@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
@@ -12,106 +13,40 @@ import {
   Layers
 } from 'lucide-react';
 import DataTable from '../../components/admin/DataTable';
+import { useTranslation } from 'react-i18next';
+
 
 const LLMModels = () => {
+  const { t } = useTranslation('dashboard');
   const [models, setModels] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Mock data - in real app, this would come from API
   useEffect(() => {
-    const mockModels = [
-      {
-        id: 1,
-        name: 'gpt-4',
-        display_name: 'GPT-4',
-        provider: 'OpenAI',
-        provider_id: 1,
-        context_length: 8192,
-        max_tokens: 4096,
-        temperature_default: 0.7,
-        supports_streaming: true,
-        is_active: true,
-        is_default: true,
-        cost_per_1k_tokens: 0.03,
-        created_at: '2024-01-15T10:30:00Z',
-        description: 'Most capable GPT-4 model'
-      },
-      {
-        id: 2,
-        name: 'gpt-3.5-turbo',
-        display_name: 'GPT-3.5 Turbo',
-        provider: 'OpenAI',
-        provider_id: 1,
-        context_length: 4096,
-        max_tokens: 2048,
-        temperature_default: 0.7,
-        supports_streaming: true,
-        is_active: true,
-        is_default: false,
-        cost_per_1k_tokens: 0.002,
-        created_at: '2024-01-15T10:30:00Z',
-        description: 'Fast and efficient model for most tasks'
-      },
-      {
-        id: 3,
-        name: 'claude-3-opus',
-        display_name: 'Claude 3 Opus',
-        provider: 'Anthropic',
-        provider_id: 2,
-        context_length: 200000,
-        max_tokens: 4096,
-        temperature_default: 0.7,
-        supports_streaming: true,
-        is_active: true,
-        is_default: false,
-        cost_per_1k_tokens: 0.015,
-        created_at: '2024-01-18T09:15:00Z',
-        description: 'Most powerful Claude model'
-      },
-      {
-        id: 4,
-        name: 'claude-3-sonnet',
-        display_name: 'Claude 3 Sonnet',
-        provider: 'Anthropic',
-        provider_id: 2,
-        context_length: 200000,
-        max_tokens: 4096,
-        temperature_default: 0.7,
-        supports_streaming: true,
-        is_active: true,
-        is_default: false,
-        cost_per_1k_tokens: 0.003,
-        created_at: '2024-01-18T09:15:00Z',
-        description: 'Balanced performance and cost'
-      },
-      {
-        id: 5,
-        name: 'llama2-7b',
-        display_name: 'Llama 2 7B',
-        provider: 'Local Ollama',
-        provider_id: 3,
-        context_length: 4096,
-        max_tokens: 2048,
-        temperature_default: 0.7,
-        supports_streaming: true,
-        is_active: false,
-        is_default: false,
-        cost_per_1k_tokens: 0,
-        created_at: '2024-01-19T16:45:00Z',
-        description: 'Open source model running locally'
+    async function fetchModels() {
+      setLoading(true);
+      try {
+        const res = await import('../../api/core').then(m => m.coreAPI.getLLMModels());
+        let data = res.data || res;
+        console.log('Models API response:', data);
+        // Ensure data is always an array
+        if (data && !Array.isArray(data)) {
+          data = [data];
+        }
+        setModels(data || []);
+      } catch (e) {
+        console.error('Failed to fetch models:', e);
+        setModels([]);
       }
-    ];
-
-    setTimeout(() => {
-      setModels(mockModels);
       setLoading(false);
-    }, 1000);
+    }
+    fetchModels();
   }, []);
 
   const columns = [
     {
       key: 'display_name',
-      label: 'Model',
+    label: t('llmModels.table.model'),
       render: (value, item) => (
         <div className="flex items-center space-x-3">
           <div className="flex-shrink-0">
@@ -128,7 +63,7 @@ const LLMModels = () => {
     },
     {
       key: 'provider',
-      label: 'Provider',
+    label: t('llmModels.table.provider'),
       render: (value) => (
         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
           {value}
@@ -137,7 +72,7 @@ const LLMModels = () => {
     },
     {
       key: 'context_length',
-      label: 'Context Length',
+    label: t('llmModels.table.contextLength'),
       render: (value) => (
         <div className="flex items-center space-x-1">
           <Layers className="w-4 h-4 text-gray-400" />
@@ -147,7 +82,7 @@ const LLMModels = () => {
     },
     {
       key: 'cost_per_1k_tokens',
-      label: 'Cost per 1K',
+    label: t('llmModels.table.costPer1K'),
       render: (value) => (
         <div className="flex items-center space-x-1">
           <DollarSign className="w-4 h-4 text-green-500" />
@@ -159,7 +94,7 @@ const LLMModels = () => {
     },
     {
       key: 'supports_streaming',
-      label: 'Streaming',
+    label: t('llmModels.table.streaming'),
       render: (value) => (
         <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
           value ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
@@ -170,7 +105,7 @@ const LLMModels = () => {
     },
     {
       key: 'is_active',
-      label: 'Status',
+    label: t('llmModels.table.status'),
       render: (value, item) => (
         <div className="flex items-center space-x-2">
           <div className={`p-1 rounded-full ${value ? 'bg-green-100' : 'bg-gray-100'}`}>
@@ -181,10 +116,11 @@ const LLMModels = () => {
             )}
           </div>
           <span className="text-sm text-gray-900">{value ? 'Active' : 'Inactive'}</span>
+            <span className="text-sm text-gray-900">{value ? t('llmModels.status.active') : t('llmModels.status.inactive')}</span>
           {item.is_default && (
             <span className="inline-flex items-center px-1.5 py-0.5 text-xs font-medium rounded bg-yellow-100 text-yellow-800">
               <Zap className="w-3 h-3 mr-1" />
-              Default
+                {t('llmModels.status.default')}
             </span>
           )}
         </div>
@@ -192,7 +128,7 @@ const LLMModels = () => {
     },
     {
       key: 'created_at',
-      label: 'Added',
+    label: t('llmModels.table.added'),
       type: 'date',
       render: (value) => (
         <div className="flex items-center space-x-1">
@@ -227,10 +163,10 @@ const LLMModels = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">LLM Models</h1>
-          <p className="text-gray-600 mt-1">
-            Manage available models and their configurations
-          </p>
+              <h1 className="text-2xl font-bold text-gray-900">{t('llmModels.title')}</h1>
+              <p className="text-gray-600 mt-1">
+                {t('llmModels.desc')}
+              </p>
         </div>
         <motion.div
           whileHover={{ scale: 1.05 }}
@@ -241,7 +177,7 @@ const LLMModels = () => {
             className="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
           >
             <Plus className="w-4 h-4 mr-2" />
-            Add Model
+                {t('llmModels.add.button')}
           </Link>
         </motion.div>
       </div>
@@ -258,7 +194,7 @@ const LLMModels = () => {
               <Brain className="w-5 h-5 text-purple-600" />
             </div>
             <div className="ml-3">
-              <p className="text-sm font-medium text-gray-600">Total Models</p>
+                  <p className="text-sm font-medium text-gray-600">{t('llmModels.stats.total')}</p>
               <p className="text-lg font-semibold text-gray-900">{models.length}</p>
             </div>
           </div>
@@ -275,7 +211,7 @@ const LLMModels = () => {
               <CheckCircle className="w-5 h-5 text-green-600" />
             </div>
             <div className="ml-3">
-              <p className="text-sm font-medium text-gray-600">Active Models</p>
+                  <p className="text-sm font-medium text-gray-600">{t('llmModels.stats.active')}</p>
               <p className="text-lg font-semibold text-gray-900">
                 {models.filter(m => m.is_active).length}
               </p>
@@ -294,7 +230,7 @@ const LLMModels = () => {
               <Zap className="w-5 h-5 text-yellow-600" />
             </div>
             <div className="ml-3">
-              <p className="text-sm font-medium text-gray-600">Default Model</p>
+                  <p className="text-sm font-medium text-gray-600">{t('llmModels.stats.default')}</p>
               <p className="text-lg font-semibold text-gray-900">
                 {models.find(m => m.is_default)?.display_name || 'None'}
               </p>
@@ -313,7 +249,7 @@ const LLMModels = () => {
               <DollarSign className="w-5 h-5 text-blue-600" />
             </div>
             <div className="ml-3">
-              <p className="text-sm font-medium text-gray-600">Avg Cost/1K</p>
+                  <p className="text-sm font-medium text-gray-600">{t('llmModels.stats.avgCost')}</p>
               <p className="text-lg font-semibold text-gray-900">
                 ${(models.reduce((sum, m) => sum + m.cost_per_1k_tokens, 0) / models.length).toFixed(3)}
               </p>
@@ -329,12 +265,12 @@ const LLMModels = () => {
         transition={{ delay: 0.4 }}
         className="bg-white rounded-lg p-6 shadow"
       >
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Models by Provider</h3>
+       <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('llmModels.byProvider')}</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {Object.entries(providerStats).map(([provider, count]) => (
             <div key={provider} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
               <span className="font-medium text-gray-900">{provider}</span>
-              <span className="text-sm text-gray-600">{count} models</span>
+         <span className="text-sm text-gray-600">{t('llmModels.modelsCount', { count })}</span>
             </div>
           ))}
         </div>
@@ -366,10 +302,10 @@ const LLMModels = () => {
         transition={{ delay: 0.6 }}
         className="bg-white rounded-lg p-6 shadow"
       >
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Performance Insights</h3>
+           <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('llmModels.performance.title')}</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <h4 className="font-medium text-gray-900 mb-3">Context Length Distribution</h4>
+               <h4 className="font-medium text-gray-900 mb-3">{t('llmModels.performance.contextLength')}</h4>
             <div className="space-y-2">
               {models.map((model) => (
                 <div key={model.id} className="flex items-center justify-between text-sm">
@@ -380,14 +316,14 @@ const LLMModels = () => {
             </div>
           </div>
           <div>
-            <h4 className="font-medium text-gray-900 mb-3">Cost Analysis</h4>
+               <h4 className="font-medium text-gray-900 mb-3">{t('llmModels.performance.cost')}</h4>
             <div className="space-y-2">
               {models.map((model) => (
                 <div key={model.id} className="flex items-center justify-between text-sm">
                   <span className="text-gray-600">{model.display_name}</span>
-                  <span className="font-medium">
-                    {model.cost_per_1k_tokens === 0 ? 'Free' : `$${model.cost_per_1k_tokens}`}
-                  </span>
+                     <span className="font-medium">
+                       {model.cost_per_1k_tokens === 0 ? t('llmModels.free') : `$${model.cost_per_1k_tokens}`}
+                     </span>
                 </div>
               ))}
             </div>

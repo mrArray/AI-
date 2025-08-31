@@ -3,7 +3,57 @@
     "title": "创建LLM服务商",
     "desc": "将新的大语言模型服务商添加到您的基础设施中",
     "successTitle": "服务商创建成功！",
-    "successDesc": "正在跳转到服务商列表..."
+    "successDesc": "正在跳转到服务商列表...",
+    "infoCard": {
+      "title": "服务商信息",
+      "desc": "请填写以下信息以注册新的LLM服务商。"
+    },
+    "form": {
+      "newProvider": "新建LLM服务商",
+      "basicInfo": "基本信息",
+      "providerName": "服务商名称*",
+      "providerNamePlaceholder": "请输入服务商名称",
+      "providerType": "服务商类型*",
+      "providerTypePlaceholder": "请选择服务商类型",
+      "configuration": "配置信息",
+      "baseUrl": "基础URL*",
+      "baseUrlPlaceholder": "请输入基础URL",
+      "apiKey": "API密钥",
+      "apiKeyPlaceholder": "请输入API密钥",
+      "timeout": "超时时间(秒)",
+      "timeoutDefault": "30",
+      "maxRetries": "最大重试次数",
+      "maxRetriesDefault": "3",
+      "statusSettings": "状态与设置",
+      "active": "启用",
+      "defaultProvider": "默认服务商",
+      "system": "系统",
+      "id": "ID",
+      "idPlaceholder": "请输入ID",
+      "createdAt": "创建时间",
+      "createdAtPlaceholder": "请输入创建时间",
+      "updatedAt": "更新时间",
+      "updatedAtPlaceholder": "请输入更新时间",
+      "cancel": "取消",
+      "save": "保存"
+    },
+    "schemaInfo": {
+      "title": "服务商Schema信息",
+      "schemaParsing": {
+        "title": "Schema解析",
+        "fetches": "从后端获取服务商Schema",
+        "parses": "解析Schema字段和类型",
+        "generates": "生成动态表单字段",
+        "supports": "支持自定义校验"
+      },
+      "dynamicRendering": {
+        "title": "动态渲染",
+        "renders": "根据Schema渲染表单",
+        "applies": "应用默认值和约束",
+        "groups": "分组相关字段",
+        "handles": "处理条件逻辑"
+      }
+    }
   }
   ,
   "sidebar": {
@@ -56,6 +106,8 @@
     "warning": "警告",
     "error": "错误",
     "created": "创建时间",
+    "actions": "操作",
+    "refresh": "刷新",
     "quickActions": {
       "title": "快捷操作",
       "testAllConnections": "测试所有连接",

@@ -3,7 +3,57 @@
     "title": "Create LLM Provider",
     "desc": "Add a new LLM service provider to your infrastructure",
     "successTitle": "Provider Created Successfully!",
-    "successDesc": "Redirecting to providers list..."
+    "successDesc": "Redirecting to providers list...",
+    "infoCard": {
+      "title": "Provider Information",
+      "desc": "Fill in the details below to register a new LLM provider."
+    },
+  "form": {
+      "newProvider": "New LLM Provider",
+      "basicInfo": "Basic Information",
+      "providerName": "Provider Name*",
+      "providerNamePlaceholder": "Enter provider name",
+      "providerType": "Provider Type*",
+      "providerTypePlaceholder": "Select Provider Type",
+      "configuration": "Configuration",
+      "baseUrl": "Base URL*",
+      "baseUrlPlaceholder": "Enter base url",
+      "apiKey": "API Key",
+      "apiKeyPlaceholder": "Enter api key",
+      "timeout": "Timeout (seconds)",
+      "timeoutDefault": "30",
+      "maxRetries": "Max Retries",
+      "maxRetriesDefault": "3",
+      "statusSettings": "Status & Settings",
+      "active": "Active",
+      "defaultProvider": "Default Provider",
+      "system": "System",
+      "id": "Id",
+      "idPlaceholder": "Enter id",
+      "createdAt": "Created at",
+      "createdAtPlaceholder": "Enter created at",
+      "updatedAt": "Updated at",
+      "updatedAtPlaceholder": "Enter updated at",
+      "cancel": "Cancel",
+      "save": "Save"
+    },
+    "schemaInfo": {
+      "title": "Provider Schema Information",
+      "schemaParsing": {
+        "title": "Schema Parsing",
+        "fetches": "Fetches provider schema from backend",
+        "parses": "Parses schema fields and types",
+        "generates": "Generates dynamic form fields",
+        "supports": "Supports custom validation"
+      },
+      "dynamicRendering": {
+        "title": "Dynamic Rendering",
+        "renders": "Renders form based on schema",
+        "applies": "Applies default values and constraints",
+        "groups": "Groups related fields",
+        "handles": "Handles conditional logic"
+      }
+    }
   }
   ,
   "sidebar": {
@@ -40,7 +90,8 @@
   "llmProviders": {
     "title": "LLM Providers",
     "description": "Manage your LLM service providers and their configurations",
-    "addProvider": "Add Provider",
+  "addProvider": "Add Provider",
+  "editProvider": "Edit Provider",
     "totalProviders": "Total Providers",
     "active": "Active",
     "inactive": "Inactive",
@@ -50,7 +101,15 @@
     "providerName": "Provider Name",
     "baseUrl": "Base URL",
     "models": "Models",
-    "modelsCount": "{{count}} models",
+  "modelsCount": "{{count}} models",
+  "refresh": "Refresh",
+  "createSuccess": "Provider created successfully!",
+  "updateSuccess": "Provider updated successfully!",
+  "createError": "Operation failed!",
+  "deleteConfirm": "Are you sure you want to delete the provider:",
+  "deleteWarning": "This action cannot be undone and will also delete all associated models.",
+  "connectionTestSuccess": "Connection test successful for {{provider}}.",
+  "connectionTestFailed": "Connection test failed for {{provider}}: {{error}}.",
     "status": "Status",
     "healthy": "Healthy",
     "warning": "Warning",
@@ -69,6 +128,27 @@
   "llmModels": {
     "title": "LLM Models",
     "desc": "Manage and configure available LLM models.",
+    "addModel": "Add Model",
+    "form": {
+      "basicInfo": "Basic Information",
+      "displayName": "Display Name",
+      "name": "Model Name",
+      "provider": "Provider",
+      "description": "Description",
+      "configuration": "Configuration",
+      "contextLength": "Context Length",
+      "maxTokens": "Max Tokens",
+      "temperature": "Temperature",
+      "costPer1K": "Cost per 1K",
+      "settings": "Settings",
+      "streaming": "Streaming",
+      "active": "Active",
+      "default": "Default",
+      "cancel": "Cancel",
+      "create": "Create"
+    },
+  "cancel": "Cancel",
+  "create": "Create",
     "table": {
       "model": "Model",
       "provider": "Provider",

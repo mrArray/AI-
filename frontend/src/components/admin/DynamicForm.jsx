@@ -16,7 +16,10 @@ const DynamicForm = ({
   onSubmit,
   onCancel,
   loading = false,
-  title = 'Form'
+  title = 'Form',
+  fields = null,
+  cancelText = 'Cancel',
+  saveText = 'Save'
 }) => {
   const [formData, setFormData] = useState(initialData);
   const [errors, setErrors] = useState({});
@@ -26,18 +29,27 @@ const DynamicForm = ({
   useEffect(() => {
     const config = schemaParser.getFormConfig(modelName);
     setFormConfig(config);
-    
-    // Set default values
-    if (config && Object.keys(initialData).length === 0) {
+  }, [modelName]);
+
+  useEffect(() => {
+    if (!formConfig) return;
+    // Only set defaults if formData is empty and initialData is empty
+    if (Object.keys(formData).length === 0 && Object.keys(initialData).length === 0) {
       const defaults = {};
-      config.fields.forEach(field => {
+      formConfig.fields.forEach(field => {
         if (field.defaultValue !== undefined) {
           defaults[field.name] = field.defaultValue;
         }
       });
       setFormData(defaults);
+    } else if (Object.keys(initialData).length > 0) {
+      // Only set if different to avoid loop
+      const isDifferent = Object.keys(initialData).some(key => formData[key] !== initialData[key]);
+      if (isDifferent) {
+        setFormData(initialData);
+      }
     }
-  }, [modelName, initialData]);
+  }, [formConfig, initialData]);
 
   const handleFieldChange = (fieldName, value) => {
     setFormData(prev => ({ ...prev, [fieldName]: value }));
@@ -238,39 +250,48 @@ const DynamicForm = ({
     );
   }
 
-  // Group fields by sections (based on Django admin fieldsets)
-  const fieldSections = [
-    {
-      title: 'Basic Information',
-      fields: formConfig.fields.filter(f => 
-        ['name', 'display_name', 'provider_type', 'language', 'prompt_type'].includes(f.name)
-      )
-    },
-    {
-      title: 'Configuration',
-      fields: formConfig.fields.filter(f => 
-        ['base_url', 'api_key', 'timeout', 'max_retries', 'context_length', 'max_tokens', 'temperature_default'].includes(f.name)
-      )
-    },
-    {
-      title: 'Content',
-      fields: formConfig.fields.filter(f => 
-        ['description', 'template', 'variables'].includes(f.name)
-      )
-    },
-    {
-      title: 'Status & Settings',
-      fields: formConfig.fields.filter(f => 
-        ['is_active', 'is_default', 'supports_streaming', 'cost_per_1k_tokens'].includes(f.name)
-      )
-    },
-    {
-      title: 'System',
-      fields: formConfig.fields.filter(f => 
-        ['id', 'created_at', 'updated_at'].includes(f.name)
-      )
-    }
-  ].filter(section => section.fields.length > 0);
+  // If fields prop is provided (for i18n), use it; otherwise, use default field grouping
+  let fieldSections;
+  if (fields) {
+    // Map 'section' to 'title' for i18n support
+    fieldSections = fields.map(section => ({
+      ...section,
+      title: section.section || section.title
+    }));
+  } else {
+    fieldSections = [
+      {
+        title: 'Basic Information',
+        fields: formConfig.fields.filter(f => 
+          ['name', 'display_name', 'provider_type', 'language', 'prompt_type'].includes(f.name)
+        )
+      },
+      {
+        title: 'Configuration',
+        fields: formConfig.fields.filter(f => 
+          ['base_url', 'api_key', 'timeout', 'max_retries', 'context_length', 'max_tokens', 'temperature_default'].includes(f.name)
+        )
+      },
+      {
+        title: 'Content',
+        fields: formConfig.fields.filter(f => 
+          ['description', 'template', 'variables'].includes(f.name)
+        )
+      },
+      {
+        title: 'Status & Settings',
+        fields: formConfig.fields.filter(f => 
+          ['is_active', 'is_default', 'supports_streaming', 'cost_per_1k_tokens'].includes(f.name)
+        )
+      },
+      {
+        title: 'System',
+        fields: formConfig.fields.filter(f => 
+          ['id', 'created_at', 'updated_at'].includes(f.name)
+        )
+      }
+    ].filter(section => section.fields.length > 0);
+  }
 
   return (
     <motion.div
@@ -350,7 +371,7 @@ const DynamicForm = ({
             onClick={onCancel}
             className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
           >
-            Cancel
+            {cancelText}
           </button>
           <motion.button
             whileHover={{ scale: 1.05 }}
@@ -364,7 +385,7 @@ const DynamicForm = ({
             ) : (
               <Save className="w-4 h-4 mr-2" />
             )}
-            {loading ? 'Saving...' : 'Save'}
+            {loading ? 'Saving...' : saveText}
           </motion.button>
         </div>
       </form>

@@ -36,8 +36,15 @@ const SystemConfig = () => {
           coreAPI.getLLMProviders(),
           coreAPI.getLLMModels()
         ]);
-        setProviders(providersRes.data || providersRes);
-        setModels(modelsRes.data || modelsRes);
+        // Normalize to array (handle paginated and non-paginated)
+        const extractArray = (res) => {
+          if (Array.isArray(res)) return res;
+          if (Array.isArray(res.data)) return res.data;
+          if (Array.isArray(res.results)) return res.results;
+          return [];
+        };
+        setProviders(extractArray(providersRes));
+        setModels(extractArray(modelsRes));
         // TODO: Fetch config from backend if endpoint exists
         // setConfig(await coreAPI.getSystemConfig());
         // For now, keep config as empty or static
@@ -281,7 +288,7 @@ const SystemConfig = () => {
   }
 
   return (
-    <div className="space-y-6">
+  <div className="space-y-6 px-2 sm:px-4 md:px-8">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>

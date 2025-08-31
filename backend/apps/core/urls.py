@@ -1,5 +1,11 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 from . import views
+
+
+router = DefaultRouter()
+router.register(r'providers', views.LLMProviderViewSet, basename='llmprovider')
+router.register(r'models', views.LLMModelViewSet, basename='llmmodel')
 
 urlpatterns = [
     # LLM Generation
@@ -11,6 +17,8 @@ urlpatterns = [
     
     # Configuration
     path('prompt-templates/', views.get_prompt_templates, name='get_prompt_templates'),
-    path('providers/', views.get_llm_providers, name='get_llm_providers'),
-    path('models/', views.get_llm_models, name='get_llm_models'),
+    # path('providers/', views.get_llm_providers, name='get_llm_providers'),  # legacy, active only
+    # path('models/', views.get_llm_models, name='get_llm_models'),
+    # CRUD API
+    path('', include(router.urls)),
 ]

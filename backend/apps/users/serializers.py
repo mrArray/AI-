@@ -29,6 +29,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             'id', 'email', 'first_name', 'last_name',
+            'user_type',
             'credits', 'is_verified', 'language', 'email_notifications',
             'marketing_emails', 'total_papers_generated', 'total_credits_used',
             'date_joined', 'profile'
@@ -53,10 +54,11 @@ class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
     password2 = serializers.CharField(write_only=True, required=True)
     full_name = serializers.CharField(write_only=True, required=True)
+    user_type = serializers.ChoiceField(choices=[('admin', 'Admin'), ('normal', 'Normal')], default='normal', required=False)
 
     class Meta:
         model = User
-        fields = ['full_name', 'password', 'password2', 'email']
+        fields = ['full_name', 'password', 'password2', 'email', 'user_type']
 
     def validate(self, attrs):
         if attrs['password'] != attrs['password2']:
@@ -67,6 +69,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         full_name = validated_data.pop('full_name')
         email = validated_data['email']
         password = validated_data['password']
+        user_type = validated_data.get('user_type', 'normal')
 
         first_name, *last_name = full_name.strip().split(' ', 1)
 
@@ -74,7 +77,8 @@ class RegisterSerializer(serializers.ModelSerializer):
             email=email,
             password=password,
             first_name=first_name,
-            last_name=last_name[0] if last_name else ''
+            last_name=last_name[0] if last_name else '',
+            user_type=user_type
         )
         return user
 

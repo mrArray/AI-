@@ -30,19 +30,19 @@ class ApiClient {
 
   // 构建请求配置
   buildConfig(options = {}) {
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers,
-      },
-      ...options,
-    };
-
+    // Always set Content-Type to application/json unless uploading files
+    let headers = { ...options.headers };
+    if (!headers['Content-Type'] && !(options.body instanceof FormData)) {
+      headers['Content-Type'] = 'application/json';
+    }
     // 添加认证头
     if (this.accessToken && !options.skipAuth) {
-      config.headers.Authorization = `Bearer ${this.accessToken}`;
+      headers.Authorization = `Bearer ${this.accessToken}`;
     }
-
+    const config = {
+      ...options,
+      headers,
+    };
     return config;
   }
 

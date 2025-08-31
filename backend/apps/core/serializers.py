@@ -11,9 +11,10 @@ class LLMModelSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'name', 'display_name', 'description', 'provider', 'provider_name',
             'context_length', 'max_tokens', 'temperature_default', 'is_active', 
-            'is_default', 'supports_streaming', 'cost_per_1k_tokens'
+            'is_default', 'supports_streaming', 'cost_per_1k_tokens',
+            'created_at', 'updated_at'
         ]
-        read_only_fields = ['id']
+        read_only_fields = ['id', 'created_at', 'updated_at']
 
 # Now define LLMProviderSerializer that references LLMModelSerializer
 class LLMProviderSerializer(serializers.ModelSerializer):
@@ -21,8 +22,8 @@ class LLMProviderSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = LLMProvider
-        fields = ['id', 'name', 'provider_type', 'base_url', 'is_active', 'is_default', 'models']
-        read_only_fields = ['id']
+        fields = ['id', 'name', 'provider_type', 'base_url', 'is_active', 'is_default', 'models', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at']
     
     @extend_schema_field(LLMModelSerializer(many=True))
     def get_models(self, obj):

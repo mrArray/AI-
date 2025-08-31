@@ -104,10 +104,45 @@ const CreateProvider = () => {
       {/* Dynamic Form */}
       <DynamicForm
         modelName="LLMProvider"
-        title="New LLM Provider"
+        title={t('createProvider.form.newProvider')}
+        fields={[
+          {
+            section: t('createProvider.form.basicInfo'),
+            fields: [
+              { label: t('createProvider.form.providerName'), name: 'name', placeholder: t('createProvider.form.providerNamePlaceholder'), required: true },
+              { label: t('createProvider.form.providerType'), name: 'provider_type', placeholder: t('createProvider.form.providerTypePlaceholder'), required: true, type: 'select' }
+            ]
+          },
+          {
+            section: t('createProvider.form.configuration'),
+            fields: [
+              { label: t('createProvider.form.baseUrl'), name: 'base_url', placeholder: t('createProvider.form.baseUrlPlaceholder'), required: true },
+              { label: t('createProvider.form.apiKey'), name: 'api_key', placeholder: t('createProvider.form.apiKeyPlaceholder') },
+              { label: t('createProvider.form.timeout'), name: 'timeout', placeholder: t('createProvider.form.timeoutDefault'), type: 'number', default: 30 },
+              { label: t('createProvider.form.maxRetries'), name: 'max_retries', placeholder: t('createProvider.form.maxRetriesDefault'), type: 'number', default: 3 }
+            ]
+          },
+          {
+            section: t('createProvider.form.statusSettings'),
+            fields: [
+              { label: t('createProvider.form.active'), name: 'is_active', type: 'checkbox' },
+              { label: t('createProvider.form.defaultProvider'), name: 'is_default', type: 'checkbox' }
+            ]
+          },
+          {
+            section: t('createProvider.form.system'),
+            fields: [
+              { label: t('createProvider.form.id'), name: 'id', placeholder: t('createProvider.form.idPlaceholder') },
+              { label: t('createProvider.form.createdAt'), name: 'created_at', placeholder: t('createProvider.form.createdAtPlaceholder') },
+              { label: t('createProvider.form.updatedAt'), name: 'updated_at', placeholder: t('createProvider.form.updatedAtPlaceholder') }
+            ]
+          }
+        ]}
         onSubmit={handleSubmit}
         onCancel={handleCancel}
         loading={loading}
+        cancelText={t('createProvider.form.cancel')}
+        saveText={t('createProvider.form.save')}
       />
 
       {/* Schema Info */}

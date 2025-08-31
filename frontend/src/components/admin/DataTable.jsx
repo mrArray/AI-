@@ -24,7 +24,8 @@ const DataTable = ({
   filterable = true,
   pagination = true,
   pageSize = 10,
-  actions = true
+  actions = true,
+  actionsLabel = 'Actions'
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
@@ -148,7 +149,7 @@ const DataTable = ({
   }
 
   return (
-    <div className="bg-white rounded-lg shadow overflow-hidden">
+  <div className="bg-white rounded-lg shadow overflow-hidden">
       {/* Table header with search and filters */}
       {(searchable || filterable) && (
         <div className="p-4 border-b border-gray-200">
@@ -193,7 +194,7 @@ const DataTable = ({
       )}
 
       {/* Table */}
-      <div className="overflow-x-auto">
+      <div className="w-full overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
@@ -230,7 +231,7 @@ const DataTable = ({
               ))}
               {actions && (
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
+                  {actionsLabel}
                 </th>
               )}
             </tr>

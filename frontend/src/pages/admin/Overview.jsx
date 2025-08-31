@@ -156,7 +156,7 @@ const Overview = () => {
   };
 
   return (
-    <div className="space-y-4">
+  <div className="space-y-4">
       {/* Welcome Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -258,7 +258,7 @@ const Overview = () => {
 
         {/* Quick Actions & System Health */}
         <div className="space-y-6">
-          {/* Quick Actions */}
+          <div className="space-y-8 px-2 sm:px-4 md:px-8">
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -329,6 +329,7 @@ const Overview = () => {
               </div>
             </div>
           </motion.div>
+          </div>
         </div>
       </div>
     </div>

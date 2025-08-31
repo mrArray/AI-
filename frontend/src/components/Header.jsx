@@ -10,9 +10,15 @@ function Header({ activePage }) {
   const { openLoginModal, openRegisterModal } = useModal();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   
+
   // 处理购买积分点击
   const handleRechargeClick = () => {
     window.location.href = '/pricing';
+  };
+
+  // 处理Admin点击
+  const handleAdminClick = () => {
+    window.location.href = '/admin';
   };
 
   // 处理用户菜单项点击
@@ -68,6 +74,15 @@ function Header({ activePage }) {
           <div className="flex items-center">
             {isAuthenticated ? (
               <div className="flex items-center space-x-3">
+                {/* 管理员按钮 */}
+                  {user?.user_type === 'admin' && (
+                    <button
+                      onClick={handleAdminClick}
+                      className="bg-black text-white px-3 py-1.5 rounded-md text-xs font-medium hover:bg-gray-900 transition-all shadow-md hover:shadow-lg whitespace-nowrap"
+                    >
+                      {t('actions.admin')}
+                    </button>
+                  )}
                 {/* 购买积分按钮 */}
                 <button 
                   onClick={handleRechargeClick}

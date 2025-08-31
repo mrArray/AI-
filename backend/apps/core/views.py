@@ -153,8 +153,12 @@ def get_prompt_templates(request):
     
     queryset = queryset.order_by('-is_default', 'language', 'name')
     
-    serializer = PromptTemplateSerializer(queryset, many=True)
-    return Response(serializer.data)
+    data = PromptTemplateSerializer(queryset, many=True).data
+    # Ensure created_at is present (should be by serializer, but add if missing)
+    for obj, instance in zip(data, queryset):
+        if 'created_at' not in obj:
+            obj['created_at'] = getattr(instance, 'created_at', None)
+    return Response(data)
 
 @extend_schema(
     summary="Detect language of text",
@@ -192,6 +196,56 @@ def detect_language(request):
         'total_chars': total_chars
     })
 
+
+# --- LLMProvider CRUD API ---
+
+from rest_framework import mixins, viewsets
+
+class LLMProviderViewSet(viewsets.ModelViewSet):
+    """Full CRUD for LLM Providers"""
+    queryset = LLMProvider.objects.all().prefetch_related('models')
+    serializer_class = LLMProviderSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            return [AllowAny()]
+        return super().get_permissions()
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        # Optionally filter by is_active
+        is_active = self.request.query_params.get('is_active')
+        if is_active is not None:
+            qs = qs.filter(is_active=is_active.lower() in ['1', 'true', 'yes'])
+        return qs
+
+
+# --- LLMModel CRUD API ---
+class LLMModelViewSet(viewsets.ModelViewSet):
+    """Full CRUD for LLM Models"""
+    queryset = LLMModel.objects.all().select_related('provider')
+    serializer_class = LLMModelSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            return [AllowAny()]
+        return super().get_permissions()
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        # Optionally filter by is_active
+        is_active = self.request.query_params.get('is_active')
+        if is_active is not None:
+            qs = qs.filter(is_active=is_active.lower() in ['1', 'true', 'yes'])
+        # Optionally filter by provider_id
+        provider_id = self.request.query_params.get('provider_id')
+        if provider_id:
+            qs = qs.filter(provider_id=provider_id)
+        return qs
+
+# For backward compatibility, keep the old GET endpoint (list active only)
 @extend_schema(
     summary="Get available LLM providers",
     description="Retrieve available LLM providers and models",
@@ -200,10 +254,13 @@ def detect_language(request):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_llm_providers(request):
-    """Get available LLM providers"""
+    """Get available LLM providers (active only)"""
     providers = LLMProvider.objects.filter(is_active=True).prefetch_related('models')
-    serializer = LLMProviderSerializer(providers, many=True)
-    return Response(serializer.data)
+    data = LLMProviderSerializer(providers, many=True).data
+    for obj, instance in zip(data, providers):
+        if 'created_at' not in obj:
+            obj['created_at'] = getattr(instance, 'created_at', None)
+    return Response(data)
 
 @extend_schema(
     summary="Get available LLM models",
@@ -231,5 +288,21 @@ def get_llm_models(request):
     
     queryset = queryset.order_by('-is_default', 'display_name')
     
-    serializer = LLMModelSerializer(queryset, many=True)
-    return Response(serializer.data)
+    data = LLMModelSerializer(queryset, many=True).data
+    for obj, instance in zip(data, queryset):
+        if 'created_at' not in obj:
+            obj['created_at'] = getattr(instance, 'created_at', None)
+    return Response(data)
+    def list(self, request, *args, **kwargs):
+        response = super().list(request, *args, **kwargs)
+        # Add created_at to each item if missing
+        for obj, instance in zip(response.data, self.get_queryset()):
+            if 'created_at' not in obj:
+                obj['created_at'] = getattr(instance, 'created_at', None)
+        return response
+    def list(self, request, *args, **kwargs):
+        response = super().list(request, *args, **kwargs)
+        for obj, instance in zip(response.data, self.get_queryset()):
+            if 'created_at' not in obj:
+                obj['created_at'] = getattr(instance, 'created_at', None)
+        return response

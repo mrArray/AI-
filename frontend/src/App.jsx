@@ -12,6 +12,7 @@ import LandingPage from './pages/LandingPage'
 import FormatDocumentPage from './pages/FormatDocumentPage'
 
 // Admin components
+
 import DashboardLayout from './components/admin/DashboardLayout'
 import Overview from './pages/admin/Overview'
 import LLMProviders from './pages/admin/LLMProviders'
@@ -19,6 +20,7 @@ import LLMModels from './pages/admin/LLMModels'
 import PromptTemplates from './pages/admin/PromptTemplates'
 import SystemConfig from './pages/admin/SystemConfig'
 import CreateProvider from './pages/admin/CreateProvider'
+import ProtectedRoute from './components/ProtectedRoute';
 
 
 function App() {
@@ -38,14 +40,17 @@ function App() {
         {/* 个人中心页面 */}
         <Route path="/profile" element={<ProfilePage />} />
 
-        {/* Admin Dashboard Routes */}
-        <Route path="/admin" element={<DashboardLayout />}>
-          <Route index element={<Overview />} />
-          <Route path="providers" element={<LLMProviders />} />
-          <Route path="providers/new" element={<CreateProvider />} />
-          <Route path="models" element={<LLMModels />} />
-          <Route path="templates" element={<PromptTemplates />} />
-          <Route path="config" element={<SystemConfig />} />
+
+        {/* Admin Dashboard Routes - Protected */}
+        <Route element={<ProtectedRoute adminOnly={true} />}>
+          <Route path="/admin" element={<DashboardLayout />}>
+            <Route index element={<Overview />} />
+            <Route path="providers" element={<LLMProviders />} />
+            <Route path="providers/new" element={<CreateProvider />} />
+            <Route path="models" element={<LLMModels />} />
+            <Route path="templates" element={<PromptTemplates />} />
+            <Route path="config" element={<SystemConfig />} />
+          </Route>
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

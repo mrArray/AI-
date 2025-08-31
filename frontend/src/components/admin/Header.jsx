@@ -170,7 +170,7 @@ const Header = ({ onToggleSidebar, sidebarOpen }) => {
       </div>
 
       {/* Page title section */}
-      <div className="px-6 py-3 bg-gray-50 border-t border-gray-200">
+      {/* <div className="px-6 py-3 bg-gray-50 border-t border-gray-200">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-xl font-semibold text-gray-900">{currentPage}</h1>
@@ -183,7 +183,7 @@ const Header = ({ onToggleSidebar, sidebarOpen }) => {
             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
           </div>
         </div>
-      </div>
+      </div> */}
     </header>
   );
 };

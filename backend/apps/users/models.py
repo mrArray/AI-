@@ -43,6 +43,11 @@ class User(AbstractUser):
     email = models.EmailField(unique=True)
 
     # Basic fields
+    USER_TYPE_CHOICES = [
+        ("admin", "Admin"),
+        ("normal", "Normal"),
+    ]
+    user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES, default="normal")
     credits = models.PositiveIntegerField(default=15)
     is_verified = models.BooleanField(default=False)
 

@@ -176,6 +176,7 @@ function AuthModal() {
         password: formData.password,
         password2: formData.password2,
         verification_code: formData.verificationCode,
+        user_type: 'normal',
       });
       
       if (registerResult.success) {

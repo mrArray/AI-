@@ -12,7 +12,8 @@
     "dashboard": "Dashboard"
   },
   "actions": {
-    "recharge": "Recharge Points",
+  "recharge": "Recharge Points",
+  "admin": "Admin",
     "login": "Login",
     "register": "Register",
     "logout": "Logout",

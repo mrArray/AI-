@@ -9,7 +9,7 @@ class UserAdmin(BaseUserAdmin):
     """Enhanced User admin with additional fields"""
     
     list_display = [
-        'email', 'username', 'first_name', 'last_name', 
+        'email', 'first_name', 'last_name', 'user_type',
         'credits', 'is_verified', 'total_papers_generated', 
         'is_active', 'date_joined'
     ]
@@ -17,10 +17,12 @@ class UserAdmin(BaseUserAdmin):
         'is_active', 'is_verified', 'is_staff', 'is_superuser',
         'language', 'email_notifications', 'date_joined'
     ]
-    search_fields = ['email', 'username', 'first_name', 'last_name']
+    search_fields = ['email', 'first_name', 'last_name']
     ordering = ['-date_joined']
     
-    fieldsets = BaseUserAdmin.fieldsets + (
+    # Remove username from fieldsets
+    fieldsets = (
+        (None, {'fields': ('email', 'password', 'first_name', 'last_name', 'user_type', 'is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
         ('Credits & Verification', {
             'fields': ('credits', 'is_verified', 'email_code', 'code_expires_at')
         }),

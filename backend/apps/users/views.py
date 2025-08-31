@@ -130,7 +130,8 @@ class RegisterView(APIView):
             user.save()
 
             cache.delete(f"pre_register_verified_{email}")  # Clean up
-            return Response({"message": "Registration successful."}, status=201)
+            user_data = UserSerializer(user).data
+            return Response({"message": "Registration successful.", "user": user_data}, status=201)
         return Response(serializer.errors, status=400)
 
 

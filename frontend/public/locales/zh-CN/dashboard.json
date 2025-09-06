@@ -54,8 +54,7 @@
         "handles": "处理条件逻辑"
       }
     }
-  }
-  ,
+  },
   "sidebar": {
     "overview": "总览",
     "providers": "大模型服务商",
@@ -68,8 +67,7 @@
     "subtitle": "大模型管理",
     "user": "管理员",
     "email": "admin@example.com"
-  }
-  ,
+  },
   "header": {
     "dashboard": "仪表盘",
     "searchPlaceholder": "搜索服务商、模型、模板...",
@@ -85,8 +83,7 @@
     },
     "pageDesc": "管理您的大模型基础设施和配置",
     "lastUpdated": "最近更新：2分钟前"
-  }
-  ,
+  },
   "llmProviders": {
     "title": "大模型服务商",
     "description": "管理您的大语言模型服务商及其配置",
@@ -116,7 +113,18 @@
       "importSettings": "导入服务商设置",
       "exportConfig": "导出配置",
       "exportSettings": "导出服务商设置"
-    }
+    },
+    "deleteProvider": "确定要删除该服务商：",
+    "deleteWarning": "此操作无法撤销，并且会删除所有关联的模型。",
+    "cancel": "取消",
+    "confirmDelete": "删除",
+    "fetchError": "获取服务商详情失败",
+    "testSuccess": "服务商 {{provider}} 连接测试成功",
+    "testError": "连接测试失败：{{error}}",
+    "createSuccess": "服务商创建成功！",
+    "updateSuccess": "服务商更新成功！",
+    "deleteSuccess": "服务商删除成功",
+    "deleteError": "删除失败：{{error}}"
   },
   "llmModels": {
     "title": "大模型列表",
@@ -297,6 +305,5 @@
       "bug_analysis": "缺陷分析",
       "translation": "文档翻译"
     }
-
   }
 }

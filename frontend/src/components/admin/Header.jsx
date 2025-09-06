@@ -70,12 +70,12 @@ const Header = ({ onToggleSidebar, sidebarOpen }) => {
           </button>
 
           {/* Breadcrumbs */}
-          <nav className="flex items-center space-x-2">
+          <nav className="hidden sm:flex items-center space-x-2">
             {breadcrumbs.map((crumb, index) => (
               <div key={crumb.path} className="flex items-center space-x-2">
                 {index > 0 && <ChevronRight className="w-4 h-4 text-gray-400" />}
                 <span className={`
-                  text-sm font-medium
+                  text-sm font-medium truncate
                   ${index === breadcrumbs.length - 1 
                     ? 'text-gray-900' 
                     : 'text-gray-500 hover:text-gray-700 cursor-pointer'
@@ -89,8 +89,8 @@ const Header = ({ onToggleSidebar, sidebarOpen }) => {
         </div>
 
         {/* Center section - Search */}
-        <div className="flex-1 max-w-md mx-8">
-          <div className="relative">
+        <div className="hidden md:flex flex-1 max-w-md mx-8">
+          <div className="relative w-full">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
               type="text"
@@ -128,7 +128,7 @@ const Header = ({ onToggleSidebar, sidebarOpen }) => {
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50"
+                className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-lg shadow-lg border border-gray-200 z-50"
               >
                 <div className="p-4 border-b border-gray-200">
                   <h3 className="text-sm font-semibold text-gray-900">{t('header.notifications.title', 'Notifications')}</h3>

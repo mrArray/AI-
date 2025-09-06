@@ -8,7 +8,7 @@
       "title": "Provider Information",
       "desc": "Fill in the details below to register a new LLM provider."
     },
-  "form": {
+    "form": {
       "newProvider": "New LLM Provider",
       "basicInfo": "Basic Information",
       "providerName": "Provider Name*",
@@ -54,8 +54,7 @@
         "handles": "Handles conditional logic"
       }
     }
-  }
-  ,
+  },
   "sidebar": {
     "overview": "Overview",
     "providers": "LLM Providers",
@@ -68,8 +67,7 @@
     "subtitle": "LLM Management",
     "user": "Admin User",
     "email": "admin@example.com"
-  }
-  ,
+  },
   "header": {
     "dashboard": "Dashboard",
     "searchPlaceholder": "Search providers, models, templates...",
@@ -85,13 +83,11 @@
     },
     "pageDesc": "Manage your LLM infrastructure and configurations",
     "lastUpdated": "Last updated: 2 minutes ago"
-  }
-  ,
+  },
   "llmProviders": {
     "title": "LLM Providers",
-    "description": "Manage your LLM service providers and their configurations",
-  "addProvider": "Add Provider",
-  "editProvider": "Edit Provider",
+    "description": "Manage your large language model providers and their configurations",
+    "addProvider": "Add Provider",
     "totalProviders": "Total Providers",
     "active": "Active",
     "inactive": "Inactive",
@@ -101,29 +97,34 @@
     "providerName": "Provider Name",
     "baseUrl": "Base URL",
     "models": "Models",
-  "modelsCount": "{{count}} models",
-  "refresh": "Refresh",
-  "createSuccess": "Provider created successfully!",
-  "updateSuccess": "Provider updated successfully!",
-  "createError": "Operation failed!",
-  "deleteConfirm": "Are you sure you want to delete the provider:",
-  "deleteWarning": "This action cannot be undone and will also delete all associated models.",
-  "connectionTestSuccess": "Connection test successful for {{provider}}.",
-  "connectionTestFailed": "Connection test failed for {{provider}}: {{error}}.",
+    "modelsCount": "{{count}} models",
     "status": "Status",
     "healthy": "Healthy",
     "warning": "Warning",
     "error": "Error",
     "created": "Created",
+    "actions": "Actions",
+    "refresh": "Refresh",
     "quickActions": {
       "title": "Quick Actions",
       "testAllConnections": "Test All Connections",
-      "verifyAllConnections": "Verify all provider connections",
-      "importConfig": "Import Configuration",
-      "importSettings": "Import provider settings",
-      "exportConfig": "Export Configuration",
-      "exportSettings": "Export provider settings"
-    }
+      "verifyAllConnections": "Verify All Provider Connections",
+      "importConfig": "Import Config",
+      "importSettings": "Import Provider Settings",
+      "exportConfig": "Export Config",
+      "exportSettings": "Export Provider Settings"
+    },
+    "deleteProvider": "Are you sure you want to delete the provider:",
+    "deleteWarning": "This action cannot be undone and will also delete all associated models.",
+    "cancel": "Cancel",
+    "confirmDelete": "Delete",
+    "fetchError": "Failed to fetch provider details",
+    "testSuccess": "Connection test successful for {{provider}}",
+    "testError": "Connection test failed: {{error}}",
+    "createSuccess": "Provider created successfully!",
+    "updateSuccess": "Provider updated successfully!",
+    "deleteSuccess": "Provider deleted successfully",
+    "deleteError": "Delete failed: {{error}}"
   },
   "llmModels": {
     "title": "LLM Models",
@@ -147,8 +148,8 @@
       "cancel": "Cancel",
       "create": "Create"
     },
-  "cancel": "Cancel",
-  "create": "Create",
+    "cancel": "Cancel",
+    "create": "Create",
     "table": {
       "model": "Model",
       "provider": "Provider",
@@ -325,6 +326,5 @@
       "bug_analysis": "Bug Analysis",
       "translation": "Translation"
     }
-
   }
 }

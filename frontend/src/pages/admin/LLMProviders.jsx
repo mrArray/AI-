@@ -33,12 +33,11 @@ const LLMProviders = () => {
   const [modal, setModal] = useState({ open: false, type: null, provider: null });
   const [activeBox, setActiveBox] = useState({ type: null, provider: null });
   const [editValues, setEditValues] = useState({});
-  // Local message state for form feedback
-  const [formMessage, setFormMessage] = useState(null); // { type: 'success'|'error', text: string }
+  const [formMessage, setFormMessage] = useState(null);
   const [testingProvider, setTestingProvider] = useState(null);
   const navigate = useNavigate();
 
-  // Fetch providers with full CRUD support
+  // Fetch providers with token
   useEffect(() => {
     fetchProviders();
   }, []);
@@ -47,7 +46,7 @@ const LLMProviders = () => {
     setLoading(true);
     try {
       const params = { page };
-      const data = await coreAPI.getAllLLMProviders(params);
+      const data = await coreAPI.getAllLLMProviders(params, token);
       if (data && Array.isArray(data.results)) {
         setProviders(data.results);
         setPagination({
@@ -62,6 +61,10 @@ const LLMProviders = () => {
       }
     } catch (e) {
       console.error('Failed to fetch providers:', e);
+      showToast({
+        type: TOAST_TYPES.ERROR,
+        message: t('llmProviders.fetchError', 'Failed to fetch providers')
+      });
       setProviders([]);
       setPagination({ count: 0, next: null, previous: null, page: 1 });
     }
@@ -73,11 +76,10 @@ const LLMProviders = () => {
     fetchProviders(newPage);
   };
 
-
   const columns = [
     {
       key: 'name',
-  label: t('llmProviders.providerName'),
+      label: t('llmProviders.providerName'),
       render: (value, item) => (
         <div className="flex items-center space-x-3">
           <div className="flex-shrink-0">
@@ -94,7 +96,7 @@ const LLMProviders = () => {
     },
     {
       key: 'base_url',
-  label: t('llmProviders.baseUrl'),
+      label: t('llmProviders.baseUrl'),
       render: (value) => (
         <div className="text-sm text-gray-900 font-mono bg-gray-50 px-2 py-1 rounded max-w-xs truncate">
           {value}
@@ -103,7 +105,7 @@ const LLMProviders = () => {
     },
     {
       key: 'models',
-  label: t('llmProviders.models'),
+      label: t('llmProviders.models'),
       render: (value, item) => (
         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
           {Array.isArray(item.models) ? item.models.length : 0} {t('llmProviders.models')}
@@ -112,7 +114,7 @@ const LLMProviders = () => {
     },
     {
       key: 'is_active',
-  label: t('llmProviders.status'),
+      label: t('llmProviders.status'),
       render: (value, item) => (
         <div className="flex items-center space-x-2">
           <div className={`p-1 rounded-full ${value ? 'bg-green-100' : 'bg-gray-100'}`}>
@@ -122,7 +124,9 @@ const LLMProviders = () => {
               <XCircle className="w-3 h-3 text-gray-500" />
             )}
           </div>
-          <span className="text-sm text-gray-900">{value ? t('llmProviders.active') : t('llmProviders.inactive')}</span>
+          <span className="text-sm text-gray-900">
+            {value ? t('llmProviders.active') : t('llmProviders.inactive')}
+          </span>
           {item.is_default && (
             <span className="inline-flex items-center px-1.5 py-0.5 text-xs font-medium rounded bg-yellow-100 text-yellow-800">
               <Zap className="w-3 h-3 mr-1" />
@@ -134,7 +138,7 @@ const LLMProviders = () => {
     },
     {
       key: 'created_at',
-  label: t('llmProviders.created'),
+      label: t('llmProviders.created'),
       type: 'date',
       render: (value) => (
         <span className="text-sm text-gray-500">
@@ -169,11 +173,15 @@ const LLMProviders = () => {
   };
 
   const handleEdit = async (provider) => {
-    // Fetch latest provider data for editing (best practice)
     try {
-      const res = await coreAPI.getLLMProvider(provider.id);
+      const res = await coreAPI.getLLMProvider(provider.id, token);
       setEditValues(res.data || res);
     } catch (e) {
+      console.error('Failed to fetch provider:', e);
+      showToast({
+        type: TOAST_TYPES.ERROR,
+        message: t('llmProviders.fetchError', 'Failed to fetch provider details')
+      });
       setEditValues(provider || {});
     }
     setActiveBox({ type: 'edit', provider });
@@ -188,11 +196,17 @@ const LLMProviders = () => {
   const handleTestConnection = async (provider) => {
     setTestingProvider(provider.id);
     try {
-      // Simulate connection test
+      // Simulate connection test with token
       await new Promise(resolve => setTimeout(resolve, 2000));
-      alert(`Connection test successful for ${provider.name}`);
+      showToast({
+        type: TOAST_TYPES.SUCCESS,
+        message: t('llmProviders.testSuccess', `Connection test successful for ${provider.name}`)
+      });
     } catch (error) {
-      alert(`Connection test failed for ${provider.name}: ${error.message}`);
+      showToast({
+        type: TOAST_TYPES.ERROR,
+        message: t('llmProviders.testError', `Connection test failed: ${error.message}`)
+      });
     } finally {
       setTestingProvider(null);
     }
@@ -202,56 +216,57 @@ const LLMProviders = () => {
     try {
       if (activeBox.type === 'add') {
         await coreAPI.createLLMProvider(formData, token);
-        setFormMessage({ type: 'success', text: t('llmProviders.createSuccess', 'Provider created successfully!') });
-        showToast({ type: TOAST_TYPES.SUCCESS, message: t('llmProviders.createSuccess', 'Provider created successfully!') });
-        setTimeout(() => setFormMessage(null), 3000);
+        showToast({
+          type: TOAST_TYPES.SUCCESS,
+          message: t('llmProviders.createSuccess', 'Provider created successfully!')
+        });
       } else if (activeBox.type === 'edit' && activeBox.provider) {
-        await coreAPI.updateLLMProvider(activeBox.provider.id, formData);
-        setFormMessage({ type: 'success', text: t('llmProviders.updateSuccess', 'Provider updated successfully!') });
-        showToast({ type: TOAST_TYPES.SUCCESS, message: t('llmProviders.updateSuccess', 'Provider updated successfully!') });
-        setTimeout(() => setFormMessage(null), 3000);
+        await coreAPI.updateLLMProvider(activeBox.provider.id, formData, token);
+        showToast({
+          type: TOAST_TYPES.SUCCESS,
+          message: t('llmProviders.updateSuccess', 'Provider updated successfully!')
+        });
       }
       setActiveBox({ type: null, provider: null });
       await fetchProviders();
     } catch (error) {
       console.error('Form submission failed:', error);
-      // Use error.data for ApiError, not error.response.data
       let errorText = error?.message || t('llmProviders.createError', 'Operation failed!');
-      if (error && typeof error === 'object' && error.data && typeof error.data === 'object') {
-        const errObj = error.data;
-        // If only a string error, show as is
-        if (typeof errObj === 'string') {
-          errorText = errObj;
-        } else {
-          errorText = (
-            <ul className="list-disc pl-5 space-y-1 text-left">
-              {Object.entries(errObj).map(([field, messages]) =>
-                Array.isArray(messages)
-                  ? messages.map((msg, i) => (
-                      <li key={field + i}><span className="font-semibold">{field}:</span> {msg}</li>
-                    ))
-                  : <li key={field}><span className="font-semibold">{field}:</span> {messages}</li>
-              )}
-            </ul>
-          );
-        }
+      
+      if (error?.data) {
+        errorText = Object.entries(error.data)
+          .map(([field, messages]) => 
+            Array.isArray(messages) 
+              ? messages.map(msg => `${field}: ${msg}`).join('\n')
+              : `${field}: ${messages}`
+          )
+          .join('\n');
       }
-      setFormMessage({ type: 'error', text: errorText });
-      showToast({ type: TOAST_TYPES.ERROR, message: error?.message || t('llmProviders.createError', 'Operation failed!') });
-      setTimeout(() => setFormMessage(null), 6000);
+      
+      showToast({
+        type: TOAST_TYPES.ERROR,
+        message: errorText
+      });
     }
   };
 
   const handleModalSubmit = async () => {
     try {
       if (modal.type === 'delete' && modal.provider) {
-        await coreAPI.deleteLLMProvider(modal.provider.id);
+        await coreAPI.deleteLLMProvider(modal.provider.id, token);
+        showToast({
+          type: TOAST_TYPES.SUCCESS,
+          message: t('llmProviders.deleteSuccess', 'Provider deleted successfully')
+        });
         closeModal();
         await fetchProviders();
       }
     } catch (error) {
       console.error('Delete operation failed:', error);
-      alert(`Delete failed: ${error.message || 'Unknown error'}`);
+      showToast({
+        type: TOAST_TYPES.ERROR,
+        message: t('llmProviders.deleteError', `Delete failed: ${error.message || 'Unknown error'}`)
+      });
     }
   };
 
@@ -270,18 +285,18 @@ const LLMProviders = () => {
 
   const formFields = [
     {
-  section: t('createProvider.form.basicInfo'),
+      section: t('createProvider.form.basicInfo'),
       fields: [
-        { 
-          label: t('createProvider.form.providerName'), 
-          name: 'name', 
+        {
+          label: t('createProvider.form.providerName'),
+          name: 'name',
           required: true,
           placeholder: t('createProvider.form.providerNamePlaceholder')
         },
-        { 
-          label: t('createProvider.form.providerType'), 
-          name: 'provider_type', 
-          required: true, 
+        {
+          label: t('createProvider.form.providerType'),
+          name: 'provider_type',
+          required: true,
           type: 'select',
           options: providerTypeOptions,
           placeholder: t('createProvider.form.providerTypePlaceholder')
@@ -289,32 +304,32 @@ const LLMProviders = () => {
       ]
     },
     {
-  section: t('createProvider.form.configuration'),
+      section: t('createProvider.form.configuration'),
       fields: [
-        { 
-          label: t('createProvider.form.baseUrl'), 
-          name: 'base_url', 
+        {
+          label: t('createProvider.form.baseUrl'),
+          name: 'base_url',
           required: true,
           placeholder: t('createProvider.form.baseUrlPlaceholder')
         },
-        { 
-          label: t('createProvider.form.apiKey'), 
+        {
+          label: t('createProvider.form.apiKey'),
           name: 'api_key',
           type: 'password',
           placeholder: t('createProvider.form.apiKeyPlaceholder')
         },
-        { 
-          label: t('createProvider.form.timeout'), 
-          name: 'timeout', 
-          type: 'number', 
+        {
+          label: t('createProvider.form.timeout'),
+          name: 'timeout',
+          type: 'number',
           defaultValue: 30,
           min: 1,
           max: 300
         },
-        { 
-          label: t('createProvider.form.maxRetries'), 
-          name: 'max_retries', 
-          type: 'number', 
+        {
+          label: t('createProvider.form.maxRetries'),
+          name: 'max_retries',
+          type: 'number',
           defaultValue: 3,
           min: 0,
           max: 10
@@ -322,17 +337,17 @@ const LLMProviders = () => {
       ]
     },
     {
-  section: t('createProvider.form.statusSettings'),
+      section: t('createProvider.form.statusSettings'),
       fields: [
-        { 
-          label: t('createProvider.form.active'), 
-          name: 'is_active', 
+        {
+          label: t('createProvider.form.active'),
+          name: 'is_active',
           type: 'checkbox',
           defaultValue: true
         },
-        { 
-          label: t('createProvider.form.defaultProvider'), 
-          name: 'is_default', 
+        {
+          label: t('createProvider.form.defaultProvider'),
+          name: 'is_default',
           type: 'checkbox',
           defaultValue: false
         }
@@ -341,9 +356,9 @@ const LLMProviders = () => {
   ];
 
   return (
-  <div className="space-y-6 px-2 sm:px-4 md:px-8 max-w-7xl mx-auto w-full">
+    <div className="space-y-6 px-2 sm:px-4 md:px-8 max-w-7xl mx-auto w-full">
       {/* Header */}
-  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">{t('llmProviders.title')}</h1>
           <p className="text-gray-600 mt-1">
@@ -374,7 +389,7 @@ const LLMProviders = () => {
       </div>
 
       {/* Stats Cards */}
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -509,16 +524,13 @@ const LLMProviders = () => {
         {/* Add/Edit Form */}
         {(activeBox.type === 'add' || activeBox.type === 'edit') && (
           <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">
-              {activeBox.type === 'add' ? t('llmProviders.addProvider') : t('llmProviders.editProvider')}
-            </h2>
+
             {formMessage && (
               <div
-                className={`mb-4 px-4 py-3 rounded text-sm font-medium border transition-all duration-300 ${
-                  formMessage.type === 'success'
+                className={`mb-4 px-4 py-3 rounded text-sm font-medium border transition-all duration-300 ${formMessage.type === 'success'
                     ? 'bg-green-50 border-green-200 text-green-800 text-center'
                     : 'bg-red-50 border-red-200 text-red-800'
-                }`}
+                  }`}
                 role="alert"
                 style={{ wordBreak: 'break-word' }}
               >
@@ -545,8 +557,8 @@ const LLMProviders = () => {
           onClose={closeModal}
           actions={
             <>
-              <button 
-                onClick={closeModal} 
+              <button
+                onClick={closeModal}
                 className="px-4 py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300"
               >
                 {t('llmProviders.cancel')}
@@ -562,7 +574,7 @@ const LLMProviders = () => {
         >
           {modal.provider && (
             <div className="text-gray-700">
-              <p className="mb-2">{t('llmProviders.deleteConfirm', 'Are you sure you want to delete the provider:')}</p>
+              <p className="mb-2">{t('llmProviders.deleteProvider', 'Are you sure you want to delete the provider:')}</p>
               <p className="font-semibold text-red-600">{modal.provider.name}</p>
               <p className="mt-2 text-sm text-gray-500">
                 {t('llmProviders.deleteWarning', 'This action cannot be undone and will also delete all associated models.')}
@@ -576,4 +588,3 @@ const LLMProviders = () => {
 };
 
 export default LLMProviders;
-

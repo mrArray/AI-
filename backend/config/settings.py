@@ -230,4 +230,3 @@ AUTHENTICATION_BACKENDS = [
 ]
 # Create logs directory
 os.makedirs(BASE_DIR / 'logs', exist_ok=True)
-

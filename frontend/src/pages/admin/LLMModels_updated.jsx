@@ -1,23 +1,24 @@
-  // Utility: Normalize model data for form
-  function normalizeModelForForm(model, formFields) {
-    // Build normalized object using dynamic field names from formFields
-    const normalized = {};
-    formFields.forEach(section => {
-      section.fields.forEach(field => {
-        // Special handling for provider field
-        if (field.name === 'provider') {
-          let providerId = model.provider;
-          if (model.provider && typeof model.provider === 'object') {
-            providerId = model.provider.id;
-          }
-          normalized.provider = providerId !== undefined ? providerId : (field.defaultValue !== undefined ? field.defaultValue : '');
-        } else {
-          normalized[field.name] = model[field.name] !== undefined ? model[field.name] : (field.defaultValue !== undefined ? field.defaultValue : '');
+// Utility: Normalize model data for form
+function normalizeModelForForm(model, formFields) {
+  // Build normalized object using dynamic field names from formFields
+  const normalized = {};
+  formFields.forEach(section => {
+    section.fields.forEach(field => {
+      // Special handling for provider field
+      if (field.name === 'provider') {
+        let providerId = model.provider;
+        if (model.provider && typeof model.provider === 'object') {
+          providerId = model.provider.id;
         }
-      });
+        normalized.provider = providerId !== undefined ? providerId : (field.defaultValue !== undefined ? field.defaultValue : '');
+      } else {
+        normalized[field.name] = model[field.name] !== undefined ? model[field.name] : (field.defaultValue !== undefined ? field.defaultValue : '');
+      }
     });
-    return normalized;
-  }
+  });
+  return normalized;
+}
+
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
@@ -58,7 +59,6 @@ const LLMModels = () => {
   const navigate = useNavigate();
 
   // Fetch models and providers with full CRUD support
-
   useEffect(() => {
     fetchData(1);
   }, []);
@@ -115,7 +115,7 @@ const LLMModels = () => {
   const columns = [
     {
       key: 'display_name',
-      label: t('llmModels.table.model'),
+      label: t('llmModels.modelName'),
       render: (value, item) => (
         <div className="flex items-center space-x-3">
           <div className="flex-shrink-0">
@@ -125,14 +125,14 @@ const LLMModels = () => {
           </div>
           <div>
             <div className="text-sm font-medium text-gray-900">{value}</div>
-            <div className="text-sm text-gray-500 font-mono">{item.name}</div>
+            <div className="text-sm text-gray-500">{item.name}</div>
           </div>
         </div>
       )
     },
     {
       key: 'provider_name',
-      label: t('llmModels.table.provider'),
+      label: t('llmModels.provider'),
       render: (value, item) => (
         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
           {value || (item.provider && item.provider.name) || 'Unknown'}
@@ -141,40 +141,27 @@ const LLMModels = () => {
     },
     {
       key: 'context_length',
-      label: t('llmModels.table.contextLength'),
+      label: t('llmModels.contextLength'),
       render: (value) => (
         <div className="flex items-center space-x-1">
-          <Layers className="w-4 h-4 text-gray-400" />
-          <span className="text-sm text-gray-900">{typeof value === 'number' ? value.toLocaleString() : '-'}</span>
+          <Layers className="w-3 h-3 text-gray-400" />
+          <span className="text-sm text-gray-900">{value?.toLocaleString()}</span>
         </div>
       )
     },
     {
       key: 'cost_per_1k_tokens',
-      label: t('llmModels.table.costPer1K'),
+      label: t('llmModels.cost'),
       render: (value) => (
         <div className="flex items-center space-x-1">
-          <DollarSign className="w-4 h-4 text-green-500" />
-          <span className="text-sm text-gray-900">
-            {value === 0 ? 'Free' : `$${value}`}
-          </span>
+          <DollarSign className="w-3 h-3 text-gray-400" />
+          <span className="text-sm text-gray-900">${value || 0}</span>
         </div>
       )
     },
     {
-      key: 'supports_streaming',
-      label: t('llmModels.table.streaming'),
-      render: (value) => (
-        <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-          value ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-        }`}>
-          {value ? 'Yes' : 'No'}
-        </span>
-      )
-    },
-    {
       key: 'is_active',
-      label: t('llmModels.table.status'),
+      label: t('llmModels.status'),
       render: (value, item) => (
         <div className="flex items-center space-x-2">
           <div className={`p-1 rounded-full ${value ? 'bg-green-100' : 'bg-gray-100'}`}>
@@ -184,11 +171,11 @@ const LLMModels = () => {
               <XCircle className="w-3 h-3 text-gray-500" />
             )}
           </div>
-          <span className="text-sm text-gray-900">{value ? 'Active' : 'Inactive'}</span>
+          <span className="text-sm text-gray-900">{value ? t('llmModels.active') : t('llmModels.inactive')}</span>
           {item.is_default && (
             <span className="inline-flex items-center px-1.5 py-0.5 text-xs font-medium rounded bg-yellow-100 text-yellow-800">
               <Zap className="w-3 h-3 mr-1" />
-              Default
+              {t('llmModels.default')}
             </span>
           )}
         </div>
@@ -196,15 +183,12 @@ const LLMModels = () => {
     },
     {
       key: 'created_at',
-      label: t('llmModels.table.added'),
+      label: t('llmModels.created'),
       type: 'date',
       render: (value) => (
-        <div className="flex items-center space-x-1">
-          <Clock className="w-4 h-4 text-gray-400" />
-          <span className="text-sm text-gray-500">
-            {new Date(value).toLocaleDateString()}
-          </span>
-        </div>
+        <span className="text-sm text-gray-500">
+          {new Date(value).toLocaleDateString()}
+        </span>
       )
     }
   ];
@@ -433,33 +417,27 @@ const LLMModels = () => {
           min: 1
         },
         { 
-          label: t('llmModels.form.temperature'), 
+          label: t('llmModels.form.temperatureDefault'), 
           name: 'temperature_default', 
           type: 'number',
-          step: 0.1,
+          defaultValue: 0.7,
           min: 0,
           max: 2,
-          defaultValue: 0.7
+          step: 0.1
         },
         { 
-          label: t('llmModels.form.costPer1K'), 
+          label: t('llmModels.form.costPer1kTokens'), 
           name: 'cost_per_1k_tokens', 
           type: 'number',
-          step: 0.001,
+          defaultValue: 0,
           min: 0,
-          defaultValue: 0
+          step: 0.001
         }
       ]
     },
     {
-      section: t('llmModels.form.settings'),
+      section: t('llmModels.form.statusSettings'),
       fields: [
-        { 
-          label: t('llmModels.form.streaming'), 
-          name: 'supports_streaming', 
-          type: 'checkbox',
-          defaultValue: true
-        },
         { 
           label: t('llmModels.form.active'), 
           name: 'is_active', 
@@ -467,40 +445,47 @@ const LLMModels = () => {
           defaultValue: true
         },
         { 
-          label: t('llmModels.form.default'), 
+          label: t('llmModels.form.defaultModel'), 
           name: 'is_default', 
           type: 'checkbox',
           defaultValue: false
+        },
+        { 
+          label: t('llmModels.form.supportsStreaming'), 
+          name: 'supports_streaming', 
+          type: 'checkbox',
+          defaultValue: true
         }
       ]
     }
   ];
 
   return (
-  <div className="space-y-6 px-2 sm:px-4 md:px-8 max-w-7xl mx-auto w-full">
+    <div className="space-y-6 px-2 sm:px-4 md:px-8 max-w-7xl mx-auto w-full">
       {/* Header */}
-  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">{t('llmModels.title')}</h1>
           <p className="text-gray-600 mt-1">
             {t('llmModels.description')}
           </p>
+          <p className="text-xs text-gray-400 mt-1">{t('header.lastUpdated')}</p>
         </div>
         <div className="flex space-x-3">
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={fetchData}
+            onClick={() => fetchData()}
             className="inline-flex items-center px-3 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
           >
             <RefreshCw className="w-4 h-4 mr-2" />
-            Refresh
+            {t('llmModels.refresh', 'Refresh')}
           </motion.button>
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={handleAdd}
-            className="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
             <Plus className="w-4 h-4 mr-2" />
             {t('llmModels.addModel')}
@@ -509,28 +494,27 @@ const LLMModels = () => {
       </div>
 
       {/* Stats Cards */}
-
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="bg-white rounded-lg p-4 shadow"
-      >
-        <div className="flex items-center">
-          <div className="p-2 bg-purple-100 rounded-lg">
-            <Brain className="w-5 h-5 text-purple-600" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-white rounded-lg p-4 shadow"
+        >
+          <div className="flex items-center">
+            <div className="p-2 bg-purple-100 rounded-lg">
+              <Brain className="w-5 h-5 text-purple-600" />
+            </div>
+            <div className="ml-3">
+              <p className="text-sm font-medium text-gray-600">{t('llmModels.totalModels')}</p>
+              <p className="text-lg font-semibold text-gray-900">{models.length}</p>
+            </div>
           </div>
-          <div className="ml-3">
-            <p className="text-sm font-medium text-gray-600">{t('llmModels.stats.total')}</p>
-            <p className="text-lg font-semibold text-gray-900">{models.length}</p>
-          </div>
-        </div>
-      </motion.div>
+        </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
+          transition={{ delay: 0.1 }}
           className="bg-white rounded-lg p-4 shadow"
         >
           <div className="flex items-center">
@@ -538,7 +522,7 @@ const LLMModels = () => {
               <CheckCircle className="w-5 h-5 text-green-600" />
             </div>
             <div className="ml-3">
-              <p className="text-sm font-medium text-gray-600">{t('llmModels.stats.active')}</p>
+              <p className="text-sm font-medium text-gray-600">{t('llmModels.active')}</p>
               <p className="text-lg font-semibold text-gray-900">
                 {models.filter(m => m.is_active).length}
               </p>
@@ -557,9 +541,9 @@ const LLMModels = () => {
               <Zap className="w-5 h-5 text-yellow-600" />
             </div>
             <div className="ml-3">
-              <p className="text-sm font-medium text-gray-600">{t('llmModels.stats.default')}</p>
+              <p className="text-sm font-medium text-gray-600">{t('llmModels.default')}</p>
               <p className="text-lg font-semibold text-gray-900">
-                {models.find(m => m.is_default)?.display_name || 'None'}
+                {models.find(m => m.is_default)?.display_name || t('llmModels.none', 'None')}
               </p>
             </div>
           </div>
@@ -576,41 +560,22 @@ const LLMModels = () => {
               <DollarSign className="w-5 h-5 text-blue-600" />
             </div>
             <div className="ml-3">
-              <p className="text-sm font-medium text-gray-600">{t('llmModels.stats.avgCost')}</p>
+              <p className="text-sm font-medium text-gray-600">{t('llmModels.avgCost')}</p>
               <p className="text-lg font-semibold text-gray-900">
-                ${models.length > 0 ? (models.reduce((sum, m) => sum + m.cost_per_1k_tokens, 0) / models.length).toFixed(3) : '0.000'}
+                ${models.length > 0 ? (models.reduce((sum, m) => sum + (m.cost_per_1k_tokens || 0), 0) / models.length).toFixed(3) : '0.000'}
               </p>
             </div>
           </div>
         </motion.div>
       </div>
 
-      {/* Provider Distribution */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
-        className="bg-white rounded-lg p-6 shadow"
-      >
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('llmModels.byProvider')}</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {Object.entries(providerStats).map(([provider, count]) => (
-            <div key={provider} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-              <span className="font-medium text-gray-900">{provider}</span>
-              <span className="text-sm text-gray-600">{count} models</span>
-            </div>
-          ))}
-        </div>
-      </motion.div>
-
       {/* Data Table */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
+        transition={{ delay: 0.4 }}
       >
-
-        {activeBox.type === null && (
+        {activeBox.type === null ? (
           <>
             <DataTable
               data={models}
@@ -618,18 +583,18 @@ const LLMModels = () => {
               loading={loading}
               onEdit={handleEdit}
               onDelete={handleDelete}
-              searchable={true}
-              filterable={true}
-              pagination={false}
+              onView={handleView}
+              actions={true}
+              actionsLabel={t('llmModels.actions')}
               customActions={(item) => (
                 <button
                   onClick={() => handleTestModel(item)}
                   disabled={testingModel === item.id}
                   className="p-1 text-gray-400 hover:text-green-600 disabled:opacity-50"
-                  title="Test Model"
+                  title={t('llmModels.testModel')}
                 >
                   {testingModel === item.id ? (
-                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    <div className="w-4 h-4 border-2 border-green-600 border-t-transparent rounded-full animate-spin"></div>
                   ) : (
                     <TestTube className="w-4 h-4" />
                   )}
@@ -655,7 +620,7 @@ const LLMModels = () => {
               </button>
             </div>
           </>
-        )}
+        ) : null}
 
         {/* Add/Edit Form */}
         {(activeBox.type === 'add' || activeBox.type === 'edit') && (
@@ -683,8 +648,8 @@ const LLMModels = () => {
               initialValues={editValues}
               onSubmit={handleFormSubmit}
               onCancel={closeBox}
-              saveText={activeBox.type === 'add' ? t('llmModels.create') : t('llmModels.save')}
-              cancelText={t('llmModels.cancel')}
+              saveText={t('llmModels.form.save')}
+              cancelText={t('llmModels.form.cancel')}
             />
           </div>
         )}
@@ -713,10 +678,10 @@ const LLMModels = () => {
         >
           {modal.model && (
             <div className="text-gray-700">
-              <p className="mb-2">Are you sure you want to delete the model:</p>
+              <p className="mb-2">{t('llmModels.deleteConfirm', 'Are you sure you want to delete the model:')}</p>
               <p className="font-semibold text-red-600">{modal.model.display_name}</p>
               <p className="mt-2 text-sm text-gray-500">
-                This action cannot be undone.
+                {t('llmModels.deleteWarning', 'This action cannot be undone.')}
               </p>
             </div>
           )}

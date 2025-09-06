@@ -11,7 +11,6 @@ import {
   Globe,
   Tag,
   Calendar,
-  Eye,
   Copy,
   Edit,
   Trash2,
@@ -22,9 +21,11 @@ import DataTable from '../../components/admin/DataTable';
 import DynamicForm from '../../components/admin/DynamicForm';
 import Modal from '../../components/admin/Modal';
 import { useTranslation } from 'react-i18next';
+import { useToast, TOAST_TYPES } from '../../contexts/ToastContext';
 
 const PromptTemplates = () => {
   const { t } = useTranslation('dashboard');
+  const { showToast } = useToast();
   const [templates, setTemplates] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState({ open: false, type: null, template: null });
@@ -49,6 +50,10 @@ const PromptTemplates = () => {
     } catch (e) {
       console.error('Failed to fetch prompt templates:', e);
       setTemplates([]);
+      showToast({ 
+        type: TOAST_TYPES.ERROR, 
+        message: t('promptTemplates.fetchError', 'Failed to fetch prompt templates') 
+      });
     }
     setLoading(false);
   };
@@ -497,7 +502,6 @@ const PromptTemplates = () => {
             loading={loading}
             onEdit={handleEdit}
             onDelete={handleDelete}
-            onView={handleView}
             searchable={true}
             filterable={true}
             pagination={true}

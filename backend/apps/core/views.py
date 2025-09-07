@@ -306,3 +306,27 @@ def get_llm_models(request):
             if 'created_at' not in obj:
                 obj['created_at'] = getattr(instance, 'created_at', None)
         return response
+
+# --- PromptTemplate CRUD API ---
+class PromptTemplateViewSet(viewsets.ModelViewSet):
+    """Full CRUD for Prompt Templates"""
+    queryset = PromptTemplate.objects.all()
+    serializer_class = PromptTemplateSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            return [AllowAny()]
+        return super().get_permissions()
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        # Optionally filter by is_active
+        is_active = self.request.query_params.get('is_active')
+        if is_active is not None:
+            qs = qs.filter(is_active=is_active.lower() in ['1', 'true', 'yes'])
+        # Optionally filter by language
+        language = self.request.query_params.get('language')
+        if language:
+            qs = qs.filter(language=language)
+        return qs

@@ -32,6 +32,10 @@ from apps.core.llm_service import LLMManager, extract_html_from_response
 from django.http import HttpResponse, JsonResponse
 import base64
 import re
+import logging
+
+# Configure logger
+logger = logging.getLogger(__name__)
 
 # New API for HomePage integration
 class AIPaperFormatView(APIView):
@@ -1035,6 +1039,8 @@ class PaperFormatWithLLMView(APIView):
                 user_input=prompt,
                 language=language
             )
+            # Log the rendered system prompt for debugging
+            logger.info(f"Rendered system prompt: {formatted_content}")
             # Remove AI explanations/thinking, keep only HTML
             formatted_content = extract_html_from_response(formatted_content)
         except Exception as e:

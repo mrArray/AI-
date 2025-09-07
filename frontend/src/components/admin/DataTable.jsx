@@ -36,7 +36,7 @@ const DataTable = ({
   // Filter and search data
   const filteredData = useMemo(() => {
     if (!searchTerm) return data;
-    
+
     return data.filter(item =>
       columns.some(column => {
         const value = item[column.key];
@@ -66,7 +66,7 @@ const DataTable = ({
   // Paginate data
   const paginatedData = useMemo(() => {
     if (!pagination) return sortedData;
-    
+
     const startIndex = (currentPage - 1) * pageSize;
     return sortedData.slice(startIndex, startIndex + pageSize);
   }, [sortedData, currentPage, pageSize, pagination]);
@@ -100,7 +100,7 @@ const DataTable = ({
 
   const renderCell = (item, column) => {
     const value = item[column.key];
-    
+
     if (column.render) {
       return column.render(value, item);
     }
@@ -116,9 +116,8 @@ const DataTable = ({
 
     if (column.type === 'boolean') {
       return (
-        <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-          value ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-        }`}>
+        <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${value ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+          }`}>
           {value ? 'Yes' : 'No'}
         </span>
       );
@@ -149,212 +148,161 @@ const DataTable = ({
   }
 
   return (
-  <div className="bg-white rounded-lg shadow overflow-hidden">
-      {/* Table header with search and filters */}
-      {(searchable || filterable) && (
-        <div className="p-4 border-b border-gray-200">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-              {searchable && (
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+      <div className="bg-white rounded-lg shadow overflow-hidden">
+        {/* Table header with search and filters */}
+        
+        {/* Table */}
+        <div className="w-full overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left">
                   <input
-                    type="text"
-                    placeholder="Search..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full sm:w-auto pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    type="checkbox"
+                    checked={selectedRows.size === paginatedData.length && paginatedData.length > 0}
+                    onChange={handleSelectAll}
+                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                   />
-                </div>
-              )}
-              
-              {filterable && (
-                <button
-                  onClick={() => setShowFilters(!showFilters)}
-                  className="flex items-center justify-center space-x-2 px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
-                >
-                  <Filter className="w-4 h-4" />
-                  <span>Filters</span>
-                </button>
-              )}
-            </div>
-
-            {selectedRows.size > 0 && (
-              <div className="flex items-center space-x-2">
-                <span className="text-sm text-gray-600">
-                  {selectedRows.size} selected
-                </span>
-                <button className="px-3 py-1 text-sm bg-red-100 text-red-700 rounded hover:bg-red-200">
-                  Delete Selected
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Table */}
-      <div className="w-full overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left">
-                <input
-                  type="checkbox"
-                  checked={selectedRows.size === paginatedData.length && paginatedData.length > 0}
-                  onChange={handleSelectAll}
-                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                />
-              </th>
-              {columns.map((column) => (
-                <th
-                  key={column.key}
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                  onClick={() => column.sortable !== false && handleSort(column.key)}
-                >
-                  <div className="flex items-center space-x-1">
-                    <span>{column.label}</span>
-                    {sortConfig.key === column.key && (
-                      <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                      >
-                        {sortConfig.direction === 'asc' ? (
-                          <ChevronUp className="w-4 h-4" />
-                        ) : (
-                          <ChevronDown className="w-4 h-4" />
-                        )}
-                      </motion.div>
-                    )}
-                  </div>
                 </th>
-              ))}
-              {actions && (
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  {actionsLabel}
-                </th>
-              )}
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            <AnimatePresence>
-              {paginatedData.map((item, index) => (
-                <motion.tr
-                  key={item.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ delay: index * 0.05 }}
-                  className="hover:bg-gray-50"
-                >
-                  <td className="px-6 py-4">
-                    <input
-                      type="checkbox"
-                      checked={selectedRows.has(item.id)}
-                      onChange={() => handleSelectRow(item.id)}
-                      className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                    />
-                  </td>
-                  {columns.map((column) => (
-                    <td key={column.key} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {renderCell(item, column)}
-                    </td>
-                  ))}
-                  {actions && (
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      <div className="flex items-center space-x-2">
-                        {onView && (
-                          <button
-                            onClick={() => onView(item)}
-                            className="p-1 text-gray-400 hover:text-blue-600"
-                          >
-                            <Eye className="w-4 h-4" />
-                          </button>
-                        )}
-                        {onEdit && (
-                          <button
-                            onClick={() => onEdit(item)}
-                            className="p-1 text-gray-400 hover:text-blue-600"
-                          >
-                            <Edit className="w-4 h-4" />
-                          </button>
-                        )}
-                        {onDelete && (
-                          <button
-                            onClick={() => onDelete(item)}
-                            className="p-1 text-gray-400 hover:text-red-600"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        )}
-                        <button className="p-1 text-gray-400 hover:text-gray-600">
-                          <MoreHorizontal className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </td>
-                  )}
-                </motion.tr>
-              ))}
-            </AnimatePresence>
-          </tbody>
-        </table>
-      </div>
-
-      {/* Pagination */}
-      {pagination && totalPages > 1 && (
-        <div className="px-4 sm:px-6 py-3 border-t border-gray-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div className="text-sm text-gray-700 text-center sm:text-left">
-            Showing {((currentPage - 1) * pageSize) + 1} to {Math.min(currentPage * pageSize, sortedData.length)} of {sortedData.length} results
-          </div>
-          <div className="flex items-center justify-center space-x-2">
-            <button
-              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1}
-              className="p-2 rounded border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-            
-            <div className="flex space-x-1">
-              {[...Array(Math.min(totalPages, 5))].map((_, i) => {
-                let pageNum;
-                if (totalPages <= 5) {
-                  pageNum = i + 1;
-                } else if (currentPage <= 3) {
-                  pageNum = i + 1;
-                } else if (currentPage >= totalPages - 2) {
-                  pageNum = totalPages - 4 + i;
-                } else {
-                  pageNum = currentPage - 2 + i;
-                }
-                
-                return (
-                  <button
-                    key={pageNum}
-                    onClick={() => setCurrentPage(pageNum)}
-                    className={`px-3 py-1 rounded text-sm ${
-                      currentPage === pageNum
-                        ? 'bg-blue-600 text-white'
-                        : 'border border-gray-300 hover:bg-gray-50'
-                    }`}
+                {columns.map((column) => (
+                  <th
+                    key={column.key}
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                    onClick={() => column.sortable !== false && handleSort(column.key)}
                   >
-                    {pageNum}
-                  </button>
-                );
-              })}
-            </div>
-            
-            <button
-              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-              disabled={currentPage === totalPages}
-              className="p-2 rounded border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
+                    <div className="flex items-center space-x-1">
+                      <span>{column.label}</span>
+                      {sortConfig.key === column.key && (
+                        <motion.div
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                        >
+                          {sortConfig.direction === 'asc' ? (
+                            <ChevronUp className="w-4 h-4" />
+                          ) : (
+                            <ChevronDown className="w-4 h-4" />
+                          )}
+                        </motion.div>
+                      )}
+                    </div>
+                  </th>
+                ))}
+                {actions && (
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    {actionsLabel}
+                  </th>
+                )}
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              <AnimatePresence>
+                {paginatedData.map((item, index) => (
+                  <motion.tr
+                    key={item.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ delay: index * 0.05 }}
+                    className="hover:bg-gray-50"
+                  >
+                    <td className="px-6 py-4">
+                      <input
+                        type="checkbox"
+                        checked={selectedRows.has(item.id)}
+                        onChange={() => handleSelectRow(item.id)}
+                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      />
+                    </td>
+                    {columns.map((column) => (
+                      <td key={column.key} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {renderCell(item, column)}
+                      </td>
+                    ))}
+                    {actions && (
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <div className="flex items-center space-x-2">
+                         
+                          {onEdit && (
+                            <button
+                              onClick={() => onEdit(item)}
+                              className="p-1 text-gray-400 hover:text-blue-600"
+                            >
+                              <Edit className="w-4 h-4" />
+                            </button>
+                          )}
+                          {onDelete && (
+                            <button
+                              onClick={() => onDelete(item)}
+                              className="p-1 text-gray-400 hover:text-red-600"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          )}
+                         
+                        </div>
+                      </td>
+                    )}
+                  </motion.tr>
+                ))}
+              </AnimatePresence>
+            </tbody>
+          </table>
         </div>
-      )}
-    </div>
+
+        {/* Pagination */}
+        {pagination && totalPages > 1 && (
+          <div className="px-4 sm:px-6 py-3 border-t border-gray-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="text-sm text-gray-700 text-center sm:text-left">
+              Showing {((currentPage - 1) * pageSize) + 1} to {Math.min(currentPage * pageSize, sortedData.length)} of {sortedData.length} results
+            </div>
+            <div className="flex items-center justify-center space-x-2">
+              <button
+                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+                className="p-2 rounded border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+
+              <div className="flex space-x-1">
+                {[...Array(Math.min(totalPages, 5))].map((_, i) => {
+                  let pageNum;
+                  if (totalPages <= 5) {
+                    pageNum = i + 1;
+                  } else if (currentPage <= 3) {
+                    pageNum = i + 1;
+                  } else if (currentPage >= totalPages - 2) {
+                    pageNum = totalPages - 4 + i;
+                  } else {
+                    pageNum = currentPage - 2 + i;
+                  }
+
+                  return (
+                    <button
+                      key={pageNum}
+                      onClick={() => setCurrentPage(pageNum)}
+                      className={`px-3 py-1 rounded text-sm ${currentPage === pageNum
+                          ? 'bg-blue-600 text-white'
+                          : 'border border-gray-300 hover:bg-gray-50'
+                        }`}
+                    >
+                      {pageNum}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <button
+                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                disabled={currentPage === totalPages}
+                className="p-2 rounded border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
   );
 };
 

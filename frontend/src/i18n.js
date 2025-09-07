@@ -13,24 +13,26 @@ i18n
   // 初始化i18next
   .init({
     fallbackLng: 'zh-CN',
-    debug: import.meta.env.VITE_NODE_ENV === 'development',
-    
-    // 公共命名空间，可以在所有组件中使用   
-    ns: ['common', 'profile' ,'home' ,
-      'template' ,'history', 
-      'document-generator'],
-    defaultNS: 'common', 
+    // debug: import.meta.env.VITE_NODE_ENV === 'development',
+    debug: false, // Disable debug mode to suppress warnings
+    missingKeyHandler: () => { }, // Suppress missing key warnings
 
-    
+    // 公共命名空间，可以在所有组件中使用   
+    ns: ['common', 'profile', 'home',
+      'template', 'history',
+      'document-generator'],
+    defaultNS: 'common',
+
+
     interpolation: {
       escapeValue: false, // React已经安全地转义了
     },
-    
+
     backend: {
       // 翻译文件的路径
       loadPath: '/locales/{{lng}}/{{ns}}.json',
     },
-    
+
     detection: {
       // 检测用户语言的选项
       order: ['localStorage', 'navigator'],

@@ -451,3 +451,48 @@ class PricingInfoView(APIView):
         }
         
         return Response(data)
+
+
+class PackageViewSet(viewsets.ModelViewSet):
+    """ViewSet for managing credit packages"""
+    serializer_class = PackageSerializer
+    queryset = Package.objects.all()
+
+    def get_permissions(self):
+        return []  # Removed all permissions
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        # Optionally filter by is_active
+        is_active = self.request.query_params.get('is_active')
+        if is_active is not None:
+            qs = qs.filter(is_active=is_active.lower() in ['1', 'true', 'yes'])
+        return qs
+
+    @extend_schema(
+        summary="Retrieve a package",
+        description="Retrieve details of a specific credit package by ID"
+    )
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    @extend_schema(
+        summary="Create a package",
+        description="Create a new credit package"
+    )
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
+
+    @extend_schema(
+        summary="Update a package",
+        description="Update an existing credit package"
+    )
+    def update(self, request, *args, **kwargs):
+        return super().update(request, *args, **kwargs)
+
+    @extend_schema(
+        summary="Delete a package",
+        description="Delete a credit package by ID"
+    )
+    def destroy(self, request, *args, **kwargs):
+        return super().destroy(request, *args, **kwargs)

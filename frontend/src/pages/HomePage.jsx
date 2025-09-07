@@ -1,8 +1,12 @@
 import React, { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { marked } from 'marked';
+import { MathJax, MathJaxContext } from 'better-react-mathjax';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { papersAPI } from '../api/papers';
+import { useAuth } from '../contexts/AuthContext';
+import { useModal } from '../contexts/ModalContext';
 
 const outputFormats = [
   { key: 'docx', icon: 'fas fa-file-word text-blue-600', label: 'DOCX' },
@@ -12,12 +16,12 @@ const outputFormats = [
 ];
 
 function HomePage() {
-  const [activeMode, setActiveMode] = useState('formatter'); // 默认显示排版功能
   const fileInputRef = useRef();
   const { t } = useTranslation('home');
+  const { isAuthenticated } = useAuth();
+  const { openRegisterModal } = useModal();
 
   const [file, setFile] = useState(null);
-  const [showFileModal, setShowFileModal] = useState(false);
   const [showFilePreview, setShowFilePreview] = useState(false);
   const [requirements, setRequirements] = useState('');
   const [selectedFormat, setSelectedFormat] = useState('docx');
@@ -25,33 +29,40 @@ function HomePage() {
   const [progress, setProgress] = useState(0);
   const [showSuccess, setShowSuccess] = useState(false);
   const [downloaded, setDownloaded] = useState(false);
-
   const [formattedContent, setFormattedContent] = useState(null);
   const [fileUrl, setFileUrl] = useState(null);
   const [fileName, setFileName] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+  const [viewMode, setViewMode] = useState('beautify');
 
-  // File upload handlers
+  const mathJaxConfig = {
+    loader: { load: ['[tex]/ams', '[tex]/color', '[tex]/boldsymbol'] },
+    tex: {
+      packages: { '[+]': ['ams', 'color', 'boldsymbol'] },
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      processEscapes: true,
+      processEnvironments: true,
+      macros: {
+        RR: '{\\mathbb{R}}',
+        bold: ['{\\bf #1}', 1],
+      }
+    },
+    options: { renderActions: { addMenu: [] } },
+    startup: {
+      typeset: false
+    }
+  };
 
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       setFile(e.target.files[0]);
       setShowFilePreview(true);
-      setShowFileModal(false);
     }
   };
 
-  const closeFileModal = () => {
-    setShowFileModal(false);
-    setShowFilePreview(true);
-  };
+  const handleFormatSelect = (key) => setSelectedFormat(key);
 
-  // Format selection
-  const handleFormatSelect = (key) => {
-    setSelectedFormat(key);
-  };
-
-  // Start formatting simulation
   const handleStart = async () => {
     setShowFilePreview(true);
     setProcessing(true);
@@ -62,19 +73,19 @@ function HomePage() {
     setFormattedContent(null);
     setFileUrl(null);
     setFileName('');
+
     if (!file || !requirements) {
       setProcessing(false);
-      setErrorMsg('Please upload a file and enter requirements.');
+      setErrorMsg(t('formatter.setErrorMsg', 'Please upload a file and enter requirements.'));
       return;
     }
+
     try {
       let prog = 0;
       const interval = setInterval(() => {
         prog += 10;
         setProgress(prog);
-        if (prog >= 100) {
-          clearInterval(interval);
-        }
+        if (prog >= 100) clearInterval(interval);
       }, 300);
 
       const data = await papersAPI.aiFormatPaper({
@@ -84,14 +95,19 @@ function HomePage() {
         title: '',
         language: 'en',
       });
+
       setProcessing(false);
       if (data.error) {
         setErrorMsg(data.error || 'Formatting failed.');
         return;
       }
+
       setShowSuccess(true);
-      // For all formats, set preview if present
       setFormattedContent(data.formatted_content || null);
+
+      // Extract original filename without extension for use in download
+      const originalName = file.name.replace(/\.[^/.]+$/, '');
+
       if (selectedFormat === 'md' || selectedFormat === 'latex') {
         if (data.file_base64) {
           const byteCharacters = atob(data.file_base64);
@@ -100,15 +116,20 @@ function HomePage() {
             byteNumbers[i] = byteCharacters.charCodeAt(i);
           }
           const byteArray = new Uint8Array(byteNumbers);
-          const blob = new Blob([byteArray], { type: data.content_type || 'text/plain' });
+          const blob = new Blob([byteArray], {
+            type: data.content_type || 'text/plain',
+          });
           const url = window.URL.createObjectURL(blob);
           setFileUrl(url);
-          setFileName(data.file_name || 'formatted_paper.' + selectedFormat);
+          setFileName(
+            data.file_name || `${originalName}_formatted.${selectedFormat}`
+          );
         }
       } else {
-        // pdf/docx
         setFileUrl(data.file_url);
-        setFileName(data.file_name || 'formatted_paper.' + selectedFormat);
+        setFileName(
+          data.file_name || `${originalName}_formatted.${selectedFormat}`
+        );
       }
     } catch (err) {
       setProcessing(false);
@@ -116,7 +137,6 @@ function HomePage() {
     }
   };
 
-  // Download handler for fileUrl
   const handleDownload = () => {
     if (fileUrl) {
       const link = document.createElement('a');
@@ -130,15 +150,241 @@ function HomePage() {
     }
   };
 
+  const renderMarkdownWithMath = (content) =>
+    marked(content || '', { breaks: true, gfm: true });
+
+  const processLatexContent = (latexContent) => {
+    if (!latexContent) return '';
+    
+    // Remove document class and preamble commands for display
+    let content = latexContent
+      .replace(/\\documentclass\{[^}]*\}/g, '')
+      .replace(/\\usepackage\{[^}]*\}/g, '')
+      .replace(/\\usepackage\[[^\]]*\]\{[^}]*\}/g, '')
+      .replace(/\\begin\{document\}/g, '')
+      .replace(/\\end\{document\}/g, '')
+      .replace(/\\maketitle/g, '')
+      .replace(/\\author\{[^}]*\}/g, '')
+      .replace(/\\date\{[^}]*\}/g, '');
+
+    // Handle LaTeX lists (itemize, enumerate)
+    content = content
+      .replace(/\\begin\{itemize\}/g, '<ul class="list-disc list-inside ml-4 mb-4">')
+      .replace(/\\end\{itemize\}/g, '</ul>')
+      .replace(/\\begin\{enumerate\}/g, '<ol class="list-decimal list-inside ml-4 mb-4">')
+      .replace(/\\end\{enumerate\}/g, '</ol>')
+      .replace(/\\begin\{description\}/g, '<dl class="ml-4 mb-4">')
+      .replace(/\\end\{description\}/g, '</dl>')
+      .replace(/\\item\s*/g, '<li class="mb-1">');
+
+    // Handle description list items
+    content = content.replace(/\\item\[([^\]]*)\]/g, '<dt class="font-semibold mt-2">$1</dt><dd class="ml-4 mb-2">');
+
+    // Handle LaTeX tables
+    content = content
+      .replace(/\\begin\{table\}(\[.*?\])?/g, '<div class="table-container my-6">')
+      .replace(/\\end\{table\}/g, '</div>')
+      .replace(/\\begin\{tabular\}\{[^}]*\}/g, '<table class="min-w-full border-collapse border border-gray-300 my-4">')
+      .replace(/\\end\{tabular\}/g, '</table>')
+      .replace(/\\begin\{longtable\}\{[^}]*\}/g, '<table class="min-w-full border-collapse border border-gray-300 my-4">')
+      .replace(/\\end\{longtable\}/g, '</table>')
+      .replace(/\\begin\{tabularx\}\{[^}]*\}\{[^}]*\}/g, '<table class="min-w-full border-collapse border border-gray-300 my-4">')
+      .replace(/\\end\{tabularx\}/g, '</table>')
+      .replace(/\\hline/g, '')
+      .replace(/\\centering/g, '')
+      .replace(/\\caption\{([^}]*)\}/g, '<caption class="text-sm font-medium text-gray-700 mb-2">$1</caption>');
+
+    // Handle table rows and cells (basic conversion)
+    content = content.replace(/([^\\&\n]+)(\s*&\s*[^\\&\n]+)*\s*\\\\/g, (match) => {
+      const cells = match.replace(/\s*\\\\$/, '').split('&').map(cell => cell.trim());
+      const tableCells = cells.map(cell => 
+        `<td class="border border-gray-300 px-3 py-2 text-sm">${cell}</td>`
+      ).join('');
+      return `<tr>${tableCells}</tr>`;
+    });
+
+    // Handle text environments
+    content = content
+      .replace(/\\begin\{abstract\}/g, '<div class="abstract bg-gray-100 p-4 rounded-lg mb-6"><h3 class="font-semibold mb-2">Abstract</h3>')
+      .replace(/\\end\{abstract\}/g, '</div>')
+      .replace(/\\begin\{quote\}/g, '<blockquote class="border-l-4 border-gray-300 pl-4 italic my-4">')
+      .replace(/\\end\{quote\}/g, '</blockquote>')
+      .replace(/\\begin\{quotation\}/g, '<blockquote class="border-l-4 border-gray-300 pl-4 italic my-4 text-justify">')
+      .replace(/\\end\{quotation\}/g, '</blockquote>')
+      .replace(/\\begin\{verse\}/g, '<div class="verse italic text-center my-4 leading-relaxed">')
+      .replace(/\\end\{verse\}/g, '</div>');
+
+    // Handle mathematical environments
+    content = content
+      .replace(/\\begin\{equation\}/g, '<div class="equation my-4 text-center">$$')
+      .replace(/\\end\{equation\}/g, '$$</div>')
+      .replace(/\\begin\{equation\*\}/g, '<div class="equation my-4 text-center">$$')
+      .replace(/\\end\{equation\*\}/g, '$$</div>')
+      .replace(/\\begin\{align\}/g, '<div class="align my-4 text-center">\\begin{align}')
+      .replace(/\\end\{align\}/g, '\\end{align}</div>')
+      .replace(/\\begin\{align\*\}/g, '<div class="align my-4 text-center">\\begin{align*}')
+      .replace(/\\end\{align\*\}/g, '\\end{align*}</div>')
+      .replace(/\\begin\{eqnarray\}/g, '<div class="eqnarray my-4 text-center">\\begin{eqnarray}')
+      .replace(/\\end\{eqnarray\}/g, '\\end{eqnarray}</div>')
+      .replace(/\\begin\{eqnarray\*\}/g, '<div class="eqnarray my-4 text-center">\\begin{eqnarray*}')
+      .replace(/\\end\{eqnarray\*\}/g, '\\end{eqnarray*}</div>')
+      .replace(/\\begin\{gather\}/g, '<div class="gather my-4 text-center">\\begin{gather}')
+      .replace(/\\end\{gather\}/g, '\\end{gather}</div>')
+      .replace(/\\begin\{gather\*\}/g, '<div class="gather my-4 text-center">\\begin{gather*}')
+      .replace(/\\end\{gather\*\}/g, '\\end{gather*}</div>')
+      .replace(/\\begin\{multline\}/g, '<div class="multline my-4 text-center">\\begin{multline}')
+      .replace(/\\end\{multline\}/g, '\\end{multline}</div>')
+      .replace(/\\begin\{multline\*\}/g, '<div class="multline my-4 text-center">\\begin{multline*}')
+      .replace(/\\end\{multline\*\}/g, '\\end{multline*}</div>');
+
+    // Handle figure environments
+    content = content
+      .replace(/\\begin\{figure\}(\[.*?\])?/g, '<div class="figure my-6 text-center">')
+      .replace(/\\end\{figure\}/g, '</div>')
+      .replace(/\\begin\{figure\*\}(\[.*?\])?/g, '<div class="figure my-6 text-center">')
+      .replace(/\\end\{figure\*\}/g, '</div>')
+      .replace(/\\includegraphics(\[.*?\])?\{([^}]*)\}/g, '<img src="$2" class="max-w-full h-auto mx-auto" alt="Figure">')
+      .replace(/\\label\{([^}]*)\}/g, '<span class="label hidden" data-label="$1"></span>');
+
+    // Handle code environments
+    content = content
+      .replace(/\\begin\{verbatim\}/g, '<pre class="verbatim bg-gray-100 p-4 rounded-lg my-4 overflow-x-auto"><code>')
+      .replace(/\\end\{verbatim\}/g, '</code></pre>')
+      .replace(/\\begin\{lstlisting\}(\[.*?\])?/g, '<pre class="lstlisting bg-gray-100 p-4 rounded-lg my-4 overflow-x-auto"><code>')
+      .replace(/\\end\{lstlisting\}/g, '</code></pre>')
+      .replace(/\\verb\|([^|]*)\|/g, '<code class="bg-gray-100 px-1 rounded">$1</code>');
+
+    // Handle theorem-like environments
+    content = content
+      .replace(/\\begin\{theorem\}/g, '<div class="theorem bg-blue-50 border-l-4 border-blue-400 p-4 my-4"><strong class="text-blue-800">Theorem:</strong> ')
+      .replace(/\\end\{theorem\}/g, '</div>')
+      .replace(/\\begin\{lemma\}/g, '<div class="lemma bg-green-50 border-l-4 border-green-400 p-4 my-4"><strong class="text-green-800">Lemma:</strong> ')
+      .replace(/\\end\{lemma\}/g, '</div>')
+      .replace(/\\begin\{proposition\}/g, '<div class="proposition bg-purple-50 border-l-4 border-purple-400 p-4 my-4"><strong class="text-purple-800">Proposition:</strong> ')
+      .replace(/\\end\{proposition\}/g, '</div>')
+      .replace(/\\begin\{corollary\}/g, '<div class="corollary bg-indigo-50 border-l-4 border-indigo-400 p-4 my-4"><strong class="text-indigo-800">Corollary:</strong> ')
+      .replace(/\\end\{corollary\}/g, '</div>')
+      .replace(/\\begin\{definition\}/g, '<div class="definition bg-yellow-50 border-l-4 border-yellow-400 p-4 my-4"><strong class="text-yellow-800">Definition:</strong> ')
+      .replace(/\\end\{definition\}/g, '</div>')
+      .replace(/\\begin\{example\}/g, '<div class="example bg-gray-50 border-l-4 border-gray-400 p-4 my-4"><strong class="text-gray-800">Example:</strong> ')
+      .replace(/\\end\{example\}/g, '</div>')
+      .replace(/\\begin\{proof\}/g, '<div class="proof bg-slate-50 border-l-4 border-slate-400 p-4 my-4"><strong class="text-slate-800">Proof:</strong> ')
+      .replace(/\\end\{proof\}/g, ' ∎</div>')
+      .replace(/\\begin\{remark\}/g, '<div class="remark bg-orange-50 border-l-4 border-orange-400 p-4 my-4"><strong class="text-orange-800">Remark:</strong> ')
+      .replace(/\\end\{remark\}/g, '</div>')
+      .replace(/\\begin\{note\}/g, '<div class="note bg-cyan-50 border-l-4 border-cyan-400 p-4 my-4"><strong class="text-cyan-800">Note:</strong> ')
+      .replace(/\\end\{note\}/g, '</div>');
+
+    // Handle special environments
+    content = content
+      .replace(/\\begin\{center\}/g, '<div class="text-center my-4">')
+      .replace(/\\end\{center\}/g, '</div>')
+      .replace(/\\begin\{flushleft\}/g, '<div class="text-left my-4">')
+      .replace(/\\end\{flushleft\}/g, '</div>')
+      .replace(/\\begin\{flushright\}/g, '<div class="text-right my-4">')
+      .replace(/\\end\{flushright\}/g, '</div>')
+      .replace(/\\begin\{minipage\}(\[.*?\])?\{[^}]*\}/g, '<div class="minipage inline-block align-top mx-2">')
+      .replace(/\\end\{minipage\}/g, '</div>');
+
+    // Handle bibliography environments
+    content = content
+      .replace(/\\begin\{thebibliography\}\{[^}]*\}/g, '<div class="bibliography mt-8"><h3 class="text-lg font-semibold mb-4">References</h3><ol class="list-decimal list-inside space-y-2">')
+      .replace(/\\end\{thebibliography\}/g, '</ol></div>')
+      .replace(/\\bibitem(\[.*?\])?\{([^}]*)\}/g, '<li class="text-sm" id="ref-$2">');
+
+    // Handle appendix
+    content = content
+      .replace(/\\appendix/g, '<div class="appendix mt-8 pt-4 border-t-2 border-gray-300">')
+      .replace(/\\begin\{appendices\}/g, '<div class="appendices mt-8">')
+      .replace(/\\end\{appendices\}/g, '</div>');
+
+    // Convert LaTeX sections to HTML headers
+    content = content
+      .replace(/\\title\{([^}]*)\}/g, '<h1 class="text-2xl font-bold mb-4">$1</h1>')
+      .replace(/\\section\{([^}]*)\}/g, '<h2 class="text-xl font-semibold mt-6 mb-3">$1</h2>')
+      .replace(/\\subsection\{([^}]*)\}/g, '<h3 class="text-lg font-medium mt-4 mb-2">$1</h3>')
+      .replace(/\\subsubsection\{([^}]*)\}/g, '<h4 class="text-base font-medium mt-3 mb-2">$1</h4>')
+      .replace(/\\paragraph\{([^}]*)\}/g, '<h5 class="text-sm font-medium mt-2 mb-1">$1</h5>')
+      .replace(/\\subparagraph\{([^}]*)\}/g, '<h6 class="text-xs font-medium mt-1 mb-1">$1</h6>');
+
+    // Handle text formatting
+    content = content
+      .replace(/\\textbf\{([^}]*)\}/g, '<strong>$1</strong>')
+      .replace(/\\textit\{([^}]*)\}/g, '<em>$1</em>')
+      .replace(/\\emph\{([^}]*)\}/g, '<em>$1</em>')
+      .replace(/\\texttt\{([^}]*)\}/g, '<code class="bg-gray-100 px-1 rounded font-mono text-sm">$1</code>')
+      .replace(/\\textsc\{([^}]*)\}/g, '<span class="uppercase text-xs tracking-wider">$1</span>')
+      .replace(/\\underline\{([^}]*)\}/g, '<u>$1</u>')
+      .replace(/\\textcolor\{[^}]*\}\{([^}]*)\}/g, '$1')
+      .replace(/\\footnote\{([^}]*)\}/g, '<sup class="text-xs text-blue-600 cursor-pointer" title="$1">[*]</sup>');
+
+    // Handle line breaks and paragraphs
+    content = content
+      .replace(/\\\\/g, '<br>')
+      .replace(/\\par/g, '</p><p>')
+      .replace(/\\newpage/g, '<div class="page-break my-8 border-t border-gray-300"></div>')
+      .replace(/\\clearpage/g, '<div class="page-break my-8 border-t border-gray-300"></div>')
+      .replace(/\n\n+/g, '</p><p>');
+
+    // Wrap in paragraph tags if not already wrapped
+    if (!content.trim().startsWith('<')) {
+      content = '<p>' + content + '</p>';
+    }
+
+    // Clean up empty paragraphs
+    content = content.replace(/<p>\s*<\/p>/g, '');
+
+    return content;
+  };
+
+  const renderBeautifiedContent = () => {
+    if (!formattedContent) return null;
+
+    if (selectedFormat === 'latex') {
+      const processedLatex = processLatexContent(formattedContent);
+      
+      return (
+        <MathJaxContext config={mathJaxConfig}>
+          <MathJax dynamic>
+            <div 
+              className="prose max-w-none latex-content"
+              dangerouslySetInnerHTML={{ __html: processedLatex }}
+            />
+          </MathJax>
+        </MathJaxContext>
+      );
+    } else if (selectedFormat === 'md') {
+      return (
+        <MathJaxContext config={mathJaxConfig}>
+          <MathJax dynamic>
+            <div
+              className="prose max-w-none"
+              dangerouslySetInnerHTML={{
+                __html: renderMarkdownWithMath(formattedContent),
+              }}
+            />
+          </MathJax>
+        </MathJaxContext>
+      );
+    } else {
+      return (
+        <pre className="whitespace-pre-wrap break-words text-sm">
+          {formattedContent}
+        </pre>
+      );
+    }
+  };
+
+
   return (
     <div className="bg-gray-50 min-h-screen">
-      {/* Navigation */}
       <Header />
 
-      {/* Main Converter Interface */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">{t('formatter.title')}</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">
+            {t('formatter.title')}
+          </h2>
           <p className="text-gray-600">{t('formatter.subtitle')}</p>
         </div>
 
@@ -156,12 +402,19 @@ function HomePage() {
                 onClick={() => fileInputRef.current.click()}
               >
                 <i className="fas fa-cloud-upload-alt text-3xl text-gray-400 group-hover:text-indigo-500 transition-colors mb-3"></i>
-                <p className="text-gray-600 mb-2">{t('formatter.uploadPlaceholder')}</p>
-                <p className="text-xs text-gray-500 mb-3">{t('formatter.supportedFormats')}</p>
+                <p className="text-gray-600 mb-2">
+                  {t('formatter.uploadPlaceholder')}
+                </p>
+                <p className="text-xs text-gray-500 mb-3">
+                  {t('formatter.supportedFormats')}
+                </p>
                 <button
                   type="button"
                   className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors"
-                  onClick={e => { e.stopPropagation(); fileInputRef.current.click(); }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    fileInputRef.current.click();
+                  }}
                 >
                   {t('formatter.browseFiles', 'Browse Files')}
                 </button>
@@ -173,15 +426,19 @@ function HomePage() {
                   onChange={handleFileChange}
                 />
               </div>
-              {/* File Preview */}
               {showFilePreview && file && (
-                <div className="mt-3 p-3 bg-blue-50 rounded-lg border border-blue-200" id="file-preview">
+                <div className="mt-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
                   <div className="flex items-center text-blue-800">
                     <i className="fas fa-file-alt mr-2"></i>
-                    <span className="text-sm">{file.name} ({(file.size / 1024 / 1024).toFixed(1)} MB)</span>
+                    <span className="text-sm">
+                      {file.name} ({(file.size / 1024 / 1024).toFixed(1)} MB)
+                    </span>
                     <button
                       className="ml-auto text-blue-600 hover:text-blue-800"
-                      onClick={() => { setFile(null); setShowFilePreview(false); }}
+                      onClick={() => {
+                        setFile(null);
+                        setShowFilePreview(false);
+                      }}
                     >
                       <i className="fas fa-times"></i>
                     </button>
@@ -190,7 +447,7 @@ function HomePage() {
               )}
             </div>
 
-            {/* Requirements Input */}
+            {/* Requirements */}
             <div className="mb-6 flex-1">
               <label className="block text-sm font-semibold text-gray-700 mb-3">
                 <i className="fas fa-list-alt mr-2 text-indigo-600"></i>
@@ -200,244 +457,225 @@ function HomePage() {
                 className="w-full h-32 p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
                 placeholder={t('formatter.requirementsPlaceholder')}
                 value={requirements}
-                onChange={e => setRequirements(e.target.value)}
+                onChange={(e) => setRequirements(e.target.value)}
               />
             </div>
 
-            {/* Output Format Selection */}
+            {/* Format Selection */}
             <div className="mb-6">
               <label className="block text-sm font-semibold text-gray-700 mb-3">
                 <i className="fas fa-file-export mr-2 text-indigo-600"></i>
                 {t('formatter.formatStyleTitle', 'Output Format')}
               </label>
               <div className="flex space-x-3">
-                {outputFormats.map(f => (
+                {outputFormats.map((f) => (
                   <button
                     key={f.key}
                     type="button"
-                    className={`format-btn flex-1 p-3 border-2 rounded-lg text-center transition-all group ${selectedFormat === f.key ? 'active border-indigo-500 bg-indigo-50' : 'border-gray-300'}`}
+                    className={`flex-1 p-3 border-2 rounded-lg text-center transition-all group ${
+                      selectedFormat === f.key
+                        ? 'border-indigo-500 bg-indigo-50'
+                        : 'border-gray-300'
+                    }`}
                     onClick={() => handleFormatSelect(f.key)}
                   >
                     <i className={`${f.icon} text-xl mb-1 block`}></i>
-                    <span className="text-sm font-medium text-gray-700">{t(`formatter.formats.${f.key}`, f.label)}</span>
+                    <span className="text-sm font-medium text-gray-700">
+                      {t(`formatter.formats.${f.key}`, f.label)}
+                    </span>
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Processing Status */}
+            {/* Processing */}
             {processing && (
-              <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200" id="processing-status">
+              <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-sm font-semibold text-gray-700">{t('formatter.processingStatusTitle', 'AI Processing Status')}</span>
+                  <span className="text-sm font-semibold text-gray-700">
+                    {t('formatter.processingStatusTitle')}
+                  </span>
                   <div className="flex items-center">
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-indigo-600 mr-2"></div>
-                    <span className="text-sm text-indigo-600">{t('formatter.processing', 'Processing...')}</span>
+                    <span className="text-sm text-indigo-600">
+                      {t('formatter.processing')}
+                    </span>
                   </div>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
                   <div
                     className="bg-gradient-to-r from-indigo-600 to-purple-600 h-2 rounded-full transition-all duration-500"
                     style={{ width: progress + '%' }}
-                    id="progress-bar"
                   ></div>
                 </div>
-                <p className="text-xs text-gray-600">{t('formatter.processingStatusDesc', 'Document analysis and formatting in progress...')}</p>
+                <p className="text-xs text-gray-600">
+                  {t(
+                    'formatter.processingStatusDesc'
+                  )}
+                </p>
               </div>
             )}
-            {/* Error Message */}
+
+            {/* Error */}
             {errorMsg && (
               <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg">
-                {(() => {
-                  try {
-                    // Try to parse as JSON and pretty print
-                    const errObj = typeof errorMsg === 'string' ? JSON.parse(errorMsg) : errorMsg;
-                    if (typeof errObj === 'object' && errObj !== null) {
-                      return <pre className="whitespace-pre-wrap text-xs text-red-800 bg-red-100 p-2 rounded overflow-x-auto">{JSON.stringify(errObj, null, 2)}</pre>;
-                    }
-                  } catch (e) {}
-                  // Fallback: plain text
-                  return errorMsg;
-                })()}
+                {errorMsg}
               </div>
             )}
 
             {/* Start Button */}
             <button
-              id="start-btn"
-              className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-4 rounded-xl text-lg font-semibold hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl"
-              onClick={handleStart}
+              className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-4 rounded-xl text-lg font-semibold"
+              onClick={isAuthenticated ? handleStart : openRegisterModal}
               disabled={processing}
             >
               {processing ? (
-                <><i className="fas fa-spinner fa-spin mr-2"></i>{t('formatter.processing', 'Processing...')}</>
+                <>
+                  <i className="fas fa-spinner fa-spin mr-2"></i>
+                  {t('formatter.processing')}
+                </>
               ) : (
-                <><i className="fas fa-magic mr-2"></i>{showSuccess ? t('formatter.formatButton') : t('formatter.startButton', 'Start AI Formatting')}</>
+                <>
+                  <i className="fas fa-magic mr-2"></i>
+                  {t('formatter.startButton')}
+                </>
               )}
             </button>
           </div>
 
           {/* Right Panel */}
           <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 flex flex-col">
-            {/* Unified Preview Area */}
-            <div className="flex-1 mb-6">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-gray-800 flex items-center">
                 <i className="fas fa-eye text-indigo-600 mr-3"></i>
-                {t('formatter.previewTitle', 'Overview of The Finished One')}
+                {t('formatter.previewTitle')}
               </h3>
-              <div className="bg-gray-50 rounded-xl h-full p-4 border-2 border-gray-200 overflow-y-auto min-h-[400px] mb-4">
-                {/* Preview for all formats if present, else message */}
-                <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
-                  {formattedContent ? (
-                    selectedFormat === 'md' ? (
-                      <div dangerouslySetInnerHTML={{ __html: window.marked ? window.marked(formattedContent) : formattedContent.replace(/\n/g, '<br/>') }} />
-                    ) : selectedFormat === 'latex' ? (
-                      <pre>{formattedContent}</pre>
-                    ) : (
-                      <pre className="whitespace-pre-wrap break-words">{formattedContent}</pre>
-                    )
-                  ) : (
-                    <div className="flex flex-col items-center justify-center h-full text-gray-400">
-                      <i className="fas fa-file-alt text-6xl mb-4"></i>
-                      <p className="text-lg font-medium mb-2">{t('formatter.preview.title')}</p>
-                      <p className="text-sm text-center">{t('formatter.preview.content')}</p>
-                    </div>
-                  )}
+              {selectedFormat !== 'docx' && selectedFormat !== 'pdf' && (
+                <div className="border-b border-gray-200">
+                  <ul className="flex -mb-px text-sm font-medium text-center text-gray-500">
+                    <li className="mr-2">
+                      <button
+                        className={`p-4 border-b-2 ${
+                          viewMode === 'beautify'
+                            ? 'text-indigo-600 border-indigo-600'
+                            : 'border-transparent hover:text-gray-600'
+                        }`}
+                        onClick={() => setViewMode('beautify')}
+                      >
+                        Beautify
+                      </button>
+                    </li>
+                    <li className="mr-2">
+                      <button
+                        className={`p-4 border-b-2 ${
+                          viewMode === 'raw'
+                            ? 'text-indigo-600 border-indigo-600'
+                            : 'border-transparent hover:text-gray-600'
+                        }`}
+                        onClick={() => setViewMode('raw')}
+                      >
+                        {selectedFormat.toUpperCase()}
+                      </button>
+                    </li>
+                  </ul>
                 </div>
-              </div>
-            </div>
-                             <div className="my-6"></div>
-
-            <button
-              id="download-btn"
-              className={`w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-4 rounded-xl text-lg font-semibold hover:from-green-600 hover:to-emerald-700 transition-all duration-300 shadow-lg ${!showSuccess || !fileUrl ? 'disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed' : ''}`}
-              disabled={!showSuccess || !fileUrl}
-              onClick={handleDownload}
-            >
-              {downloaded ? (
-                <><i className="fas fa-check mr-2"></i>{t('formatter.downloaded', 'Downloaded!')}</>
-              ) : (
-                <><i className="fas fa-download mr-2"></i>{t('formatter.download', 'Download')}</>
               )}
-            </button>
-              <div className="my-3"></div>
-
-          {/* Additional Options */}
-            <div className="mt-3 flex space-x-2">
-              <button className="flex-1 bg-gray-100 text-gray-700 py-2 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50" disabled>
-                <i className="fas fa-share mr-1"></i>
-                {t('formatter.share', 'Share')}
-              </button>
-              <button className="flex-1 bg-gray-100 text-gray-700 py-2 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50" disabled>
-                <i className="fas fa-history mr-1"></i>
-                {t('formatter.history', 'History')}
-              </button>
             </div>
-            
+
+            <div className="bg-gray-50 rounded-xl p-4 border-2 border-gray-200 h-[400px] overflow-y-auto overflow-x-auto">
+              {formattedContent ? (
+                (selectedFormat === 'docx' || selectedFormat === 'pdf') ? (
+                  <div className="flex flex-col items-center justify-center h-full text-gray-400">
+                    <i className="fas fa-file-alt text-6xl mb-4"></i>
+                    <p className="text-lg font-medium mb-2">
+                      {t('formatter.preview.notAvailable')}
+                    </p>
+                    <p className="text-sm text-center">
+                      {t('formatter.preview.binaryFileMessage')}
+                    </p>
+                  </div>
+                ) : (
+                  viewMode === 'beautify' ? (
+                    renderBeautifiedContent()
+                  ) : (
+                    <pre className="text-xs whitespace-pre font-mono overflow-x-auto">
+                      {formattedContent}
+                    </pre>
+                  )
+                )
+              ) : (
+                <div className="flex flex-col items-center justify-center h-full text-gray-400">
+                  <i className="fas fa-file-alt text-6xl mb-4"></i>
+                  <p className="text-lg font-medium mb-2">
+                    {t('formatter.preview.notAvailable')}
+                  </p>
+                  <p className="text-sm text-center">
+                    {t('formatter.preview.content')}
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {fileUrl && (
+              <button
+                className="w-full mt-6 bg-gradient-to-r from-green-500 to-emerald-600 text-white py-4 rounded-xl text-lg font-semibold"
+                disabled={!showSuccess || !fileUrl}
+                onClick={handleDownload}
+              >
+                {downloaded ? (
+                  <>
+                    <i className="fas fa-check mr-2"></i>
+                    {t('formatter.downloaded')}
+                  </>
+                ) : (
+                  <>
+                    <i className="fas fa-download mr-2"></i>
+                    {t('formatter.download')}
+                  </>
+                )}
+              </button>
+            )}
           </div>
-          
         </div>
       </div>
 
-      {/* Features Section */}
-      {/* <div className="py-16 bg-gradient-to-br from-indigo-50 to-blue-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h2 className="text-base text-indigo-600 font-semibold tracking-wide uppercase">
-              {t('features.subtitle')}
-            </h2>
-            <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-              {t('features.title')}
-            </p>
-          </div>
-
-          <div className="mt-16 grid grid-cols-1 gap-8 md:grid-cols-3">
-            {['speed', 'plagiarism', 'templates'].map((feature) => (
-              <div key={feature} className="bg-white rounded-2xl p-8 shadow-xl border border-indigo-100 transform transition hover:-translate-y-2">
-                <div className="bg-indigo-100 w-16 h-16 rounded-xl flex items-center justify-center mb-6">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">
-                  {t(`features.items.${feature}.title`)}
-                </h3>
-                <p className="text-gray-600">
-                  {t(`features.items.${feature}.content`)}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div> */}
-
-      {/* Testimonials */}
-      {/* <div className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h2 className="text-base text-indigo-600 font-semibold tracking-wide uppercase">
-              {t('testimonials.subtitle')}
-            </h2>
-            <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-              {t('testimonials.title')}
-            </p>
-          </div>
-
-          <div className="mt-16 grid grid-cols-1 gap-8 md:grid-cols-3">
-            {['student', 'professor', 'researcher'].map((role) => (
-              <div key={role} className="bg-gray-50 rounded-2xl p-8 border border-gray-200">
-                <div className="flex items-center mb-4">
-                  <div className="bg-gray-200 border-2 border-dashed rounded-xl w-12 h-12" />
-                  <div className="ml-4">
-                    <h4 className="font-bold">{t(`testimonials.items.${role}.name`)}</h4>
-                    <div className="flex text-yellow-400">
-                      {[...Array(5)].map((_, i) => (
-                        <svg key={i} xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                        </svg>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-                <p className="text-gray-600 italic">
-                  {t(`testimonials.items.${role}.content`)}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div> */}
-
-      {/* CTA Section */}
-      {/* <div className="py-16 bg-gradient-to-r from-indigo-600 to-purple-600">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-extrabold text-white sm:text-4xl">
-            {t('cta.title')}
-          </h2>
-          <p className="mt-4 max-w-2xl mx-auto text-xl text-indigo-200">
-            {t('cta.description')}
-          </p>
-          <div className="mt-8 flex justify-center">
-            <button
-              onClick={() => window.location.href = '/register'}
-              className="bg-white text-indigo-600 px-8 py-3 rounded-xl font-bold text-lg shadow-lg hover:bg-indigo-50 transition"
-            >
-              {t('cta.register')}
-            </button>
-            <button
-              onClick={() => window.location.href = '/login'}
-              className="ml-4 bg-indigo-800 text-white px-8 py-3 rounded-xl font-bold text-lg shadow-lg hover:bg-indigo-900 transition"
-            >
-              {t('cta.demo')}
-            </button>
-          </div>
-        </div>
-      </div> */}
-
       <Footer />
+
+      <style jsx>{`
+        .latex-content {
+          line-height: 1.6;
+        }
+        .latex-content h1, .latex-content h2, .latex-content h3, .latex-content h4 {
+          color: #1f2937;
+          margin-top: 1.5rem;
+          margin-bottom: 0.75rem;
+        }
+        .latex-content p {
+          margin-bottom: 1rem;
+          text-align: justify;
+        }
+        .latex-content strong {
+          font-weight: 600;
+        }
+        .latex-content em {
+          font-style: italic;
+        }
+        .latex-content ul, .latex-content ol {
+          margin: 1rem 0;
+        }
+        .latex-content li {
+          margin-bottom: 0.25rem;
+        }
+        .latex-content .abstract {
+          background-color: #f8fafc;
+          border: 1px solid #e2e8f0;
+        }
+        .latex-content blockquote {
+          color: #4a5568;
+        }
+      `}</style>
     </div>
   );
 }
 
 export default HomePage;
-

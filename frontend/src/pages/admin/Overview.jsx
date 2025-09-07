@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
@@ -17,7 +16,6 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-
 
 const Overview = () => {
   const { t } = useTranslation('dashboard');
@@ -57,6 +55,15 @@ const Overview = () => {
       icon: TrendingUp,
       color: 'orange',
       href: '/admin/analytics'
+    },
+    {
+      name: t('overview.billingPackages'),
+      value: '6',
+      change: '+2',
+      changeType: 'positive',
+      icon: Settings,
+      color: 'teal',
+      href: '/admin/billing-packages'
     }
   ];
 
@@ -156,28 +163,28 @@ const Overview = () => {
   };
 
   return (
-  <div className="space-y-4">
+    <div className="space-y-4 p-4 sm:p-6">
       {/* Welcome Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg p-6 text-white"
       >
-        <div className="flex items-center justify-between">
-          <div>
+        <div className="flex flex-col sm:flex-row items-center justify-between">
+          <div className="mb-4 sm:mb-0">
             <h1 className="text-2xl font-bold">{t('overview.welcome')}</h1>
             <p className="text-blue-100 mt-2">
               {t('overview.subtitle')}
             </p>
           </div>
-          <div className="hidden md:block">
-            <Activity className="w-16 h-16 text-blue-200" />
+          <div className="hidden sm:block">
+            <Activity className="w-12 h-12 sm:w-16 sm:h-16 text-blue-200" />
           </div>
         </div>
       </motion.div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {stats.map((stat, index) => {
           const Icon = stat.icon;
           return (
@@ -187,25 +194,25 @@ const Overview = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
               whileHover={{ scale: 1.02 }}
-              className="bg-white rounded-lg p-6 shadow hover:shadow-md transition-all cursor-pointer"
+              className="bg-white rounded-lg p-4 sm:p-6 shadow hover:shadow-md transition-all cursor-pointer"
             >
               <Link to={stat.href} className="block">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-gray-600">{stat.name}</p>
-                    <p className="text-2xl font-bold text-gray-900 mt-2">{stat.value}</p>
-                    <div className="flex items-center mt-2">
-                      <span className={`text-sm font-medium ${
+                    <p className="text-xl sm:text-2xl font-bold text-gray-900 mt-1 sm:mt-2">{stat.value}</p>
+                    <div className="flex items-center mt-1 sm:mt-2">
+                      <span className={`text-xs sm:text-sm font-medium ${
                         stat.changeType === 'positive' ? 'text-green-600' : 
                         stat.changeType === 'negative' ? 'text-red-600' : 'text-gray-600'
                       }`}>
                         {stat.change}
                       </span>
-                      <span className="text-sm text-gray-500 ml-1">{t('overview.fromLastWeek')}</span>
+                      <span className="text-xs sm:text-sm text-gray-500 ml-1">{t('overview.fromLastWeek')}</span>
                     </div>
                   </div>
-                  <div className={`p-3 rounded-lg bg-${stat.color}-100`}>
-                    <Icon className={`w-6 h-6 text-${stat.color}-600`} />
+                  <div className={`p-2 sm:p-3 rounded-lg bg-${stat.color}-100`}>
+                    <Icon className={`w-5 h-5 sm:w-6 sm:h-6 text-${stat.color}-600`} />
                   </div>
                 </div>
               </Link>
@@ -214,14 +221,14 @@ const Overview = () => {
         })}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Recent Activity */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           className="lg:col-span-2 bg-white rounded-lg shadow"
         >
-          <div className="p-6 border-b border-gray-200">
+          <div className="p-4 sm:p-6 border-b border-gray-200">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold text-gray-900">{t('overview.recentActivity')}</h2>
               <Link to="/admin/activity" className="text-blue-600 hover:text-blue-700 text-sm font-medium">
@@ -229,8 +236,8 @@ const Overview = () => {
               </Link>
             </div>
           </div>
-          <div className="p-6">
-            <div className="space-y-4">
+          <div className="p-4 sm:p-6">
+            <div className="space-y-3 sm:space-y-4">
               {recentActivity.map((activity, index) => (
                 <motion.div
                   key={activity.id}
@@ -257,18 +264,17 @@ const Overview = () => {
         </motion.div>
 
         {/* Quick Actions & System Health */}
-        <div className="space-y-6">
-          <div className="space-y-8 px-2 sm:px-4 md:px-8">
+        <div className="space-y-4 sm:space-y-6">
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             className="bg-white rounded-lg shadow"
           >
-            <div className="p-6 border-b border-gray-200">
+            <div className="p-4 sm:p-6 border-b border-gray-200">
               <h2 className="text-lg font-semibold text-gray-900">Quick Actions</h2>
             </div>
-            <div className="p-6">
-              <div className="space-y-3">
+            <div className="p-4 sm:p-6">
+              <div className="space-y-2 sm:space-y-3">
                 {quickActions.map((action, index) => {
                   const Icon = action.icon;
                   return (
@@ -281,9 +287,9 @@ const Overview = () => {
                     >
                       <Link
                         to={action.href}
-                        className="flex items-center p-3 rounded-lg hover:bg-gray-50 transition-colors group"
+                        className="flex items-center p-2 sm:p-3 rounded-lg hover:bg-gray-50 transition-colors group"
                       >
-                        <div className={`p-2 rounded-lg bg-${action.color}-100 mr-3`}>
+                        <div className={`p-1 sm:p-2 rounded-lg bg-${action.color}-100 mr-3`}>
                           <Icon className={`w-4 h-4 text-${action.color}-600`} />
                         </div>
                         <div className="flex-1">
@@ -306,11 +312,11 @@ const Overview = () => {
             transition={{ delay: 0.2 }}
             className="bg-white rounded-lg shadow"
           >
-            <div className="p-6 border-b border-gray-200">
+            <div className="p-4 sm:p-6 border-b border-gray-200">
               <h2 className="text-lg font-semibold text-gray-900">{t('overview.systemHealth')}</h2>
             </div>
-            <div className="p-6">
-              <div className="space-y-3">
+            <div className="p-4 sm:p-6">
+              <div className="space-y-2 sm:space-y-3">
                 {systemHealth.map((system, index) => (
                   <motion.div
                     key={system.name}
@@ -329,7 +335,6 @@ const Overview = () => {
               </div>
             </div>
           </motion.div>
-          </div>
         </div>
       </div>
     </div>
@@ -337,4 +342,3 @@ const Overview = () => {
 };
 
 export default Overview;
-

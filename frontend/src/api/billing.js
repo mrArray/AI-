@@ -3,21 +3,36 @@ import { apiClient } from './client';
 import { buildQueryString, normalizePaginatedResponse } from './utils';
 
 class BillingAPI {
+  // Helper method to add authorization header
+  getAuthConfig(token) {
+    return token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+  }
+
   // 获取套餐列表
-  async getPackages() {
-    const data = await apiClient.get('/billing/packages/');
+  async getPackages(params = {}, token) {
+    const query = buildQueryString(params);
+    const data = await apiClient.get(`/billing/packages/${query}`, this.getAuthConfig(token));
     return normalizePaginatedResponse(data);
+  }
+  async updateBillingPackage(packageId, packageData, token) {
+    return apiClient.patch(`/billing/packages/${packageId}/`, packageData, this.getAuthConfig(token));
+  }
+  async createBillingPackage(packageData, token) {
+    return apiClient.post('/billing/packages/', packageData, this.getAuthConfig(token));
+  }
+  async deleteBillingPackage(packageId, token) {
+    return apiClient.delete(`/billing/packages/${packageId}/`, this.getAuthConfig(token));
   }
 
   // 获取价格信息
-  async getPricingInfo() {
-    return apiClient.get('/billing/pricing/');
+  async getPricingInfo(token) {
+    return apiClient.get('/billing/pricing/', this.getAuthConfig(token));
   }
 
   // 获取用户交易记录
-  async getTransactions(params = {}) {
+  async getTransactions(params = {}, token) {
     const query = buildQueryString(params);
-    const data = await apiClient.get(`/billing/transactions/${query}`);
+    const data = await apiClient.get(`/billing/transactions/${query}`, this.getAuthConfig(token));
     return normalizePaginatedResponse(data);
   }
 

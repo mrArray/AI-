@@ -4,10 +4,11 @@ from . import views
 
 router = DefaultRouter()
 router.register(r'payment-methods', views.PaymentMethodViewSet, basename='payment-methods')
+router.register(r'packages', views.PackageViewSet, basename='packages')
 
 urlpatterns = [
     # Packages and pricing
-    path('packages/', views.PackageListView.as_view(), name='packages'),
+    # path('packages/', views.PackageListView.as_view(), name='packages'),
     path('pricing/', views.PricingInfoView.as_view(), name='pricing_info'),
     
     # Transactions

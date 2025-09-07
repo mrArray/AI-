@@ -46,6 +46,11 @@ const Sidebar = ({ onClose }) => {
       name: t('sidebar.config', 'Configuration'),
       href: '/admin/config',
       icon: Settings
+    },
+    {
+      name: t('sidebar.billing', 'Billing Packages'),
+      href: '/admin/billing-packages',
+      icon: FileText
     }
   ];
 

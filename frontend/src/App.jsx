@@ -21,6 +21,7 @@ import PromptTemplates from './pages/admin/PromptTemplates'
 import SystemConfig from './pages/admin/SystemConfig'
 import CreateProvider from './pages/admin/CreateProvider'
 import ProtectedRoute from './components/ProtectedRoute';
+import BillingPackages from './pages/admin/BillingPackages'
 
 
 function App() {
@@ -50,6 +51,7 @@ function App() {
             <Route path="models" element={<LLMModels />} />
             <Route path="templates" element={<PromptTemplates />} />
             <Route path="config" element={<SystemConfig />} />
+            <Route path="billing-packages" element={<BillingPackages />} />
           </Route>
         </Route>
 

@@ -51,6 +51,11 @@ const Sidebar = ({ onClose }) => {
       name: t('sidebar.billing', 'Billing Packages'),
       href: '/admin/billing-packages',
       icon: FileText
+    },
+    {
+      name: t('sidebar.formatPrices', 'Format Credit Prices'),
+      href: '/admin/format-credit-prices',
+      icon: FileText
     }
   ];
 

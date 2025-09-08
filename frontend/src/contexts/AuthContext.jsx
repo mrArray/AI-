@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { authService } from '../services/authService';
 
 // 创建认证上下文
@@ -116,8 +116,24 @@ export const AuthProvider = ({ children }) => {
     authService.setUserData(updatedUser);
   };
 
-  // 提供认证状态和方法
-  const value = {
+  // 刷新用户资料
+  const refreshProfile = async () => {
+    // Use token to check authentication, not isAuthenticated directly
+    if (!token) return;
+
+    try {
+      const { success, data } = await authService.getProfileDetail();
+      if (success) {
+        setUser(data);
+        authService.setUserData(data);
+      }
+    } catch (error) {
+      console.error('Failed to refresh profile:', error);
+    }
+  };
+
+  // 提供认证状态和方法，使用 useMemo 保证引用稳定
+  const value = useMemo(() => ({
     user,
     token,
     isAuthenticated: !!token,
@@ -126,9 +142,9 @@ export const AuthProvider = ({ children }) => {
     register,
     logout,
     resetPassword,
+    refreshProfile,
     updateUser,
-  };
-
+  }), [user, token, isLoading, login, register, logout, resetPassword, refreshProfile, updateUser]);
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 

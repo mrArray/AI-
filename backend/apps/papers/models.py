@@ -8,13 +8,20 @@ User = get_user_model()
 class PaperFormat(BaseModel):
     """Different academic paper formats (APA, MLA, Chicago, etc.)"""
     
-    name = models.CharField(max_length=100, unique=True)
+    FORMAT_CHOICES = [
+        ('docx', 'DOCX'),
+        ('pdf', 'PDF'),
+        ('latex', 'LaTeX'),
+        ('md', 'Markdown'),
+    ]
+    name = models.CharField(max_length=100, unique=True, choices=FORMAT_CHOICES)
     description = models.TextField()
     template_structure = models.JSONField(
         default=dict,
         help_text="JSON structure defining paper sections and requirements"
     )
-    style_guidelines = models.TextField(help_text="Formatting and style guidelines")
+    style_guidelines = models.TextField(blank=True, help_text="Formatting and style guidelines")
+    credit_price = models.PositiveIntegerField(default=1, help_text="Credit cost to generate this paper format")
     citation_style = models.CharField(max_length=50, default='APA')
     is_active = models.BooleanField(default=True)
     order = models.PositiveIntegerField(default=0)
@@ -60,35 +67,23 @@ class PaperTemplate(BaseModel):
     system_prompt = models.TextField(help_text="System prompt for AI generation")
     user_prompt_template = models.TextField(help_text="Template for user prompt with placeholders")
     
-    # Template configuration
-    required_fields = models.JSONField(
-        default=list,
-        help_text="List of required input fields from user"
-    )
-    optional_fields = models.JSONField(
-        default=list,
-        help_text="List of optional input fields from user"
-    )
-    
-    # Example and validation
-    example_output = models.TextField(blank=True, help_text="Example generated paper")
-    validation_rules = models.JSONField(
-        default=dict,
-        help_text="Validation rules for user inputs"
-    )
-    
-    # Settings
-    estimated_credits = models.PositiveIntegerField(default=5)
-    is_active = models.BooleanField(default=True)
-    is_premium = models.BooleanField(default=False)
-    order = models.PositiveIntegerField(default=0)
-    
-    class Meta:
-        ordering = ['order', 'name']
-        unique_together = ['name', 'language']
-    
+
+
+# Move FormatCreditPrice to top-level
+class FormatCreditPrice(models.Model):
+    FORMAT_CHOICES = [
+        ('docx', 'DOCX'),
+        ('pdf', 'PDF'),
+        ('latex', 'LaTeX'),
+        ('md', 'Markdown'),
+    ]
+
+    format = models.CharField(max_length=20, choices=FORMAT_CHOICES, unique=True)
+    credit_price = models.PositiveIntegerField(default=1)
+    created_at = models.DateTimeField(auto_now_add=True)
+
     def __str__(self):
-        return f"{self.name} ({self.get_paper_type_display()}) - {self.language}"
+        return f"{self.get_format_display()} ({self.credit_price} credits)"
 
 
 class GeneratedPaper(BaseModel):

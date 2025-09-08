@@ -18,7 +18,7 @@ const outputFormats = [
 function HomePage() {
   const fileInputRef = useRef();
   const { t } = useTranslation('home');
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, token, refreshProfile } = useAuth();
   const { openRegisterModal } = useModal();
 
   const [file, setFile] = useState(null);
@@ -82,10 +82,15 @@ function HomePage() {
 
     try {
       let prog = 0;
-      const interval = setInterval(() => {
-        prog += 10;
+      let interval = null;
+      // Start progress bar, but only go up to 90%
+      interval = setInterval(() => {
+        prog += 5;
+        if (prog >= 90) {
+          prog = 90;
+          clearInterval(interval);
+        }
         setProgress(prog);
-        if (prog >= 100) clearInterval(interval);
       }, 300);
 
       const data = await papersAPI.aiFormatPaper({
@@ -94,8 +99,11 @@ function HomePage() {
         output_format: selectedFormat,
         title: '',
         language: 'en',
+        token: isAuthenticated ? token : null
       });
 
+      clearInterval(interval);
+      setProgress(100);
       setProcessing(false);
       if (data.error) {
         setErrorMsg(data.error || 'Formatting failed.');
@@ -131,6 +139,8 @@ function HomePage() {
           data.file_name || `${originalName}_formatted.${selectedFormat}`
         );
       }
+      // Refresh user profile after formatting is done
+      await refreshProfile();
     } catch (err) {
       setProcessing(false);
       setErrorMsg(err.message || 'Network or server error.');
@@ -641,7 +651,7 @@ function HomePage() {
 
       <Footer />
 
-      <style jsx>{`
+  <style>{`
         .latex-content {
           line-height: 1.6;
         }

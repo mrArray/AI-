@@ -66,12 +66,15 @@
     "title": "Admin Panel",
     "subtitle": "LLM Management",
     "user": "Admin User",
-    "email": "admin@example.com"
+    "email": "admin@example.com",
+    "billing": "Billing Packages",
+    "formatPrices": "Format Credit Prices"
   },
   "header": {
     "dashboard": "Dashboard",
     "searchPlaceholder": "Search providers, models, templates...",
     "quickAdd": "Quick Add",
+    "viewSite": "View Site",
     "notifications": {
       "title": "Notifications",
       "modelAdded": "New LLM model added successfully",
@@ -213,7 +216,8 @@
     "openaiProvider": "OpenAI Provider",
     "anthropicProvider": "Anthropic Provider",
     "localProvider": "Local Provider",
-    "database": "Database"
+    "database": "Database",
+    "billing": "Billing"
   },
   "systemConfig": {
     "title": "System Configuration",
@@ -381,5 +385,40 @@
     "deletePackage": "Are you sure you want to delete the package:",
     "cancel": "Cancel",
     "confirmDelete": "Confirm Delete"
-  }
+  },
+  "formatPrices": {
+    "title": "Format Credit Prices",
+    "description": "Manage credit pricing for different document formats",
+    "addPrice": "Add Format Price",
+    "refresh": "Refresh",
+    "totalFormats": "Total Formats",
+    "active": "Active",
+    "format": "Format",
+    "creditPrice": "Credit Price",
+    "credits": "credits",
+    "created": "Created",
+    "actions": "Actions",
+    "deletePrice": "Delete Format Price",
+    "deleteConfirm": "Are you sure you want to delete the price for:",
+    "deleteWarning": "This action cannot be undone.",
+    "cancel": "Cancel",
+    "confirmDelete": "Confirm Delete",
+    "fetchError": "Failed to fetch format prices",
+    "createSuccess": "Format price created successfully!",
+    "updateSuccess": "Format price updated successfully!",
+    "deleteSuccess": "Format price deleted successfully!",
+    "deleteError": "Delete failed: {{error}}",
+    "createError": "Operation failed!",
+    "docx": "DOCX",
+    "pdf": "PDF",
+    "latex": "LaTeX",
+    "md": "Markdown",
+    "form": {
+      "settings": "Settings",
+      "format": "Format",
+      "creditPrice": "Credit Price",
+      "save": "Save",
+      "cancel": "Cancel"
+    }
+    }
 }

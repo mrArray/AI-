@@ -4,22 +4,30 @@ from django.urls import reverse
 from django.utils.safestring import mark_safe
 from .models import (
     PaperFormat, PaperTemplate, GeneratedPaper, 
-    PaperSection, PaperFeedback
+    PaperSection, PaperFeedback, FormatCreditPrice
 )
+
+# Dedicated admin for format credit prices
+@admin.register(FormatCreditPrice)
+class FormatCreditPriceAdmin(admin.ModelAdmin):
+    list_display = ('format', 'credit_price')
+    list_editable = ('credit_price',)
+    search_fields = ['format']
+    ordering = ['format']
 
 
 @admin.register(PaperFormat)
 class PaperFormatAdmin(admin.ModelAdmin):
     """Paper Format admin"""
     
-    list_display = ('name', 'language', 'is_active')
+    list_display = ('name', 'language', 'credit_price', 'is_active')
     list_filter = ['citation_style', 'language', 'is_active', 'created_at']
     search_fields = ['name', 'description', 'citation_style', 'language']
     ordering = ['order', 'name']
     
     fields = (
         'name', 'language', 'description', 'template_structure', 'style_guidelines',
-        'citation_style', 'prompt_template_en', 'prompt_template_zh', 'is_active', 'order'
+        'credit_price', 'citation_style', 'prompt_template_en', 'prompt_template_zh', 'is_active', 'order'
     )
     
     def template_count(self, obj):
@@ -37,15 +45,12 @@ class PaperTemplateAdmin(admin.ModelAdmin):
     
     list_display = [
         'name', 'paper_type', 'format', 'language', 
-        'estimated_credits', 'is_active', 'is_premium', 
-        'usage_count', 'created_at'
+        'is_active', 'usage_count', 'created_at'
     ]
     list_filter = [
-        'paper_type', 'format', 'language', 'is_active', 
-        'is_premium', 'created_at'
+        'paper_type', 'format', 'language', 'is_active', 'created_at'
     ]
     search_fields = ['name', 'description']
-    ordering = ['order', 'name']
     
     fieldsets = (
         ('Basic Information', {

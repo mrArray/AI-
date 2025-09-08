@@ -6,10 +6,17 @@ import { useModal } from '../contexts/ModalContext';
 
 function Header({ activePage }) {
   const { t } = useTranslation('common');
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, logout, user, refreshProfile } = useAuth();
   const { openLoginModal, openRegisterModal } = useModal();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  
+  // Removed local profile state, use profile from context
+
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      refreshProfile();
+    }
+    // Only depend on isAuthenticated to avoid infinite loop
+  }, [isAuthenticated]);
 
   // 处理购买积分点击
   const handleRechargeClick = () => {
@@ -55,7 +62,6 @@ function Header({ activePage }) {
                 </a>
                
                   {isAuthenticated && (
-
                 <a 
                   href="/history" 
                   className={`${activePage === 'history' ? 'text-gray-900 border-b-2 border-indigo-600' : 'text-gray-500'} hover:text-indigo-600 px-3 py-2 text-sm font-medium whitespace-nowrap`}
@@ -97,11 +103,20 @@ function Header({ activePage }) {
                     onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                     className="flex items-center space-x-2 text-gray-700 hover:text-indigo-600 transition-colors"
                   >
-                    <div className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">
-                      {user?.username?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase() || 'U'}
-                    </div>
+                    {/* Show avatar if available, else fallback to initial */}
+                    {user?.profile?.avatar ? (
+                      <img
+                        src={user.profile.avatar}
+                        alt="avatar"
+                        className="rounded-full w-8 h-8 object-cover border border-gray-200"
+                      />
+                    ) : (
+                      <div className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">
+                        {user?.profile?.nickname?.charAt(0)?.toUpperCase() || user?.first_name?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase() || 'U'}
+                      </div>
+                    )}
                     <span className="hidden md:block text-sm font-medium whitespace-nowrap">
-                      {user?.username || user?.email?.split('@')[0] || '用户'}
+                      {user?.profile?.nickname || user?.first_name || user?.email?.split('@')[0] || '用户'}
                     </span>
                     <svg 
                       className={`w-4 h-4 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`} 
@@ -119,7 +134,7 @@ function Header({ activePage }) {
                       {/* 用户信息 */}
                       <div className="px-4 py-2 border-b border-gray-100">
                         <p className="text-sm font-medium text-gray-900">
-                          {user?.username || user?.email?.split('@')[0] || '用户'}
+                          {user?.profile?.nickname || user?.first_name || user?.email?.split('@')[0] || '用户'}
                         </p>
                         <p className="text-xs text-gray-500">{user?.email}</p>
                       </div>

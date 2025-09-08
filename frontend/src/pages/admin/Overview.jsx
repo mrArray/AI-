@@ -48,16 +48,7 @@ const Overview = () => {
       href: '/admin/templates'
     },
     {
-      name: t('overview.apiCallsToday'),
-      value: '1,247',
-      change: '+15%',
-      changeType: 'positive',
-      icon: TrendingUp,
-      color: 'orange',
-      href: '/admin/analytics'
-    },
-    {
-      name: t('overview.billingPackages'),
+      name: t('overview.billing'),
       value: '6',
       change: '+2',
       changeType: 'positive',

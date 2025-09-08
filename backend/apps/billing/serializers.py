@@ -15,7 +15,8 @@ class PackageSerializer(serializers.ModelSerializer):
         model = Package
         fields = [
             'id', 'name', 'description', 'credits', 'price', 'currency',
-            'features', 'is_popular', 'is_active', 'order',
+            'features', 'bonus_credits', 'badge', 'color', 'limitation',
+            'is_popular', 'is_active', 'order',
             'discount_percentage', 'original_price', 'price_per_credit',
             'created_at', 'updated_at'
         ]

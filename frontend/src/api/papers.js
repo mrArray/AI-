@@ -3,6 +3,11 @@ import { apiClient } from './client';
 import { buildQueryString, normalizePaginatedResponse, handleStreamResponse } from './utils';
 
 class PapersAPI {
+
+
+  getAuthConfig(token) {
+    return token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+  }
   // 获取论文格式列表
   async getFormats(language) {
     const query = buildQueryString({ language });
@@ -162,7 +167,7 @@ class PapersAPI {
   }
 
   // AI Paper Formatting (HomePage integration)
-  async aiFormatPaper({ file, requirements, output_format, title, language }) {
+  async aiFormatPaper({ file, requirements, output_format, title, language, token }) {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('requirements', requirements);
@@ -172,7 +177,7 @@ class PapersAPI {
 
     // Use apiClient.upload for all formats
     const apiUrl = '/papers/ai-format/';
-    const response = await apiClient.upload(apiUrl, formData);
+    const response = await apiClient.upload(apiUrl, formData, this.getAuthConfig(token));
 
     // If response is a Blob (pdf/docx), convert to download info
     if (output_format === 'pdf' || output_format === 'docx') {

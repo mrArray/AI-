@@ -9,9 +9,9 @@ class BillingAPI {
   }
 
   // 获取套餐列表
-  async getPackages(params = {}, token) {
+  async getPackages(params = {}) {
     const query = buildQueryString(params);
-    const data = await apiClient.get(`/billing/packages/${query}`, this.getAuthConfig(token));
+    const data = await apiClient.get(`/billing/packages/${query}`);
     return normalizePaginatedResponse(data);
   }
   async updateBillingPackage(packageId, packageData, token) {
@@ -37,11 +37,10 @@ class BillingAPI {
   }
 
   // 购买套餐
-  async purchasePackage(packageId, paymentMethodId) {
+  async purchasePackage(packageId ,token) {
     return apiClient.post('/billing/purchase/', {
       package_id: packageId,
-      payment_method_id: paymentMethodId,
-    });
+    }, this.getAuthConfig(token));
   }
 
   // 获取用户订阅列表

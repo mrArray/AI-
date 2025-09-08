@@ -11,27 +11,20 @@ class PackageAdmin(admin.ModelAdmin):
     """Package admin"""
     
     list_display = [
-        'name', 'credits', 'price', 'currency', 
-        'price_per_credit_display', 'is_popular', 'is_active', 
-        'purchase_count', 'order'
+        'id', 'name', 'price', 'original_price', 'credits', 'bonus_credits', 'currency',
+        'is_active', 'is_popular', 'order', 'badge', 'color', 'limitation', 'created_at', 'updated_at'
     ]
-    list_filter = ['currency', 'is_popular', 'is_active', 'created_at']
-    search_fields = ['name', 'description']
+    list_filter = ['is_active', 'is_popular', 'currency']
+    search_fields = ['name', 'description', 'badge', 'color', 'limitation']
     ordering = ['order', 'price']
     
     fieldsets = (
-        ('Package Information', {
-            'fields': ('name', 'description', 'credits', 'price', 'currency')
-        }),
-        ('Features', {
-            'fields': ('features',),
-            'description': 'JSON list of package features'
-        }),
-        ('Pricing Strategy', {
-            'fields': ('discount_percentage', 'original_price')
-        }),
-        ('Display Settings', {
-            'fields': ('is_popular', 'is_active', 'order')
+        (None, {
+            'fields': (
+                'name', 'description', 'price', 'original_price', 'credits', 'bonus_credits', 'currency',
+                'features', 'badge', 'color', 'limitation', 'is_active', 'is_popular', 'order',
+                'discount_percentage'
+            )
         }),
     )
     

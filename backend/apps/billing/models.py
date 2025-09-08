@@ -16,6 +16,10 @@ class Package(BaseModel):
     
     # Package features
     features = models.JSONField(blank=True, null=True, default=list, help_text="List of package features")
+    bonus_credits = models.PositiveIntegerField(default=0, help_text="Bonus credits included in package")
+    badge = models.CharField(max_length=50, blank=True, null=True, help_text="Badge label for package")
+    color = models.CharField(max_length=20, blank=True, null=True, help_text="Color for frontend display")
+    limitation = models.CharField(max_length=200, blank=True, null=True, help_text="Limitation or note for package")
     
     # Display settings
     is_popular = models.BooleanField(default=False)

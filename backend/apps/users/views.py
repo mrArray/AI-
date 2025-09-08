@@ -11,10 +11,8 @@ from drf_spectacular.utils import extend_schema,extend_schema_view, OpenApiRespo
 from drf_spectacular.types import OpenApiTypes
 from django.core.mail import send_mail
 from django.conf import settings
-
-from .models import UserProfile
 from .serializers import (
-    LoginSerializer, UserSerializer, UserProfileSerializer, UserStatsSerializer,
+    LoginSerializer, UserSerializer, UserStatsSerializer,
     RegisterSerializer, PasswordChangeSerializer, EmailVerificationSerializer,
     PasswordResetRequestSerializer, PasswordResetConfirmSerializer, 
     PreRegisterEmailSerializer , LogoutSerializer,

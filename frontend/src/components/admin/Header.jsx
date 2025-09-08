@@ -9,7 +9,8 @@ import {
   Settings,
   User,
   ChevronRight,
-  Plus
+  Plus,
+  Eye
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -76,8 +77,8 @@ const Header = ({ onToggleSidebar, sidebarOpen }) => {
                 {index > 0 && <ChevronRight className="w-4 h-4 text-gray-400" />}
                 <span className={`
                   text-sm font-medium truncate
-                  ${index === breadcrumbs.length - 1 
-                    ? 'text-gray-900' 
+                  ${index === breadcrumbs.length - 1
+                    ? 'text-gray-900'
                     : 'text-gray-500 hover:text-gray-700 cursor-pointer'
                   }
                 `}>
@@ -87,21 +88,6 @@ const Header = ({ onToggleSidebar, sidebarOpen }) => {
             ))}
           </nav>
         </div>
-
-        {/* Center section - Search */}
-        <div className="hidden md:flex flex-1 max-w-md mx-8">
-          <div className="relative w-full">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <input
-              type="text"
-              placeholder={t('header.searchPlaceholder', 'Search providers, models, templates...')}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-            />
-          </div>
-        </div>
-
         {/* Right section */}
         <div className="flex items-center space-x-3">
           {/* Quick action button */}
@@ -109,81 +95,16 @@ const Header = ({ onToggleSidebar, sidebarOpen }) => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            onClick={() => window.location.href = '/'}
           >
-            <Plus className="w-4 h-4" />
-            <span className="hidden sm:inline">{t('header.quickAdd', 'Quick Add')}</span>
+            <Eye className="w-4 h-4" />
+            <span className="hidden sm:inline">{t('header.viewSite', 'View Site')}</span>
           </motion.button>
 
-          {/* Notifications */}
-          <div className="relative">
-            <button
-              onClick={() => setShowNotifications(!showNotifications)}
-              className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors"
-            >
-              <Bell className="w-5 h-5 text-gray-600" />
-              <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
-            </button>
-
-            {showNotifications && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-lg shadow-lg border border-gray-200 z-50"
-              >
-                <div className="p-4 border-b border-gray-200">
-                  <h3 className="text-sm font-semibold text-gray-900">{t('header.notifications.title', 'Notifications')}</h3>
-                </div>
-                <div className="max-h-64 overflow-y-auto">
-                  {notifications.map((notification) => (
-                    <div key={notification.id} className="p-4 border-b border-gray-100 hover:bg-gray-50">
-                      <div className="flex items-start space-x-3">
-                        <div className={`
-                          w-2 h-2 rounded-full mt-2
-                          ${notification.type === 'success' ? 'bg-green-500' : 
-                            notification.type === 'error' ? 'bg-red-500' : 'bg-blue-500'}
-                        `}></div>
-                        <div className="flex-1">
-                          <p className="text-sm text-gray-900">{notification.message}</p>
-                          <p className="text-xs text-gray-500 mt-1">{notification.time}</p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-          </div>
-
-          {/* Settings */}
-          <button className="p-2 rounded-lg hover:bg-gray-100 transition-colors">
-            <Settings className="w-5 h-5 text-gray-600" />
-          </button>
-
-          {/* User menu */}
-          <button className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 transition-colors">
-            <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-              <User className="w-4 h-4 text-white" />
-            </div>
-            <span className="hidden sm:inline text-sm font-medium text-gray-700">{t('sidebar.user', 'Admin User')}</span>
-          </button>
         </div>
       </div>
 
-      {/* Page title section */}
-      {/* <div className="px-6 py-3 bg-gray-50 border-t border-gray-200">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-xl font-semibold text-gray-900">{currentPage}</h1>
-            <p className="text-sm text-gray-600 mt-1">
-              {t('header.pageDesc', 'Manage your LLM infrastructure and configurations')}
-            </p>
-          </div>
-          <div className="flex items-center space-x-2 text-sm text-gray-500">
-            <span>{t('header.lastUpdated', 'Last updated: 2 minutes ago')}</span>
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-          </div>
-        </div>
-      </div> */}
+
     </header>
   );
 };

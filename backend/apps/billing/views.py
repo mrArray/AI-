@@ -150,61 +150,51 @@ class PurchasePackageView(APIView):
         responses={201: CreditTransactionSerializer}
     )
     def post(self, request):
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        
-        package_id = serializer.validated_data['package_id']
-        payment_method_id = serializer.validated_data.get('payment_method_id')
-        
-        try:
-            # Get package
-            package = get_object_or_404(
-                Package,
-                id=package_id,
-                is_active=True,
-                is_deleted=False
-            )
-            
-            # Get payment method if provided
-            payment_method = None
-            if payment_method_id:
-                payment_method = get_object_or_404(
-                    PaymentMethod,
-                    id=payment_method_id,
-                    user=request.user,
+            serializer = self.serializer_class(data=request.data)
+            serializer.is_valid(raise_exception=True)
+
+            package_id = serializer.validated_data['package_id']
+
+            try:
+                # Get package
+                package = get_object_or_404(
+                    Package,
+                    id=package_id,
                     is_active=True,
                     is_deleted=False
                 )
-            
-            # TODO: Implement actual payment processing
-            # For now, simulate successful payment
-            
-            # Create credit transaction
-            transaction = CreditTransaction.objects.create(
-                user=request.user,
-                transaction_type='purchase',
-                status='completed',
-                credits=package.credits,
-                amount=package.price,
-                currency=package.currency,
-                package=package,
-                payment_method=payment_method.get_method_type_display() if payment_method else 'manual',
-                description=f"Purchase of {package.name}",
-                balance_before=request.user.credits,
-                balance_after=request.user.credits + package.credits
-            )
-            
-            # Update user credits
-            request.user.credits += package.credits
-            request.user.save()
-            
-            serializer = CreditTransactionSerializer(transaction)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-            
-        except Exception as e:
-            return Response({
-                'error': str(e)
-            }, status=status.HTTP_400_BAD_REQUEST)
+
+                # No payment method required
+
+                # TODO: Implement actual payment processing
+                # For now, simulate successful payment
+
+                # Create credit transaction
+                transaction = CreditTransaction.objects.create(
+                    user=request.user,
+                    transaction_type='purchase',
+                    status='completed',
+                    credits=package.credits,
+                    amount=package.price,
+                    currency=package.currency,
+                    package=package,
+                    payment_method='manual',
+                    description=f"Purchase of {package.name}",
+                    balance_before=request.user.credits,
+                    balance_after=request.user.credits + package.credits
+                )
+
+                # Update user credits
+                request.user.credits += package.credits
+                request.user.save()
+
+                serializer = CreditTransactionSerializer(transaction)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+            except Exception as e:
+                return Response({
+                    'error': str(e)
+                }, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserBillingInfoView(APIView):

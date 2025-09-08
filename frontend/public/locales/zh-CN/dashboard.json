@@ -67,12 +67,14 @@
     "subtitle": "大模型管理",
     "user": "管理员",
     "email": "admin@example.com",
-    "billing": "计费套餐"
+    "billing": "计费套餐",
+    "formatPrices": "格式积分价格"
   },
   "header": {
     "dashboard": "仪表盘",
     "searchPlaceholder": "搜索服务商、模型、模板...",
     "quickAdd": "快速添加",
+    "viewSite": "查看站点",
     "notifications": {
       "title": "通知",
       "modelAdded": "新大模型添加成功",
@@ -212,7 +214,8 @@
     "openaiProvider": "OpenAI 服务商",
     "anthropicProvider": "Anthropic 服务商",
     "localProvider": "本地服务商",
-    "database": "数据库"
+    "database": "数据库",
+    "billing": "计费"
   },
   "systemConfig": {
     "title": "系统配置",
@@ -380,5 +383,40 @@
     "deletePackage": "确定要删除该套餐：",
     "cancel": "取消",
     "confirmDelete": "确认删除"
+  },
+   "formatPrices": {
+    "title": "格式积分价格",
+    "description": "管理不同文档格式的积分定价",
+    "addPrice": "添加格式价格",
+    "refresh": "刷新",
+    "totalFormats": "格式总数",
+    "active": "启用",
+    "format": "格式",
+    "creditPrice": "积分价格",
+    "credits": "积分",
+    "created": "创建时间",
+    "actions": "操作",
+    "deletePrice": "删除格式价格",
+    "deleteConfirm": "确定要删除该格式的价格：",
+    "deleteWarning": "此操作无法撤销。",
+    "cancel": "取消",
+    "confirmDelete": "确认删除",
+    "fetchError": "获取格式价格失败",
+    "createSuccess": "格式价格创建成功！",
+    "updateSuccess": "格式价格更新成功！",
+    "deleteSuccess": "格式价格删除成功！",
+    "deleteError": "删除失败：{{error}}",
+    "createError": "操作失败！",
+    "docx": "DOCX",
+    "pdf": "PDF",
+    "latex": "LaTeX",
+    "md": "Markdown",
+    "form": {
+      "settings": "设置",
+      "format": "格式",
+      "creditPrice": "积分价格",
+      "save": "保存",
+      "cancel": "取消"
+    }
   }
 }

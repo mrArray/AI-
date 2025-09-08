@@ -7,6 +7,7 @@ from .views import PaperFormatWithLLMView, TemplateSearchView, FeaturedTemplates
 router = DefaultRouter()
 router.register(r'templates', views.PaperTemplateViewSet, basename='paper-templates')
 router.register(r'feedback', views.PaperFeedbackViewSet, basename='paper-feedback')
+router.register(r'format-credit-prices', views.FormatCreditPriceViewSet, basename='format-credit-prices')
 
 urlpatterns = [
     # Paper formats

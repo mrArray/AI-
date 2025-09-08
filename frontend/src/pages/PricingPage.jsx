@@ -1,87 +1,54 @@
 import React, { useState } from 'react';
+import { useModal } from '../contexts/ModalContext';
 import { useTranslation } from 'react-i18next';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Modal from '../components/Modal';
+import { useToast, TOAST_TYPES } from '../contexts/ToastContext';
+import { billingAPI } from '../api/billing';
+import { useAuth } from '../contexts/AuthContext';
+import { authAPI } from '../api/auth';
+
 
 const PricingPage = () => {
   const { t } = useTranslation('pricing');
+  const { showToast } = useToast();
+  const { openLoginModal, openRegisterModal } = useModal();
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('alipay');
+  const [loadingPurchase, setLoadingPurchase] = useState(false);
+  const { isAuthenticated, token, refreshProfile } = useAuth();
 
-  // 主要套餐数据 (第一行显示)
-  const mainPlans = [
-    {
-      id: 'basic',
-      name: t('plans.basic.name'),
-      price: 9.9,
-      originalPrice: 39.9,
-      credits: 60.00,
-      bonusCredits: 20.00,
-      description: t('plans.basic.description'),
-      features: [
-        t('plans.basic.features.0'),
-        t('plans.basic.features.1'),
-        t('plans.basic.features.2')
-      ],
-      popular: false,
-      color: 'green'
-    },
-    {
-      id: 'final',
-      name: t('plans.final.name'),
-      price: 29.8,
-      originalPrice: 148,
-      credits: 300.00,
-      bonusCredits: 60.00,
-      description: t('plans.final.description'),
-      features: [
-        t('plans.final.features.0'),
-        t('plans.final.features.1'),
-        t('plans.final.features.2')
-      ],
-      popular: true,
-      badge: t('plans.final.badge'),
-      color: 'purple'
-    },
-    {
-      id: 'research',
-      name: t('plans.research.name'),
-      price: 88.8,
-      originalPrice: 468,
-      credits: 1000.00,
-      bonusCredits: 200.00,
-      description: t('plans.research.description'),
-      features: [
-        t('plans.research.features.0'),
-        t('plans.research.features.1'),
-        t('plans.research.features.2')
-      ],
-      popular: false,
-      color: 'orange'
+  // 主要套餐数据 (API驱动)
+  const [mainPlans, setMainPlans] = useState([]);
+  const [loadingPlans, setLoadingPlans] = useState(true);
+
+  React.useEffect(() => {
+    async function fetchPackages() {
+      setLoadingPlans(true);
+      try {
+        const data = await billingAPI.getPackages({ is_active: true });
+        const results = Array.isArray(data.data) ? data.data : [];
+        const plans = results.map(plan => ({
+          ...plan,
+          bonusCredits: plan.bonus_credits || 0,
+          color: plan.color || 'blue',
+          badge: plan.badge,
+          originalPrice: plan.original_price ? Number(plan.original_price) : Number(plan.price),
+          popular: plan.is_popular || false,
+          features: Array.isArray(plan.features) ? plan.features : [],
+        }));
+        setMainPlans(plans);
+      } catch (e) {
+        setMainPlans([]);
+      }
+      setLoadingPlans(false);
     }
-  ];
+    fetchPackages();
+  }, []);
 
-  // 试用套餐数据 (第二行单独显示)
-  const trialPlan = {
-    id: 'trial',
-    name: t('plans.trial.name'),
-    price: 3.8,
-    originalPrice: 19.9,
-    credits: 15.00,
-    bonusCredits: 0.00,
-    description: t('plans.trial.description'),
-    features: [
-      t('plans.trial.features.0'),
-      t('plans.trial.features.1'),
-      t('plans.trial.features.2')
-    ],
-    popular: false,
-    badge: t('plans.trial.badge'),
-    color: 'blue',
-    limitation: t('plans.trial.limitation')
-  };
+
 
   // 支付方式配置
   const paymentMethods = [
@@ -109,16 +76,32 @@ const PricingPage = () => {
   ];
 
   const handleSelectPlan = (plan) => {
+    if (!isAuthenticated) {
+      openLoginModal();
+      return;
+    }
     setSelectedPlan(plan);
     setShowPaymentModal(true);
   };
 
-  const handlePayment = () => {
-    if (selectedPaymentMethod === 'alipay') {
-      alert(`正在跳转到支付宝支付 ${selectedPlan?.name} 套餐 ¥${selectedPlan?.price}`);
-    } else {
-      alert('该支付方式暂未开放，敬请期待！');
+  const handlePayment = async () => {
+    if (!selectedPlan) return;
+    setLoadingPurchase(true);
+    try {
+      // Call backend purchase API
+      try {
+        const data = await billingAPI.purchasePackage(selectedPlan.id, token);
+        showToast({ type: TOAST_TYPES.SUCCESS, message: t('payment.success', 'Purchase successful!') });
+        setShowPaymentModal(false);
+        // Refresh user profile after successful purchase
+        await refreshProfile();
+      } catch (e) {
+        showToast({ type: TOAST_TYPES.ERROR, message: e?.response?.data?.error || t('payment.error', 'Purchase failed!') });
+      }
+    } catch (e) {
+      showToast({ type: TOAST_TYPES.ERROR, message: t('payment.error', 'Purchase failed!') });
     }
+    setLoadingPurchase(false);
   };
 
   const getColorClasses = (color, popular = false) => {
@@ -174,204 +157,111 @@ const PricingPage = () => {
            </div>
           
                      {/* 主要套餐 - 第一行 */}
-           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center max-w-5xl mx-auto">
-             {mainPlans.map((plan) => (
-               <div
-                 key={plan.id}
-                 className={`relative rounded-2xl border-2 transition-all duration-300 transform hover:scale-[1.02] w-full max-w-sm ${
-                   getColorClasses(plan.color, plan.popular)
-                 }`}
-               >
-                 {/* 推荐标签 */}
-                 {plan.popular && (
-                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                     <span className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-1 rounded-full text-sm font-bold shadow-lg">
-                       🔥 {t('common.recommended')}
-                     </span>
-                   </div>
-                 )}
+                     {loadingPlans ? (
+                       <div className="text-center py-8 text-gray-500">Loading packages...</div>
+                     ) : mainPlans.length === 0 ? (
+                       <div className="text-center py-8 text-gray-500">No packages available.</div>
+                     ) : (
+                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center max-w-5xl mx-auto">
+                         {mainPlans.map((plan) => (
+                           <div
+                             key={plan.id}
+                             className={`relative rounded-2xl border-2 transition-all duration-300 transform hover:scale-[1.02] w-full max-w-sm ${
+                               getColorClasses(plan.color, plan.popular)
+                             }`}
+                           >
+                             {/* 推荐标签 */}
+                             {plan.popular && (
+                               <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                                 <span className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-1 rounded-full text-sm font-bold shadow-lg">
+                                   🔥 {t('common.recommended')}
+                                 </span>
+                               </div>
+                             )}
 
-                 {/* 特殊标签 */}
-                 {plan.badge && (
-                   <div className="absolute top-4 right-4">
-                     <span className="bg-gradient-to-r from-red-500 to-red-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow">
-                       {plan.badge}
-                     </span>
-                   </div>
-                 )}
+                             {/* 特殊标签 */}
+                             {plan.badge && (
+                               <div className="absolute top-4 right-4">
+                                 <span className="bg-gradient-to-r from-red-500 to-red-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow">
+                                   {plan.badge}
+                                 </span>
+                               </div>
+                             )}
 
-                 <div className="p-6">
-                   {/* 套餐名称 */}
-                   <h3 className={`text-lg font-bold mb-2 text-center ${
-                     plan.popular ? 'text-purple-700' : 'text-gray-900'
-                   }`}>
-                     {plan.name}
-                   </h3>
+                             <div className="p-6">
+                               {/* 套餐名称 */}
+                               <h3 className={`text-lg font-bold mb-2 text-center ${
+                                 plan.popular ? 'text-purple-700' : 'text-gray-900'
+                               }`}>
+                                 {plan.name}
+                               </h3>
 
-                   {/* 价格 */}
-                   <div className="mb-6">
-                     <div className="flex items-baseline justify-center">
-                       <span className="text-3xl font-bold text-gray-900">
-                         ¥{plan.price}
-                       </span>
-                       <span className="ml-2 text-lg text-gray-500 line-through">
-                         ¥{plan.originalPrice}
-                       </span>
-                     </div>
-                     <div className="mt-2 text-center">
-                                                <span className="inline-block bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full">
-                         {t('common.save')} ¥{(plan.originalPrice - plan.price).toFixed(1)}
-                       </span>
-                     </div>
-                   </div>
+                               {/* 价格 */}
+                               <div className="mb-6">
+                                 <div className="flex items-baseline justify-center">
+                                   <span className="text-3xl font-bold text-gray-900">
+                                     ¥{plan.price}
+                                   </span>
+                                   <span className="ml-2 text-lg text-gray-500 line-through">
+                                     ¥{plan.originalPrice}
+                                   </span>
+                                 </div>
+                                 <div className="mt-2 text-center">
+                                   <span className="inline-block bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full">
+                                     {t('common.save')} ¥{(plan.originalPrice - plan.price).toFixed(1)}
+                                   </span>
+                                 </div>
+                               </div>
 
-                   {/* 积分 */}
-                   <div className="mb-6 p-4 bg-white rounded-xl border border-gray-200 shadow-sm">
-                     <div className="flex flex-col items-center">
-                       <div className="text-center">
-                         <div className="text-3xl font-bold text-indigo-600">
-                           {plan.credits.toFixed(2)}
-                           {plan.bonusCredits > 0 && (
-                             <span className="text-lg text-green-600"> + {plan.bonusCredits.toFixed(2)}</span>
-                           )}
-                         </div>
-                                                   <div className="text-sm text-gray-600 mt-1">
-                            {plan.bonusCredits > 0 ? t('common.creditsWithBonus') : t('common.baseCredits')}
-                          </div>
-                       </div>
-                     </div>
-                   </div>
+                               {/* 积分 */}
+                               <div className="mb-6 p-4 bg-white rounded-xl border border-gray-200 shadow-sm">
+                                 <div className="flex flex-col items-center">
+                                   <div className="text-center">
+                                     <div className="text-3xl font-bold text-indigo-600">
+                                       {Number(plan.credits).toFixed(2)}
+                                       {plan.bonusCredits > 0 && (
+                                         <span className="text-lg text-green-600"> + {Number(plan.bonusCredits).toFixed(2)}</span>
+                                       )}
+                                     </div>
+                                     <div className="text-sm text-gray-600 mt-1">
+                                       {plan.bonusCredits > 0 ? t('common.creditsWithBonus') : t('common.baseCredits')}
+                                     </div>
+                                   </div>
+                                 </div>
+                               </div>
 
-                   {/* 描述 */}
-                   <p className="text-sm text-gray-600 mb-6 text-center min-h-[3rem]">
-                     {plan.description}
-                   </p>
+                               {/* 描述 */}
+                               <p className="text-sm text-gray-600 mb-6 text-center min-h-[3rem]">
+                                 {plan.description}
+                               </p>
 
-                   {/* 功能列表 */}
-                   <ul className="space-y-3 mb-8">
-                     {plan.features.map((feature, index) => (
-                       <li key={index} className="flex items-start">
-                         <svg className="w-5 h-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                           <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                         </svg>
-                         <span className="text-sm text-gray-700">{feature}</span>
-                       </li>
-                     ))}
-                   </ul>
+                               {/* 功能列表 */}
+                               <ul className="space-y-3 mb-8">
+                                 {plan.features.map((feature, index) => (
+                                   <li key={index} className="flex items-start">
+                                     <svg className="w-5 h-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                       <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                     </svg>
+                                     <span className="text-sm text-gray-700">{feature}</span>
+                                   </li>
+                                 ))}
+                               </ul>
 
-                   {/* 购买按钮 */}
-                   <button
-                     onClick={() => handleSelectPlan(plan)}
-                     className={`w-full py-3 px-4 rounded-lg font-bold text-white transition-all duration-200 transform hover:scale-[1.03] shadow-lg ${
-                       getButtonClasses(plan.color)
-                     }`}
-                   >
-                     {t('common.selectPlan')}
-                   </button>
-                 </div>
-               </div>
-             ))}
-           </div>
-
-           {/* 试用套餐 - 第二行单独显示 */}
-           <div className="mt-16 flex justify-center">
-             <div className="max-w-sm w-full">
-               <div className="text-center mb-8">
-                 <h3 className="text-2xl font-bold text-gray-900 mb-2">{t('plans.trial.sectionTitle')}</h3>
-                 <p className="text-gray-600">{t('plans.trial.sectionSubtitle')}</p>
-               </div>
-               
-               <div
-                 className={`relative rounded-2xl border-2 transition-all duration-300 transform hover:scale-[1.02] ${
-                   getColorClasses(trialPlan.color, trialPlan.popular)
-                 }`}
-               >
-                 {/* 特殊标签 */}
-                 {trialPlan.badge && (
-                   <div className="absolute top-4 right-4">
-                     <span className="bg-gradient-to-r from-red-500 to-red-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow">
-                       {trialPlan.badge}
-                     </span>
-                   </div>
-                 )}
-
-                 <div className="p-6">
-                   {/* 套餐名称 */}
-                   <h3 className="text-lg font-bold mb-2 text-center text-gray-900">
-                     {trialPlan.name}
-                   </h3>
-
-                   {/* 购买限制提示 */}
-                   <div className="mb-4 text-center">
-                     <span className="inline-block bg-blue-100 text-blue-800 text-xs font-medium px-3 py-1 rounded-full">
-                       {trialPlan.limitation}
-                     </span>
-                   </div>
-
-                   {/* 价格 */}
-                   <div className="mb-6">
-                     <div className="flex items-baseline justify-center">
-                       <span className="text-3xl font-bold text-gray-900">
-                         ¥{trialPlan.price}
-                       </span>
-                       <span className="ml-2 text-lg text-gray-500 line-through">
-                         ¥{trialPlan.originalPrice}
-                       </span>
-                     </div>
-                     <div className="mt-2 text-center">
-                       <span className="inline-block bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full">
-                         {t('common.save')} ¥{(trialPlan.originalPrice - trialPlan.price).toFixed(1)}
-                       </span>
-                     </div>
-                   </div>
-
-                                       {/* 积分 */}
-                    <div className="mb-6 p-4 bg-white rounded-xl border border-gray-200 shadow-sm">
-                      <div className="flex flex-col items-center">
-                        <div className="text-center">
-                          <div className="text-3xl font-bold text-indigo-600">
-                            {trialPlan.credits.toFixed(2)}
-                            {trialPlan.bonusCredits > 0 && (
-                              <span className="text-lg text-green-600"> + {trialPlan.bonusCredits.toFixed(2)}</span>
-                            )}
-                          </div>
-                                                     <div className="text-sm text-gray-600 mt-1">
-                             {trialPlan.bonusCredits > 0 ? t('common.creditsWithBonus') : t('common.baseCredits')}
+                               {/* 购买按钮 */}
+                               <button
+                                 onClick={() => handleSelectPlan(plan)}
+                                 className={`w-full py-3 px-4 rounded-lg font-bold text-white transition-all duration-200 transform hover:scale-[1.03] shadow-lg ${
+                                   getButtonClasses(plan.color)
+                                 }`}
+                               >
+                                 {t('common.selectPlan')}
+                               </button>
+                             </div>
                            </div>
-                        </div>
-                      </div>
-                    </div>
+                         ))}
+                       </div>
+                     )}
 
-                   {/* 描述 */}
-                   <p className="text-sm text-gray-600 mb-6 text-center min-h-[3rem]">
-                     {trialPlan.description}
-                   </p>
-
-                   {/* 功能列表 */}
-                   <ul className="space-y-3 mb-8">
-                     {trialPlan.features.map((feature, index) => (
-                       <li key={index} className="flex items-start">
-                         <svg className="w-5 h-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                           <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                         </svg>
-                         <span className="text-sm text-gray-700">{feature}</span>
-                       </li>
-                     ))}
-                   </ul>
-
-                   {/* 购买按钮 */}
-                   <button
-                     onClick={() => handleSelectPlan(trialPlan)}
-                     className={`w-full py-3 px-4 rounded-lg font-bold text-white transition-all duration-200 transform hover:scale-[1.03] shadow-lg ${
-                       getButtonClasses(trialPlan.color)
-                     }`}
-                   >
-                     {t('plans.trial.buttonText')}
-                   </button>
-                 </div>
-               </div>
-             </div>
-           </div>
         </div>
       </div>
 

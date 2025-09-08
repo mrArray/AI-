@@ -3,6 +3,11 @@ import { apiClient } from './client';
 import { extractFieldErrors } from './utils';
 
 class AuthAPI {
+
+    getAuthConfig(token) {
+    return token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+  }
+
   // 登录
   async login(email, password) {
     try {
@@ -139,9 +144,9 @@ class AuthAPI {
   }
 
   // 获取用户资料
-  async getProfile() {
+  async getProfile(token) {
     try {
-      const data = await apiClient.get('/auth/profile/');
+      const data = await apiClient.get('/auth/profile/', this.getAuthConfig(token));
       return { success: true, data };
     } catch (error) {
       return { success: false, error: error.message };

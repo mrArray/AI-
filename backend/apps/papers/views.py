@@ -1,3 +1,12 @@
+from rest_framework import permissions
+from .models import FormatCreditPrice
+from .serializers import FormatCreditPriceSerializer
+# API ViewSet for FormatCreditPrice
+from rest_framework import viewsets
+class FormatCreditPriceViewSet(viewsets.ModelViewSet):
+    queryset = FormatCreditPrice.objects.all()
+    serializer_class = FormatCreditPriceSerializer
+    permission_classes = [permissions.IsAuthenticated]
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from rest_framework import generics, permissions, status, viewsets, serializers
 from rest_framework.decorators import api_view, permission_classes, action
@@ -33,6 +42,7 @@ from django.http import HttpResponse, JsonResponse
 import base64
 import re
 import logging
+from .models import FormatCreditPrice
 
 # Configure logger
 logger = logging.getLogger(__name__)
@@ -90,9 +100,30 @@ class AIPaperFormatView(APIView):
         except Exception as e:
             return Response({'error': f'File extraction failed: {str(e)}'}, status=400)
 
+
         # Parse user requirements - can be JSON or plain text
         user_requirements = self._parse_requirements(requirements)
-        
+
+        # Get user (must be authenticated)
+        user = request.user if request.user.is_authenticated else None
+        if not user:
+            return Response({'error': 'Authentication required to generate papers.'}, status=401)
+
+
+        # Get credit prices for each format option from the database
+        format_credit_prices = {f.format: f.credit_price for f in FormatCreditPrice.objects.all()}
+        format_name = user_requirements.get('format') or user_requirements.get('name') or output_format
+        credit_price = format_credit_prices.get(format_name, 1)
+
+        # Check user credits
+        if user.credits < credit_price:
+            return Response({'error': f'Insufficient credits. Required: {credit_price}, Available: {user.credits}'}, status=402)
+
+        # Deduct credits
+        user.credits -= credit_price
+        user.total_credits_used += credit_price
+        user.save()
+
         # Construct optimal prompt based on user requirements and output format
         prompt = self._construct_optimal_prompt(
             user_requirements=user_requirements,
@@ -989,6 +1020,17 @@ class PaperFormatWithLLMView(APIView):
             )
         except PaperFormat.DoesNotExist:
             return Response({'error': 'Format not found.'}, status=404)
+
+        # User credit check and deduction
+        user = request.user if request.user.is_authenticated else None
+        if not user:
+            return Response({'error': 'Authentication required to format papers.'}, status=401)
+        credit_price = paper_format.credit_price
+        if user.credits < credit_price:
+            return Response({'error': f'Insufficient credits. Required: {credit_price}, Available: {user.credits}'}, status=402)
+        user.credits -= credit_price
+        user.total_credits_used += credit_price
+        user.save()
 
         # Prepare variables for prompt
         sections = paper_format.template_structure.get('sections', []) if paper_format.template_structure else []

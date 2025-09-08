@@ -1,8 +1,14 @@
+from .models import FormatCreditPrice
 from rest_framework import serializers
+
+class FormatCreditPriceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FormatCreditPrice
+        fields = ['id', 'format', 'credit_price', 'created_at']
 from django.contrib.auth import get_user_model
 from drf_spectacular.utils import extend_schema_field
 from .models import (
-    PaperFormat, PaperTemplate, GeneratedPaper, PaperSection, PaperFeedback
+    PaperFormat, PaperTemplate, GeneratedPaper, PaperSection, PaperFeedback, FormatCreditPrice
 )
 
 User = get_user_model()

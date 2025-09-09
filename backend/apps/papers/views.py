@@ -135,7 +135,16 @@ class AIPaperFormatView(APIView):
 
         # Generate formatted content using LLM
         try:
-            llm_manager = LLMManager()
+            # Always get the active provider and model from the database
+            from apps.core.models import LLMProvider, LLMModel
+            provider = LLMProvider.objects.filter(is_active=True).order_by('-is_default').first()
+            model = None
+            if provider:
+                model = LLMModel.objects.filter(provider=provider, is_active=True).order_by('-is_default').first()
+            if provider and model:
+                llm_manager = LLMManager(provider=provider, model=model)
+            else:
+                llm_manager = LLMManager()
             messages = [
                 {"role": "system", "content": "You are an expert academic editor. Format papers according to user specifications. Return only the formatted content without explanations or AI commentary."},
                 {"role": "user", "content": prompt}
@@ -144,7 +153,22 @@ class AIPaperFormatView(APIView):
             # Clean up and extract relevant content based on output_format
             formatted_content = self._clean_ai_response(formatted_content, output_format)
         except Exception as e:
-            return Response({'error': f'LLM formatting failed: {str(e)}'}, status=500)
+            # If it's an LLMServiceError, return only the actual error message if available
+            if hasattr(e, 'details') and isinstance(e.details, dict):
+                # Try to extract OpenAI/LLM error message
+                error_msg = None
+                details = e.details.get('response')
+                if details:
+                    try:
+                        error_json = json.loads(details)
+                        if 'error' in error_json and 'message' in error_json['error']:
+                            error_msg = error_json['error']['message']
+                    except Exception:
+                        pass
+                if error_msg:
+                    return Response({'error': error_msg}, status=500)
+            # Fallback: show the exception string
+            return Response({'error': str(e)}, status=500)
 
         # Return response based on format type
         return self._format_response(formatted_content, output_format, title)

@@ -167,7 +167,7 @@ class PapersAPI {
   }
 
   // AI Paper Formatting (HomePage integration)
-  async aiFormatPaper({ file, requirements, output_format, title, language, token }) {
+  async aiFormatPaper({ file, requirements, output_format, title, language, token, timeout = 120000 }) {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('requirements', requirements);
@@ -175,30 +175,45 @@ class PapersAPI {
     if (title) formData.append('title', title);
     if (language) formData.append('language', language);
 
-    // Use apiClient.upload for all formats
-    const apiUrl = '/papers/ai-format/';
-    const response = await apiClient.upload(apiUrl, formData, this.getAuthConfig(token));
-
-    // If response is a Blob (pdf/docx), convert to download info
-    if (output_format === 'pdf' || output_format === 'docx') {
-      // apiClient.upload should return the raw Response for blobs
-      if (response instanceof Blob) {
-        const url = window.URL.createObjectURL(response);
+    // Use fetch with timeout
+    const apiUrl = apiClient.baseURL + '/papers/ai-format/';
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeout);
+    try {
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+        body: formData,
+        signal: controller.signal,
+      });
+      clearTimeout(id);
+      if (!response.ok) {
+        let errorMsg = '请求失败';
+        try {
+          const errJson = await response.json();
+          errorMsg = errJson.error || errorMsg;
+        } catch {}
+        throw new Error(errorMsg);
+      }
+      if (output_format === 'pdf' || output_format === 'docx') {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
         let filename = 'formatted_paper.' + output_format;
-        // Try to get filename from headers if possible (apiClient.upload may need to expose headers)
-        // If not possible, fallback to default filename
         return {
           file_url: url,
           file_name: filename,
-          content_type: response.type || '',
+          content_type: blob.type || '',
         };
-      } else if (response && response.file_url) {
-        // fallback for previous logic
-        return response;
       }
+      // For md/latex, expect JSON
+      return await response.json();
+    } catch (err) {
+      clearTimeout(id);
+      if (err.name === 'AbortError') {
+        throw new Error('请求超时，请稍后重试');
+      }
+      throw err;
     }
-    // For md/latex, expect JSON
-    return response;
   }
 }
 

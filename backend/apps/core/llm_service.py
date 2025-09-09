@@ -38,27 +38,22 @@ class LLMService:
             'Content-Type': 'application/json',
             'Accept': 'application/json',
         }
-        
         if self.provider.api_key:
             if self.provider.provider_type == 'openai':
                 headers['Authorization'] = f'Bearer {self.provider.api_key}'
             elif self.provider.provider_type == 'anthropic':
                 headers['x-api-key'] = self.provider.api_key
             elif self.provider.provider_type == 'google':
-                headers['Authorization'] = f'Bearer {self.provider.api_key}'
+                headers['X-goog-api-key'] = self.provider.api_key
             elif self.provider.provider_type == 'ollama':
-                # Ollama typically doesn't require authentication
                 pass
-        
         return headers
     
     def _build_request_data(self, messages: List[Dict], **kwargs) -> Dict[str, Any]:
-        """Build request data optimized for Deepseek-coder"""
+        """Build request data for LLM providers, including Gemini (Google)"""
         temperature = kwargs.get('temperature', self.config.default_temperature)
         max_tokens = kwargs.get('max_tokens', self.config.default_max_tokens)
         stream = kwargs.get('stream', self.config.enable_streaming)
-        
-        # Special handling for Ollama/Deepseek providers
         if self.provider.provider_type == 'ollama':
             return {
                 'model': self.model.name,
@@ -69,30 +64,42 @@ class LLMService:
                     'num_predict': max_tokens,
                 }
             }
-            
-        # Standard format for other providers
-        return {
-            'model': self.model.name,
-            'messages': messages,
-            'temperature': temperature,
-            'max_tokens': max_tokens,
-            'stream': stream,
-        }
+        elif self.provider.provider_type == 'google':
+            # Gemini expects 'contents' with 'parts' and 'text'
+            contents = []
+            for msg in messages:
+                if msg['role'] == 'user':
+                    contents.append({
+                        'parts': [{'text': msg['content']}]
+                    })
+            data = {'contents': contents}
+            # Optionally add generationConfig for temperature, maxOutputTokens
+            data['generationConfig'] = {
+                'temperature': temperature,
+                'maxOutputTokens': max_tokens
+            }
+            return data
+        else:
+            return {
+                'model': self.model.name,
+                'messages': messages,
+                'temperature': temperature,
+                'max_tokens': max_tokens,
+                'stream': stream,
+            }
     
     def _get_endpoint_url(self) -> str:
-        """Get the endpoint URL with better Ollama support"""
+        """Get the endpoint URL for each provider, including Gemini (Google)"""
         base_url = self.provider.base_url.rstrip('/')
-        
         if self.provider.provider_type == 'ollama':
-            # Both endpoints work, but /api/chat is more reliable
             return f"{base_url}/api/chat"
         elif self.provider.provider_type == 'openai':
             return f"{base_url}/v1/chat/completions"
         elif self.provider.provider_type == 'anthropic':
             return f"{base_url}/v1/messages"
         elif self.provider.provider_type == 'google':
-            return f"{base_url}/v1/models/{self.model.name}:generateContent"
-        
+            # Gemini expects v1beta/models/{model}:generateContent
+            return f"{base_url}/v1beta/models/{self.model.name}:generateContent"
         return f"{base_url}/chat/completions"
     
     def _log_request(self, url: str, headers: Dict, data: Dict):
@@ -203,21 +210,24 @@ class LLMService:
         # Handle Deepseek-coder's special format
         if self.provider.provider_type == 'ollama' and self.model.name.startswith('deepseek'):
             if isinstance(response, dict):
-                # Single-response format
                 content = response.get('message', {}).get('content', '')
             else:
-                # Stream response format
                 content = "".join([
                     chunk.get('message', {}).get('content', '')
                     for chunk in response
                     if not chunk.get('done') and 'message' in chunk
                 ])
-                
             return self._sanitize_output(content)
-        
-        # Default handling for other providers
         try:
-            if self.provider.provider_type in ['openai', 'anthropic', 'google']:
+            if self.provider.provider_type == 'google':
+                # Gemini returns candidates[0].content.parts[0].text
+                candidates = response.get('candidates', [])
+                if candidates and 'content' in candidates[0]:
+                    parts = candidates[0]['content'].get('parts', [])
+                    if parts and 'text' in parts[0]:
+                        return parts[0]['text']
+                return ''
+            elif self.provider.provider_type in ['openai', 'anthropic']:
                 return response.get('choices', [{}])[0].get('message', {}).get('content', '')
             else:
                 return response.get('message', {}).get('content', '')
@@ -243,23 +253,28 @@ class LLMService:
     
     def generate_response(self, messages: List[Dict], **kwargs) -> str:
         """Generate a response optimized for Deepseek-coder (cache disabled)"""
-        # cache_key = None
-        # if self.config.enable_caching:
-        #     cache_key = f"llm_response_{self.provider.id}_{self.model.id}_{hash(str(messages))}"
-        #     if cached := cache.get(cache_key):
-        #         return cached
         try:
             url = self._get_endpoint_url()
             headers = self._get_headers()
             data = self._build_request_data(messages, **kwargs)
-            # Special streaming handling for Deepseek-coder
+            # For Ollama streaming, use the streaming handler
             if self.provider.provider_type == 'ollama' and self.model.name.startswith('deepseek'):
-                # Use sequential token collection for reliability
                 content = self._generate_deepseek_response(url, headers, data)
+            elif self.provider.provider_type == 'ollama':
+                # For non-streaming Ollama, parse only the first line as JSON
+                response = requests.post(
+                    url,
+                    headers=headers,
+                    json=data,
+                    timeout=self.provider.timeout
+                )
+                response.raise_for_status()
+                first_line = response.text.splitlines()[0]
+                response_json = json.loads(first_line)
+                content = self._extract_content(response_json)
             else:
                 response = self._request_with_retry(url, headers, data)
                 content = self._extract_content(response)
-            # Cache disabled: do not cache content
             return content
         except Exception as e:
             logger.error(f"Generation failed: {str(e)}")
@@ -310,21 +325,19 @@ class LLMService:
             ) from e
     
     def stream_response(self, messages: List[Dict], **kwargs) -> Generator[str, None, None]:
-        """Streaming not fully supported for Deepseek-coder in this implementation"""
+        """Streaming supported for providers except Deepseek-coder/Ollama"""
+        # Only block streaming for Deepseek/Ollama
         if self.provider.provider_type == 'ollama' and self.model.name.startswith('deepseek'):
-            raise NotImplementedError("Direct streaming not supported for Deepseek models")
-        
+            raise LLMServiceError(
+                "Streaming not supported for Deepseek-coder/Ollama models",
+                code="DEEPSEEK_STREAM_NOT_SUPPORTED"
+            )
         try:
             url = self._get_endpoint_url()
             headers = self._get_headers()
             data = self._build_request_data(messages, stream=True, **kwargs)
-            
-            # Make the streaming request
             response = self._request_with_retry(url, headers, data)
-            
-            # Yield each content chunk
             yield from self._extract_stream_content(response)
-                        
         except Exception as e:
             logger.error(f"Streaming error: {str(e)}")
             if isinstance(e, LLMServiceError):
@@ -438,8 +451,8 @@ class PromptService:
 class LLMManager:
     """Enhanced LLM manager with better error handling and prompt validation"""
     
-    def __init__(self):
-        self.llm_service = LLMService()
+    def __init__(self, provider: Optional[LLMProvider] = None, model: Optional[LLMModel] = None):
+        self.llm_service = LLMService(provider=provider, model=model)
         self.prompt_service = PromptService()
     
     def _get_system_prompt(self, prompt_name: str, language: str, variables: Dict) -> str:

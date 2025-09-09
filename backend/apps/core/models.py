@@ -59,6 +59,10 @@ class LLMProvider(models.Model):
 
 
 class LLMModel(models.Model):
+    def save(self, *args, **kwargs):
+        if self.is_default:
+            LLMModel.objects.filter(is_default=True).exclude(pk=self.pk).update(is_default=False)
+        super().save(*args, **kwargs)
     """Model for specific LLM models available from providers"""
     
     provider = models.ForeignKey(LLMProvider, on_delete=models.CASCADE, related_name='models')
@@ -85,9 +89,9 @@ class LLMModel(models.Model):
         return f"{self.display_name} ({self.provider.name})"
     
     def save(self, *args, **kwargs):
-        # Ensure only one default model per provider
+        # Ensure only one default model globally
         if self.is_default:
-            LLMModel.objects.filter(provider=self.provider, is_default=True).update(is_default=False)
+            LLMModel.objects.filter(is_default=True).exclude(pk=self.pk).update(is_default=False)
         super().save(*args, **kwargs)
 
 

@@ -1,3 +1,7 @@
+import os
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
+import django
+django.setup()
 from apps.core.llm_service import LLMService
 import requests
 import logging

@@ -60,15 +60,6 @@ function Header({ activePage }) {
                 >
                   {t('nav.home')}
                 </a>
-               
-                  {isAuthenticated && (
-                <a 
-                  href="/history" 
-                  className={`${activePage === 'history' ? 'text-gray-900 border-b-2 border-indigo-600' : 'text-gray-500'} hover:text-indigo-600 px-3 py-2 text-sm font-medium whitespace-nowrap`}
-                >
-                  {t('nav.history')}
-                </a>
-                )}
                 <a 
                   href="/pricing" 
                   className={`${activePage === 'pricing' ? 'text-gray-900 border-b-2 border-indigo-600' : 'text-gray-500'} hover:text-indigo-600 px-3 py-2 text-sm font-medium whitespace-nowrap`}
